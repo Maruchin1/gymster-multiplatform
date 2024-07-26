@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.realm)
 }
 
 kotlin {
@@ -26,6 +27,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
+            implementation(libs.realm.base)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

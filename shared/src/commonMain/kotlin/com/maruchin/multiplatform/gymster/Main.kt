@@ -1,10 +1,10 @@
 package com.maruchin.multiplatform.gymster
 
+import com.maruchin.multiplatform.gymster.core.database.di.coreDatabaseModule
 import com.maruchin.multiplatform.gymster.core.di.SharedLibraryKoin
-import org.koin.core.module.Module
 
-private val modules = listOf<Module>()
+private val coreModules = listOf(coreDatabaseModule)
 
 fun initSharedLibrary() {
-    SharedLibraryKoin.init(modules)
+    SharedLibraryKoin.init(coreModules)
 }
