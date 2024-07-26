@@ -28,10 +28,13 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.koin.core)
             implementation(libs.realm.base)
+            implementation(libs.kotlinx.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.koin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
         }
     }
 }
