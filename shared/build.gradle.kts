@@ -26,6 +26,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(libs.androidx.viewmodel)
             implementation(libs.koin.core)
             implementation(libs.realm.base)
             implementation(libs.kotlinx.coroutines)

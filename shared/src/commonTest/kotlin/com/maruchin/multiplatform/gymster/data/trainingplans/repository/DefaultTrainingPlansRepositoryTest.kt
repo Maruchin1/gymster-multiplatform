@@ -5,15 +5,15 @@ import com.maruchin.multiplatform.gymster.data.trainingplans.model.Reps
 import com.maruchin.multiplatform.gymster.data.trainingplans.model.Sets
 import com.maruchin.multiplatform.gymster.data.trainingplans.repository.TrainingPlansRepository
 import io.realm.kotlin.Realm
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class DefaultTrainingPlansRepositoryTest : KoinTest {
     private val realm: Realm by inject()
