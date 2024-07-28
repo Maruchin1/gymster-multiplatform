@@ -1,12 +1,11 @@
 package com.maruchin.multiplatform.gymster.android.trainingplans.exerciseform
 
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.dialog
 import androidx.navigation.toRoute
+import com.maruchin.gymster.android.ui.fullScreenDialog
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.exerciseform.ExerciseFormViewModel
 import kotlinx.serialization.Serializable
 
@@ -18,12 +17,7 @@ internal data class ExerciseFormRoute(
 )
 
 internal fun NavGraphBuilder.exerciseFormDialog(onClose: () -> Unit) {
-    dialog<ExerciseFormRoute>(
-        dialogProperties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false
-        )
-    ) {
+    fullScreenDialog<ExerciseFormRoute> {
         val (planId, dayId, exerciseId) = it.toRoute<ExerciseFormRoute>()
         val viewModel = viewModel {
             ExerciseFormViewModel.get(
