@@ -1,13 +1,16 @@
 import app.cash.turbine.test
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.di.dataTrainingPlansTestModule
+import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.sampleTrainingPlans
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.repository.FakeTrainingPlansRepository
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.di.featureTrainingPlansModule
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.planform.PlanFormViewModel
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -40,25 +43,25 @@ class PlanFormViewModelTest : KoinTest {
 
     @Test
     fun `emit plan when selected and available`() = runTest {
-        trainingPlansRepository.setAvailablePlans()
-        val plan = trainingPlansRepository.getPlans().random()
+        trainingPlansRepository.setPlans(sampleTrainingPlans)
+        val plan = sampleTrainingPlans.random()
         val viewModel: PlanFormViewModel = get { parametersOf(plan.id) }
 
         viewModel.plan.test {
-            assertNull(awaitItem())
+            awaitItem().shouldBeNull()
 
-            assertEquals(plan, awaitItem())
+            awaitItem() shouldBe plan
         }
     }
 
     @Test
     fun `emit null when plan selected but not available`() = runTest {
-        trainingPlansRepository.setNoPlans()
+        trainingPlansRepository.setPlans(emptyList())
         val planId = "xyz"
         val viewModel: PlanFormViewModel = get { parametersOf(planId) }
 
         viewModel.plan.test {
-            assertNull(awaitItem())
+            awaitItem().shouldBeNull()
         }
     }
 
@@ -67,23 +70,23 @@ class PlanFormViewModelTest : KoinTest {
         val viewModel: PlanFormViewModel = get { parametersOf(null) }
 
         viewModel.plan.test {
-            assertNull(awaitItem())
+            awaitItem().shouldBeNull()
         }
     }
 
     @Test
     fun `change plan name when save and plan selected`() = runTest {
-        trainingPlansRepository.setAvailablePlans()
-        val plan = trainingPlansRepository.getPlans().random()
+        trainingPlansRepository.setPlans(sampleTrainingPlans)
+        val plan = sampleTrainingPlans.random()
         val newName = "Eat and sleep"
         val viewModel: PlanFormViewModel = get { parametersOf(plan.id) }
 
         trainingPlansRepository.observePlan(plan.id).test {
-            assertEquals(plan, awaitItem())
+            awaitItem() shouldBe plan
 
             viewModel.savePlan(newName).join()
 
-            assertEquals(newName, awaitItem()!!.name)
+            awaitItem()!!.name shouldBe newName
         }
     }
 
@@ -93,13 +96,13 @@ class PlanFormViewModelTest : KoinTest {
         val viewModel: PlanFormViewModel = get { parametersOf(null) }
 
         trainingPlansRepository.observeAllPlans().test {
-            assertEquals(0, awaitItem().size)
+            awaitItem().shouldBeEmpty()
 
             viewModel.savePlan(planName).join()
 
             awaitItem().let {
-                assertEquals(1, it.size)
-                assertEquals(planName, it.first().name)
+                it shouldHaveSize 1
+                it.first().name shouldBe planName
             }
         }
     }

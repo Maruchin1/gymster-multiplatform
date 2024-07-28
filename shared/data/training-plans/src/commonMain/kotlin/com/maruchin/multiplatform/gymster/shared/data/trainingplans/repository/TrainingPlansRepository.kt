@@ -41,4 +41,6 @@ interface TrainingPlansRepository {
     )
 
     suspend fun deleteExercise(planId: String, dayId: String, exerciseId: String)
+
+    suspend fun reorderExercises(planId: String, dayId: String, exercisesIds: List<String>)
 }

@@ -5,4 +5,9 @@ data class Sets(val regular: Int, val drop: Int = 0) {
         require(regular >= 1) { "regularSets must be greater or equal to 0" }
         require(drop >= 0) { "superSets must be greater or equal to 0" }
     }
+
+    override fun toString(): String {
+        val dropSigns = (1..drop).joinToString(separator = "") { "+" }
+        return "$regular$dropSigns"
+    }
 }

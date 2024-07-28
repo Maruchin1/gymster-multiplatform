@@ -13,61 +13,8 @@ class FakeTrainingPlansRepository : TrainingPlansRepository {
 
     private val collection = MutableStateFlow<Map<String, TrainingPlan>>(emptyMap())
 
-    fun getPlans(): List<TrainingPlan> = collection.value.values.toList()
-
-    fun setAvailablePlans() {
-        collection.value = listOf(
-            TrainingPlan(
-                id = "1",
-                name = "Push Pull",
-                days = listOf(
-                    TrainingPlanDay(
-                        id = "1",
-                        name = "Push 1",
-                        exercises = listOf(
-                            TrainingPlanExercise(
-                                id = "1",
-                                name = "Bench Press",
-                                sets = Sets(regular = 3),
-                                reps = Reps(4..6)
-                            ),
-                            TrainingPlanExercise(
-                                id = "2",
-                                name = "Overhead Press",
-                                sets = Sets(regular = 3),
-                                reps = Reps(10..12)
-                            ),
-                            TrainingPlanExercise(
-                                id = "3",
-                                name = "Triceps Extension",
-                                sets = Sets(regular = 1, drop = 2),
-                                reps = Reps(10..20)
-                            )
-                        )
-                    ),
-                    TrainingPlanDay(
-                        id = "2",
-                        name = "Pull 1",
-                        exercises = emptyList()
-                    ),
-                    TrainingPlanDay(
-                        id = "3",
-                        name = "Push 2",
-                        exercises = emptyList()
-                    ),
-                    TrainingPlanDay(
-                        id = "4",
-                        name = "Pull 2",
-                        exercises = emptyList()
-                    )
-                )
-            ),
-            TrainingPlan(id = "2", name = "Full Body Workout", days = emptyList())
-        ).associateBy { it.id }
-    }
-
-    fun setNoPlans() {
-        collection.value = emptyMap()
+    fun setPlans(plans: List<TrainingPlan>) {
+        collection.value = plans.associateBy { it.id }
     }
 
     override fun observeAllPlans(): Flow<List<TrainingPlan>> = collection.map {
@@ -172,7 +119,7 @@ class FakeTrainingPlansRepository : TrainingPlansRepository {
                 if (day.id == dayId) {
                     val newExercises = day.exercises.map { exercise ->
                         if (exercise.id == exerciseId) {
-                            exercise.copy(name = newName)
+                            exercise.copy(name = newName, sets = newSets, reps = newReps)
                         } else {
                             exercise
                         }
@@ -191,6 +138,24 @@ class FakeTrainingPlansRepository : TrainingPlansRepository {
             val newDays = plan.days.map { day ->
                 if (day.id == dayId) {
                     val newExercises = day.exercises.filter { it.id != exerciseId }
+                    day.copy(exercises = newExercises)
+                } else {
+                    day
+                }
+            }
+            collection.value += planId to plan.copy(days = newDays)
+        }
+    }
+
+    override suspend fun reorderExercises(
+        planId: String,
+        dayId: String,
+        exercisesIds: List<String>
+    ) {
+        collection.value[planId]?.let { plan ->
+            val newDays = plan.days.map { day ->
+                if (day.id == dayId) {
+                    val newExercises = day.exercises.sortedBy { exercisesIds.indexOf(it.id) }
                     day.copy(exercises = newExercises)
                 } else {
                     day

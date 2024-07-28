@@ -1,13 +1,14 @@
 import app.cash.turbine.test
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.di.dataTrainingPlansTestModule
+import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.sampleTrainingPlans
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.repository.FakeTrainingPlansRepository
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.di.featureTrainingPlansModule
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.planlist.PlanListUiState
 import com.maruchin.multiplatform.gymster.shared.feature.trainingplans.planlist.PlanListViewModel
+import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -39,24 +40,23 @@ class PlanListViewModelTest : KoinTest {
 
     @Test
     fun `emit loaded state when training plans available`() = runTest {
-        trainingPlansRepository.setAvailablePlans()
-        val allPlans = trainingPlansRepository.getPlans()
+        trainingPlansRepository.setPlans(sampleTrainingPlans)
 
         viewModel.uiState.test {
-            assertEquals(PlanListUiState.Loading, awaitItem())
+            awaitItem() shouldBe PlanListUiState.Loading
 
-            assertEquals(PlanListUiState.Loaded(allPlans), awaitItem())
+            awaitItem() shouldBe PlanListUiState.Loaded(sampleTrainingPlans)
         }
     }
 
     @Test
     fun `emit empty state when no training plans`() = runTest {
-        trainingPlansRepository.setNoPlans()
+        trainingPlansRepository.setPlans(emptyList())
 
         viewModel.uiState.test {
-            assertEquals(PlanListUiState.Loading, awaitItem())
+            awaitItem() shouldBe PlanListUiState.Loading
 
-            assertEquals(PlanListUiState.Empty, awaitItem())
+            awaitItem() shouldBe PlanListUiState.Empty
         }
     }
 }

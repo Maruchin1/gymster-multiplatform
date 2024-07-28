@@ -32,6 +32,7 @@ class MultiplatformConventionPlugin : Plugin<Project> {
                     implementation(libs.findLibrary("kotlinx-coroutines-test").get())
                     implementation(libs.findLibrary("koin-test").get())
                     implementation(libs.findLibrary("turbine").get())
+                    implementation(libs.findLibrary("kotest-assertions").get())
                 }
             }
         }

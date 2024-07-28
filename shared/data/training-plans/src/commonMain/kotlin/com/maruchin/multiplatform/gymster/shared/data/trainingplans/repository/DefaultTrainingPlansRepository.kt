@@ -102,4 +102,16 @@ internal class DefaultTrainingPlansRepository(
             exerciseId = RealmUUID.from(exerciseId)
         )
     }
+
+    override suspend fun reorderExercises(
+        planId: String,
+        dayId: String,
+        exercisesIds: List<String>
+    ) {
+        localDataSource.reorderExercises(
+            planId = RealmUUID.from(planId),
+            dayId = RealmUUID.from(dayId),
+            exercisesIds = exercisesIds.map(RealmUUID::from)
+        )
+    }
 }

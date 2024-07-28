@@ -10,4 +10,6 @@ data class Reps(val min: Int, val max: Int) {
     }
 
     val range: IntRange = min..max
+
+    override fun toString(): String = "$min-$max"
 }

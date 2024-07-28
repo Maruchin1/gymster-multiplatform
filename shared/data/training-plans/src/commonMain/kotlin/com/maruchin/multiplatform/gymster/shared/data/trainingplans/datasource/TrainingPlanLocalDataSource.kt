@@ -7,6 +7,7 @@ import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -113,6 +114,25 @@ internal class TrainingPlanLocalDataSource(private val realm: Realm) {
             exercise?.dropSets = newSets.drop
             exercise?.minReps = newReps.min
             exercise?.maxReps = newReps.max
+        }
+    }
+
+    suspend fun reorderExercises(
+        planId: RealmUUID,
+        dayId: RealmUUID,
+        exercisesIds: List<RealmUUID>
+    ) {
+        val plan = realm.query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+        val day = plan.days.find { it.id == dayId } ?: return
+        val reorderedExercises = realmListOf<TrainingPlanExerciseDbModel>()
+        for (id in exercisesIds) {
+            val exercise = day.exercises.find { it.id == id } ?: continue
+            reorderedExercises.add(exercise)
+        }
+        realm.write {
+            findLatest(day)?.let {
+                it.exercises = reorderedExercises
+            }
         }
     }
 
