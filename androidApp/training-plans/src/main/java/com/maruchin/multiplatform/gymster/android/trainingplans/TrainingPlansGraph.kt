@@ -21,9 +21,6 @@ object TrainingPlansGraph
 fun NavGraphBuilder.trainingPlansGraph(navController: NavController) {
     navigation<TrainingPlansGraph>(startDestination = PlanListRoute) {
         planListScreen(
-            onBack = {
-                navController.navigateUp()
-            },
             onAddTrainingPlan = {
                 navController.navigate(PlanFormRoute(null))
             },

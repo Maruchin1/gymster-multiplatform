@@ -35,7 +35,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.TrainingPlanExercise
@@ -179,10 +181,10 @@ internal fun ExerciseFormDialog(
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun ExerciseFormDialogPreview() {
-    MaterialTheme {
+    AppTheme {
         ExerciseFormDialog(
             exercise = null,
             onClose = {},

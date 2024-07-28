@@ -12,7 +12,6 @@ import kotlinx.serialization.Serializable
 internal data object PlanListRoute
 
 internal fun NavGraphBuilder.planListScreen(
-    onBack: () -> Unit,
     onAddTrainingPlan: () -> Unit,
     onEditTrainingPlan: (String) -> Unit
 ) {
@@ -22,7 +21,6 @@ internal fun NavGraphBuilder.planListScreen(
 
         PlanListScreen(
             state = state,
-            onBack = onBack,
             onAddTrainingPlan = onAddTrainingPlan,
             onEditTrainingPlan = onEditTrainingPlan
         )

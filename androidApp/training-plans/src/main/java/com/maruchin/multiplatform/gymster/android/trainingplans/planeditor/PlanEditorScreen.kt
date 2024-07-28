@@ -54,8 +54,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
 import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.TrainingPlan
@@ -244,7 +245,8 @@ private fun LazyItemScope.DayHeader(name: String, onEdit: () -> Unit, onDelete: 
             Text(text = name)
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         actions = {
             Box {
@@ -404,10 +406,10 @@ private fun LazyItemScope.AddExerciseButton(onClick: () -> Unit) {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun PlanEditorScreen_LoadedPreview() {
-    MaterialTheme {
+    AppTheme {
         PlanEditorScreen(
             state = PlanEditorUiState.Loaded(plan = sampleTrainingPlans.first()),
             onBack = {},
@@ -424,10 +426,10 @@ private fun PlanEditorScreen_LoadedPreview() {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun PlanEditorScreen_EmptyPreview() {
-    MaterialTheme {
+    AppTheme {
         PlanEditorScreen(
             state = PlanEditorUiState.Loaded(plan = sampleTrainingPlans.last()),
             onBack = {},
@@ -444,10 +446,10 @@ private fun PlanEditorScreen_EmptyPreview() {
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun PlanEditorScreen_LoadingPreview() {
-    MaterialTheme {
+    AppTheme {
         PlanEditorScreen(
             state = PlanEditorUiState.Loading,
             onBack = {},

@@ -9,5 +9,6 @@ android {
 
 dependencies {
     implementation(projects.shared.feature.trainingPlans)
+    implementation(projects.androidApp.ui)
     implementation(libs.reorderable)
 }
