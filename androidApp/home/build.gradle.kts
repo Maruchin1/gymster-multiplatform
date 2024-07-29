@@ -4,5 +4,5 @@ plugins {
 }
 
 android {
-    namespace = "com.maruchin.multiplatform.gymster.android.home"
+    namespace = "com.maruchin.gymster.android.home"
 }

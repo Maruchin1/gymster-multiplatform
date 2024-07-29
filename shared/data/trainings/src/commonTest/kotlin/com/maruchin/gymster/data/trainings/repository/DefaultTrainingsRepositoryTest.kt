@@ -1,12 +1,12 @@
 package com.maruchin.gymster.data.trainings.repository
 
 import app.cash.turbine.test
+import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
+import com.maruchin.gymster.data.plans.model.Reps
+import com.maruchin.gymster.data.plans.model.Sets
+import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.multiplatform.gymster.shared.core.database.di.coreDatabaseTestModule
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.sampleTrainingPlans
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
@@ -41,7 +41,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `create training`() = runTest {
         val today = LocalDate(2024, 7, 24)
-        val planDay = sampleTrainingPlans.first().days.first()
+        val planDay = samplePlans.first().days.first()
 
         repository.observeAllTrainings().test {
             awaitItem().shouldBeEmpty()
@@ -90,7 +90,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `should update progress`() = runTest {
         val today = LocalDate(2024, 7, 24)
-        val planDay = sampleTrainingPlans.first().days.first()
+        val planDay = samplePlans.first().days.first()
         val training = repository.createTraining(date = today, planDay = planDay)
         val exercise = training.exercises.first()
         val newProgress = Progress(weight = 70.0, reps = 5)

@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    namespace = "com.maruchin.multiplatform.gymster.android"
+    namespace = "com.maruchin.gymster.android"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.maruchin.multiplatform.gymster.android"
+        applicationId = "com.maruchin.gymster.android"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation(projects.shared)
     implementation(projects.androidApp.home)
-    implementation(projects.androidApp.trainingPlans)
+    implementation(projects.androidApp.plans)
     implementation(projects.androidApp.ui)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)

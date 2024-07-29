@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.mapper
 
+import com.maruchin.gymster.core.database.schema.TrainingDbModel
 import com.maruchin.gymster.data.trainings.model.Training
-import com.maruchin.multiplatform.gymster.shared.core.database.schema.TrainingDbModel
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 import kotlinx.datetime.LocalDate

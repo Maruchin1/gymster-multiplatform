@@ -1,10 +1,10 @@
 package com.maruchin.gymster.data.trainings.mapper
 
+import com.maruchin.gymster.core.database.schema.TrainingExerciseDbModel
+import com.maruchin.gymster.data.plans.model.Reps
+import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.TrainingExercise
-import com.maruchin.multiplatform.gymster.shared.core.database.schema.TrainingExerciseDbModel
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 

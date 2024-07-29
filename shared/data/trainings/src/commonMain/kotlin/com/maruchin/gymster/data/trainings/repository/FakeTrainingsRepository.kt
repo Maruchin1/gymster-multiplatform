@@ -1,8 +1,8 @@
 package com.maruchin.gymster.data.trainings.repository
 
+import com.maruchin.gymster.data.plans.model.PlanDay
 import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.Training
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.TrainingPlanDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -22,7 +22,7 @@ class FakeTrainingsRepository : TrainingsRepository {
         it[trainingId]
     }
 
-    override suspend fun createTraining(date: LocalDate, planDay: TrainingPlanDay): Training {
+    override suspend fun createTraining(date: LocalDate, planDay: PlanDay): Training {
         val trainings = collection.value
         val id = (trainings.size + 1).toString()
         val newTraining = Training(date = date, planDay = planDay).copy(id = id)

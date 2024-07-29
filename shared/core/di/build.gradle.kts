@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.maruchin.multiplatform.gymster.shared.core.di"
+    namespace = "com.maruchin.gymster.core.di"
 }

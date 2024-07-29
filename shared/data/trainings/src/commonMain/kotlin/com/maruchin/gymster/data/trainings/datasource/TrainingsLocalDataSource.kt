@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.datasource
 
-import com.maruchin.multiplatform.gymster.shared.core.database.schema.ProgressDbModel
-import com.maruchin.multiplatform.gymster.shared.core.database.schema.TrainingDbModel
+import com.maruchin.gymster.core.database.schema.ProgressDbModel
+import com.maruchin.gymster.core.database.schema.TrainingDbModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmUUID

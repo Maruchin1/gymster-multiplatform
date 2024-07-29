@@ -4,5 +4,5 @@ plugins {
 }
 
 android {
-    namespace = "com.maruchin.multiplatform.gymster.shared.core.database"
+    namespace = "com.maruchin.gymster.core.database"
 }

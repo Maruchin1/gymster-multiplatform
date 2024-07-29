@@ -1,8 +1,8 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Reps
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.Sets
-import com.maruchin.multiplatform.gymster.shared.data.trainingplans.model.TrainingPlanExercise
+import com.maruchin.gymster.data.plans.model.PlanExercise
+import com.maruchin.gymster.data.plans.model.Reps
+import com.maruchin.gymster.data.plans.model.Sets
 
 data class TrainingExercise(
     val id: String,
@@ -12,7 +12,7 @@ data class TrainingExercise(
     val progress: List<Progress>
 ) {
 
-    internal constructor(planExercise: TrainingPlanExercise) : this(
+    internal constructor(planExercise: PlanExercise) : this(
         id = "",
         name = planExercise.name,
         sets = planExercise.sets,
