@@ -22,10 +22,15 @@ class FakeTrainingsRepository : TrainingsRepository {
         it[trainingId]
     }
 
-    override suspend fun createTraining(date: LocalDate, planDay: PlanDay): Training {
+    override suspend fun createTraining(
+        date: LocalDate,
+        planName: String,
+        planDay: PlanDay
+    ): Training {
         val trainings = collection.value
         val id = (trainings.size + 1).toString()
-        val newTraining = Training(date = date, planDay = planDay).copy(id = id)
+        val newTraining = Training(date = date, planName = planName, planDay = planDay)
+            .copy(id = id)
         collection.value += id to newTraining
         return newTraining
     }

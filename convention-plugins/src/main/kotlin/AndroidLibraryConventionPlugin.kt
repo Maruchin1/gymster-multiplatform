@@ -12,6 +12,10 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         configure<LibraryExtension> {
             compileSdk = 34
 
+            defaultConfig {
+                minSdk = 29
+            }
+
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_17
                 targetCompatibility = JavaVersion.VERSION_17

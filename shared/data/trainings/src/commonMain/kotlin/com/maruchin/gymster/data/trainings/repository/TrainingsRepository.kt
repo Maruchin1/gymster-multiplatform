@@ -12,7 +12,7 @@ interface TrainingsRepository {
 
     fun observeTraining(trainingId: String): Flow<Training?>
 
-    suspend fun createTraining(date: LocalDate, planDay: PlanDay): Training
+    suspend fun createTraining(date: LocalDate, planName: String, planDay: PlanDay): Training
 
     suspend fun updateProgress(
         trainingId: String,

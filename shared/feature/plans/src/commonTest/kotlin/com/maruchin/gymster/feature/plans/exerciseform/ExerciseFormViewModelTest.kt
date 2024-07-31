@@ -4,7 +4,7 @@ import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
-import com.maruchin.gymster.feature.plans.di.featureTrainingPlansModule
+import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import com.maruchin.gymster.feature.plans.exerciseform.ExerciseFormViewModel
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
@@ -33,7 +33,7 @@ class ExerciseFormViewModelTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(featureTrainingPlansModule, dataPlansTestModule) }
+        startKoin { modules(featurePlansModule, dataPlansTestModule) }
         Dispatchers.setMain(StandardTestDispatcher())
     }
 

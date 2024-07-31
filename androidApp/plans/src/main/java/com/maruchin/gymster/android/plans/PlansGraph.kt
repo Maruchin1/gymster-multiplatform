@@ -16,10 +16,10 @@ import com.maruchin.gymster.android.plans.planlist.planListScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-object TrainingPlansGraph
+object PlansGraph
 
-fun NavGraphBuilder.trainingPlansGraph(navController: NavController) {
-    navigation<TrainingPlansGraph>(startDestination = PlanListRoute) {
+fun NavGraphBuilder.plansGraph(navController: NavController) {
+    navigation<PlansGraph>(startDestination = PlanListRoute) {
         planListScreen(
             onAddTrainingPlan = {
                 navController.navigate(PlanFormRoute(null))

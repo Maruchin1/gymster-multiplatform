@@ -7,6 +7,8 @@ import kotlinx.datetime.LocalDate
 val sampleTrainings = listOf(
     Training(
         id = "1",
+        name = "Push",
+        planName = "Push Pull",
         date = LocalDate(2024, 7, 24),
         exercises = listOf(
             TrainingExercise(

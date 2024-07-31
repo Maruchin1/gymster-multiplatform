@@ -2,7 +2,7 @@ import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
-import com.maruchin.gymster.feature.plans.di.featureTrainingPlansModule
+import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import com.maruchin.gymster.feature.plans.planeditor.PlanEditorUiState
 import com.maruchin.gymster.feature.plans.planeditor.PlanEditorViewModel
 import io.kotest.matchers.collections.shouldContain
@@ -34,7 +34,7 @@ class PlanEditorViewModelTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(featureTrainingPlansModule, dataPlansTestModule) }
+        startKoin { modules(featurePlansModule, dataPlansTestModule) }
         Dispatchers.setMain(StandardTestDispatcher())
     }
 

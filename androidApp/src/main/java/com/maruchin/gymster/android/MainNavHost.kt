@@ -9,8 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.maruchin.gymster.android.home.HomeGraph
 import com.maruchin.gymster.android.home.homeGraph
-import com.maruchin.gymster.android.plans.TrainingPlansGraph
-import com.maruchin.gymster.android.plans.trainingPlansGraph
+import com.maruchin.gymster.android.plans.PlansGraph
+import com.maruchin.gymster.android.plans.plansGraph
+import com.maruchin.gymster.android.trainings.trainingsGraph
 
 @Composable
 internal fun MainNavHost() {
@@ -26,10 +27,11 @@ internal fun MainNavHost() {
         ) {
             homeGraph(
                 onOpenTrainingPlans = {
-                    navController.navigate(TrainingPlansGraph)
+                    navController.navigate(PlansGraph)
                 }
             )
-            trainingPlansGraph(navController = navController)
+            trainingsGraph(navController = navController)
+            plansGraph(navController = navController)
         }
         MainNavigationBar(navController = navController)
     }

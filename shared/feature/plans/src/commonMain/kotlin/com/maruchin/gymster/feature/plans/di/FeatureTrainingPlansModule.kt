@@ -8,7 +8,7 @@ import com.maruchin.gymster.feature.plans.planlist.PlanListViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-val featureTrainingPlansModule = module {
+val featurePlansModule = module {
 
     factory { (planId: String?) -> PlanFormViewModel(planId, get()) }
 

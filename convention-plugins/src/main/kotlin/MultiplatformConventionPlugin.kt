@@ -24,8 +24,8 @@ class MultiplatformConventionPlugin : Plugin<Project> {
             iosSimulatorArm64()
             with(sourceSets) {
                 commonMain.dependencies {
-                    implementation(libs.findLibrary("kotlinx-coroutines").get())
-                    implementation(libs.findLibrary("kotlinx-datetime").get())
+                    api(libs.findLibrary("kotlinx-datetime").get())
+                    api(libs.findLibrary("kotlinx-coroutines").get())
                     implementation(libs.findLibrary("koin-core").get())
                 }
                 commonTest.dependencies {

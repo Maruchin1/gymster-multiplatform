@@ -28,4 +28,4 @@ include(":shared:data:plans")
 include(":shared:data:trainings")
 include(":shared:feature:plans")
 include(":shared:feature:trainings")
-
+include(":androidApp:trainings")

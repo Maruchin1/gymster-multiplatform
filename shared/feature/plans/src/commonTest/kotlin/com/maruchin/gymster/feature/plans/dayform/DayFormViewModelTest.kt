@@ -3,7 +3,7 @@ import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import com.maruchin.gymster.feature.plans.dayform.DayFormViewModel
-import com.maruchin.gymster.feature.plans.di.featureTrainingPlansModule
+import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
@@ -31,7 +31,7 @@ class DayFormViewModelTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(featureTrainingPlansModule, dataPlansTestModule) }
+        startKoin { modules(featurePlansModule, dataPlansTestModule) }
         Dispatchers.setMain(StandardTestDispatcher())
     }
 

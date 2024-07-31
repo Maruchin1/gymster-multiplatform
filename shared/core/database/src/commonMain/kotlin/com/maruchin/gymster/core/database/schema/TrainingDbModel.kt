@@ -11,6 +11,8 @@ class TrainingDbModel : RealmObject {
     @PersistedName("_id")
     @PrimaryKey
     var id: RealmUUID = RealmUUID.random()
+    var name: String = ""
+    var planName: String = ""
     var date: String = ""
     var exercises: RealmList<TrainingExerciseDbModel> = realmListOf()
 }

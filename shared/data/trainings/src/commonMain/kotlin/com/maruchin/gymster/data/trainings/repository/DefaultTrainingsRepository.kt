@@ -23,8 +23,12 @@ internal class DefaultTrainingsRepository(private val localDataSource: Trainings
             it?.toDomainModel()
         }
 
-    override suspend fun createTraining(date: LocalDate, planDay: PlanDay): Training {
-        val newTraining = Training(date = date, planDay = planDay)
+    override suspend fun createTraining(
+        date: LocalDate,
+        planName: String,
+        planDay: PlanDay
+    ): Training {
+        val newTraining = Training(date = date, planName = planName, planDay = planDay)
         val newTrainingDbModel = newTraining.toDbModel()
         localDataSource.createTraining(training = newTrainingDbModel)
         return newTrainingDbModel.toDomainModel()

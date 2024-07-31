@@ -10,12 +10,16 @@ internal fun Training.toDbModel() = TrainingDbModel().also {
     if (id.isNotBlank()) {
         it.id = RealmUUID.from(id)
     }
+    it.name = name
+    it.planName = planName
     it.date = date.toString()
     it.exercises = exercises.map { it.toDbModel() }.toRealmList()
 }
 
 internal fun TrainingDbModel.toDomainModel() = Training(
     id = id.toString(),
+    name = name,
+    planName = planName,
     date = LocalDate.parse(date),
     exercises = exercises.map { it.toDomainModel() }
 )
