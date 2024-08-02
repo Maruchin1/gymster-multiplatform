@@ -6,7 +6,6 @@ import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.model.PlanExercise
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
-import com.maruchin.gymster.data.plans.model.findExercise
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

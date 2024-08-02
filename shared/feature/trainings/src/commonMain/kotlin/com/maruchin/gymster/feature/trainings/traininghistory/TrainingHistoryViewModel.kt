@@ -16,6 +16,9 @@ class TrainingHistoryViewModel internal constructor(
 
     val uiState: StateFlow<TrainingHistoryUiState> = trainingsRepository.observeAllTrainings()
         .map { trainings ->
+            trainings.sortedByDescending { it.date }
+        }
+        .map { trainings ->
             if (trainings.isEmpty()) {
                 TrainingHistoryUiState.Empty
             } else {

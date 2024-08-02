@@ -41,12 +41,13 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `create training`() = runTest {
         val today = LocalDate(2024, 7, 24)
-        val planDay = samplePlans.first().days.first()
+        val plan = samplePlans.first()
+        val planDay = plan.days.first()
 
         repository.observeAllTrainings().test {
             awaitItem().shouldBeEmpty()
 
-            repository.createTraining(date = today, planDay = planDay)
+            repository.createTraining(date = today, planName = plan.name, planDay = planDay)
 
             awaitItem().let { trainings ->
                 trainings shouldHaveSize 1
@@ -88,10 +89,15 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     }
 
     @Test
-    fun `should update progress`() = runTest {
+    fun `update progress`() = runTest {
         val today = LocalDate(2024, 7, 24)
-        val planDay = samplePlans.first().days.first()
-        val training = repository.createTraining(date = today, planDay = planDay)
+        val plan = samplePlans.first()
+        val planDay = plan.days.first()
+        val training = repository.createTraining(
+            date = today,
+            planName = plan.name,
+            planDay = planDay
+        )
         val exercise = training.exercises.first()
         val newProgress = Progress(weight = 70.0, reps = 5)
 

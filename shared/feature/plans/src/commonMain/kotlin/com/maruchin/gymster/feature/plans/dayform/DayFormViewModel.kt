@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.model.PlanDay
-import com.maruchin.gymster.data.plans.model.findDay
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

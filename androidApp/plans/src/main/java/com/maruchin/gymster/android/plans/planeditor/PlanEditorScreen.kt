@@ -60,7 +60,6 @@ import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
-import com.maruchin.gymster.data.plans.model.changeExercisesOrder
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.plans.planeditor.PlanEditorUiState
 import sh.calvin.reorderable.ReorderableItem
