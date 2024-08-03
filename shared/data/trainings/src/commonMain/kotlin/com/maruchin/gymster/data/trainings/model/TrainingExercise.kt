@@ -25,4 +25,6 @@ data class TrainingExercise(
             "Progress list size must be equal to total sets"
         }
     }
+
+    fun getProgress(index: Int): Progress = progress[index]
 }

@@ -5,6 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.maruchin.gymster.android.trainings.planpicker.PlanPickerRoute
 import com.maruchin.gymster.android.trainings.planpicker.planPickerDialog
+import com.maruchin.gymster.android.trainings.progresseditor.ProgressEditorRoute
+import com.maruchin.gymster.android.trainings.progresseditor.progressEditorDialog
 import com.maruchin.gymster.android.trainings.trainingeditor.TrainingEditorRoute
 import com.maruchin.gymster.android.trainings.trainingeditor.trainingEditorScreen
 import com.maruchin.gymster.android.trainings.traininghistory.TrainingHistoryRoute
@@ -33,7 +35,13 @@ fun NavGraphBuilder.trainingsGraph(navController: NavController) {
             onBack = {
                 navController.navigateUp()
             },
-            onEditProgress = { _, _, _ ->
+            onEditProgress = { trainingId, exerciseId, progressIndex ->
+                navController.navigate(ProgressEditorRoute(trainingId, exerciseId, progressIndex))
+            }
+        )
+        progressEditorDialog(
+            onClose = {
+                navController.navigateUp()
             }
         )
     }

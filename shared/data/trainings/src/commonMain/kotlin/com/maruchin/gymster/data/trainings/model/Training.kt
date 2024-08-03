@@ -18,4 +18,6 @@ data class Training(
         date = date,
         exercises = planDay.exercises.map { TrainingExercise(it) }
     )
+
+    fun getExercise(exerciseId: String): TrainingExercise = exercises.first { it.id == exerciseId }
 }

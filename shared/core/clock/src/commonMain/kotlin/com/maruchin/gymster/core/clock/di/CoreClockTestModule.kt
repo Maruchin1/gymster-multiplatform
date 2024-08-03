@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 val coreClockTestModule = module {
 
-    factory { FakeClock() } bind Clock::class
+    single { FakeClock() } bind Clock::class
 }
