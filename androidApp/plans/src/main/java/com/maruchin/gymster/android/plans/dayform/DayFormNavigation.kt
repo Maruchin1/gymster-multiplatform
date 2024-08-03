@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.dialog
 import androidx.navigation.toRoute
-import com.maruchin.gymster.android.ui.fullScreenDialog
 import com.maruchin.gymster.feature.plans.dayform.DayFormViewModel
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 internal data class DayFormRoute(val planId: String, val dayId: String?)
 
 internal fun NavGraphBuilder.dayFormDialog(onClose: () -> Unit) {
-    fullScreenDialog<DayFormRoute> {
+    dialog<DayFormRoute> {
         val (planId, dayId) = it.toRoute<DayFormRoute>()
         val viewModel = viewModel {
             DayFormViewModel.get(planId = planId, dayId = dayId)

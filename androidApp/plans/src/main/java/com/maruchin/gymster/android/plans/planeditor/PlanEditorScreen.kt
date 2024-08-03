@@ -256,7 +256,7 @@ private fun WeeksDurationItem(weeksDuration: Int, onClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Text(
-            text = "Duration: $weeksDuration weeks",
+            text = "Duration - $weeksDuration weeks",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(12.dp)
         )
@@ -409,7 +409,7 @@ private fun LazyItemScope.AddDayButton(onClick: () -> Unit) {
             modifier = Modifier.size(ButtonDefaults.IconSize)
         )
         Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
-        Text(text = "Add day")
+        Text(text = "Add training")
     }
 }
 

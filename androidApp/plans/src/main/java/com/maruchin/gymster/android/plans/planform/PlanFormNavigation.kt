@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.dialog
 import androidx.navigation.toRoute
-import com.maruchin.gymster.android.ui.fullScreenDialog
 import com.maruchin.gymster.feature.plans.planform.PlanFormViewModel
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 internal data class PlanFormRoute(val planId: String?)
 
 internal fun NavGraphBuilder.planFormDialog(onClose: () -> Unit) {
-    fullScreenDialog<PlanFormRoute> {
+    dialog<PlanFormRoute> {
         val (planId) = it.toRoute<PlanFormRoute>()
         val viewModel = viewModel { PlanFormViewModel.get(planId) }
         val plan by viewModel.plan.collectAsStateWithLifecycle()
