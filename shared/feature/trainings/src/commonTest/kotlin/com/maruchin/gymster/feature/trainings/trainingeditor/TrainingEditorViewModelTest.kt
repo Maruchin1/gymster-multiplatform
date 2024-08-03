@@ -5,6 +5,7 @@ import com.maruchin.gymster.data.trainings.di.dataTrainingsTestModule
 import com.maruchin.gymster.data.trainings.model.sampleTrainings
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
 import com.maruchin.gymster.feature.trainings.di.featureTrainingsModule
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -52,13 +53,26 @@ class TrainingEditorViewModelTest : KoinTest {
     }
 
     @Test
-    fun `should not emit when selected training not available`() = runTest {
+    fun `don not emit when selected training not available`() = runTest {
         trainingsRepository.setTrainings(emptyList())
 
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingEditorUiState.Loading
 
             expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `delete training`() = runTest {
+        trainingsRepository.setTrainings(sampleTrainings)
+
+        trainingsRepository.observeTraining(selectedTraining.id).test {
+            awaitItem() shouldBe selectedTraining
+
+            viewModel.deleteTraining()
+
+            awaitItem().shouldBeNull()
         }
     }
 }

@@ -38,4 +38,11 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
             exercise.progress[progressIndex] = newProgress
         }
     }
+
+    suspend fun deleteTraining(trainingId: RealmUUID) {
+        realm.write {
+            val training = query<TrainingDbModel>("_id == $0", trainingId).find().first()
+            delete(training)
+        }
+    }
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
@@ -25,6 +26,10 @@ class TrainingEditorViewModel internal constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = TrainingEditorUiState.Loading
         )
+
+    fun deleteTraining() = viewModelScope.launch {
+        trainingsRepository.deleteTraining(trainingId)
+    }
 
     companion object {
 

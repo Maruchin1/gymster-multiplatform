@@ -26,7 +26,8 @@ internal fun NavGraphBuilder.trainingEditorScreen(
             onBack = onBack,
             onEditProgress = { exerciseId, progressIndex ->
                 onEditProgress(trainingId, exerciseId, progressIndex)
-            }
+            },
+            onDeleteTraining = { viewModel.deleteTraining().invokeOnCompletion { onBack() } }
         )
     }
 }

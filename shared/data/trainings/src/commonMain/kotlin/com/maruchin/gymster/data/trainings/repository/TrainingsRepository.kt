@@ -20,4 +20,6 @@ interface TrainingsRepository {
         progressIndex: Int,
         newProgress: Progress
     )
+
+    suspend fun deleteTraining(trainingId: String)
 }

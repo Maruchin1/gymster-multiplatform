@@ -47,4 +47,8 @@ internal class DefaultTrainingsRepository(private val localDataSource: Trainings
             newProgress = newProgress.toDbModel()
         )
     }
+
+    override suspend fun deleteTraining(trainingId: String) {
+        localDataSource.deleteTraining(trainingId = RealmUUID.from(trainingId))
+    }
 }

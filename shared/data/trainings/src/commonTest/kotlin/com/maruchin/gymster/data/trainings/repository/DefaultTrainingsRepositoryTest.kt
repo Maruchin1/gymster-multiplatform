@@ -114,4 +114,24 @@ class DefaultTrainingsRepositoryTest : KoinTest {
             awaitItem()!!.exercises.first().progress.first() shouldBe newProgress
         }
     }
+
+    @Test
+    fun `delete training`() = runTest {
+        val today = LocalDate(2024, 7, 24)
+        val plan = samplePlans.first()
+        val planDay = plan.days.first()
+        val training = repository.createTraining(
+            date = today,
+            planName = plan.name,
+            planDay = planDay
+        )
+
+        repository.observeAllTrainings().test {
+            awaitItem().shouldHaveSize(1)
+
+            repository.deleteTraining(trainingId = training.id)
+
+            awaitItem().shouldBeEmpty()
+        }
+    }
 }

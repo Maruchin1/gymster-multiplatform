@@ -54,4 +54,8 @@ class FakeTrainingsRepository : TrainingsRepository {
             collection.value += trainingId to training.copy(exercises = updatedExercises)
         }
     }
+
+    override suspend fun deleteTraining(trainingId: String) {
+        collection.value -= trainingId
+    }
 }
