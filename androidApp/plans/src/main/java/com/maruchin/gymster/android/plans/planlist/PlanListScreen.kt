@@ -2,8 +2,8 @@ package com.maruchin.gymster.android.plans.planlist
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +27,7 @@ import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.EmptyContent
 import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.plans.model.PlanDay
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.plans.planlist.PlanListUiState
 
@@ -82,26 +83,32 @@ private fun LoadedContent(plans: List<Plan>, onEditTrainingPlan: (String) -> Uni
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(plans) { trainingPlan ->
-            TrainingPlanItem(
-                name = trainingPlan.name,
-                onClick = { onEditTrainingPlan(trainingPlan.id) }
+        items(plans) { plan ->
+            PlanItem(
+                name = plan.name,
+                days = plan.days,
+                onClick = { onEditTrainingPlan(plan.id) }
             )
         }
     }
 }
 
 @Composable
-private fun TrainingPlanItem(name: String, onClick: () -> Unit) {
-    ElevatedCard(onClick = onClick) {
-        Text(
-            text = name,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .clickable { onClick() }
-                .padding(16.dp)
-                .fillMaxWidth()
-        )
+private fun PlanItem(name: String, days: List<PlanDay>, onClick: () -> Unit) {
+    ElevatedCard(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = name, style = MaterialTheme.typography.titleMedium)
+            days.forEachIndexed { index, day ->
+                val dayNumber = index + 1
+                Text(
+                    text = "Training $dayNumber - ${day.name}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
     }
 }
 
