@@ -1,8 +1,8 @@
 package com.maruchin.gymster.data.plans.datasource
 
-import com.maruchin.gymster.core.database.schema.TrainingPlanDayDbModel
-import com.maruchin.gymster.core.database.schema.TrainingPlanDbModel
-import com.maruchin.gymster.core.database.schema.TrainingPlanExerciseDbModel
+import com.maruchin.gymster.core.database.schema.PlanDbModel
+import com.maruchin.gymster.core.database.schema.PlannedExerciseDbModel
+import com.maruchin.gymster.core.database.schema.PlannedTrainingDbModel
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import io.realm.kotlin.Realm
@@ -14,19 +14,20 @@ import kotlinx.coroutines.flow.map
 
 internal class PlansLocalDataSource(private val realm: Realm) {
 
-    fun observeAllPlans(): Flow<List<TrainingPlanDbModel>> =
-        realm.query<TrainingPlanDbModel>().asFlow().map { change ->
+    fun observeAllPlans(): Flow<List<PlanDbModel>> =
+        realm.query<PlanDbModel>().asFlow().map { change ->
             change.list.toList()
         }
 
-    fun observePlan(planId: RealmUUID): Flow<TrainingPlanDbModel?> =
-        realm.query<TrainingPlanDbModel>("_id == $0", planId).asFlow().map { change ->
+    fun observePlan(planId: RealmUUID): Flow<PlanDbModel?> =
+        realm.query<PlanDbModel>("_id == $0", planId).asFlow().map { change ->
             change.list.firstOrNull()
         }
 
-    suspend fun createPlan(name: String): RealmUUID {
-        val newPlan = TrainingPlanDbModel().also {
+    suspend fun createPlan(name: String, weeksDuration: Int): RealmUUID {
+        val newPlan = PlanDbModel().also {
             it.name = name
+            it.weeksDuration = weeksDuration
         }
         realm.write {
             copyToRealm(newPlan)
@@ -36,24 +37,31 @@ internal class PlansLocalDataSource(private val realm: Realm) {
 
     suspend fun changePlanName(planId: RealmUUID, newName: String) {
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             plan.name = newName
+        }
+    }
+
+    suspend fun changePlanDuration(planId: RealmUUID, newDuration: Int) {
+        realm.write {
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
+            plan.weeksDuration = newDuration
         }
     }
 
     suspend fun deletePlan(planId: RealmUUID) {
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             delete(plan)
         }
     }
 
     suspend fun addDay(planId: RealmUUID, name: String): RealmUUID {
-        val newDay = TrainingPlanDayDbModel().also {
+        val newDay = PlannedTrainingDbModel().also {
             it.name = name
         }
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             plan.days.add(newDay)
         }
         return newDay.id
@@ -61,7 +69,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
 
     suspend fun changeDayName(planId: RealmUUID, dayId: RealmUUID, name: String) {
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             val day = plan.days.find { it.id == dayId }
             day?.name = name
         }
@@ -69,7 +77,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
 
     suspend fun deleteDay(planId: RealmUUID, dayId: RealmUUID) {
         realm.write {
-            val trainingPlan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val trainingPlan = query<PlanDbModel>("_id == $0", planId).find().first()
             val day = trainingPlan.days.find { it.id == dayId }
             trainingPlan.days.remove(day)
         }
@@ -82,7 +90,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         sets: Sets,
         reps: Reps
     ): RealmUUID {
-        val newExercise = TrainingPlanExerciseDbModel().also {
+        val newExercise = PlannedExerciseDbModel().also {
             it.name = name
             it.regularSets = sets.regular
             it.dropSets = sets.drop
@@ -90,7 +98,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
             it.maxReps = reps.max
         }
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             val day = plan.days.find { it.id == dayId }
             day?.exercises?.add(newExercise)
         }
@@ -106,7 +114,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         newReps: Reps
     ) {
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             val day = plan.days.find { it.id == dayId }
             val exercise = day?.exercises?.find { it.id == exerciseId }
             exercise?.name = newName
@@ -122,9 +130,9 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         dayId: RealmUUID,
         exercisesIds: List<RealmUUID>
     ) {
-        val plan = realm.query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+        val plan = realm.query<PlanDbModel>("_id == $0", planId).find().first()
         val day = plan.days.find { it.id == dayId } ?: return
-        val reorderedExercises = realmListOf<TrainingPlanExerciseDbModel>()
+        val reorderedExercises = realmListOf<PlannedExerciseDbModel>()
         for (id in exercisesIds) {
             val exercise = day.exercises.find { it.id == id } ?: continue
             reorderedExercises.add(exercise)
@@ -138,7 +146,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
 
     suspend fun deleteExercise(planId: RealmUUID, dayId: RealmUUID, exerciseId: RealmUUID) {
         realm.write {
-            val plan = query<TrainingPlanDbModel>("_id == $0", planId).find().first()
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             val day = plan.days.find { it.id == dayId }
             val exercise = day?.exercises?.find { it.id == exerciseId }
             day?.exercises?.remove(exercise)

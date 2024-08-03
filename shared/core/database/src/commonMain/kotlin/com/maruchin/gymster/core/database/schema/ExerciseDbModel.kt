@@ -5,7 +5,7 @@ import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.RealmUUID
 
-class TrainingExerciseDbModel : RealmObject {
+class ExerciseDbModel : RealmObject {
     var id: RealmUUID = RealmUUID.random()
     var name: String = ""
     var regularSets: Int = 0

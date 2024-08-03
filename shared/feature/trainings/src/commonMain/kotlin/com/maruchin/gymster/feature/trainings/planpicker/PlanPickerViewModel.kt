@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import com.maruchin.gymster.data.trainings.repository.TrainingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class PlanPickerViewModel(
 ) : ViewModel() {
 
     private val selectedPlan = MutableStateFlow<Plan?>(null)
-    private val selectedDay = MutableStateFlow<PlanDay?>(null)
+    private val selectedDay = MutableStateFlow<PlannedTraining?>(null)
     private val selectedDate = MutableStateFlow(getToday())
 
     val uiState: StateFlow<PlanPickerUiState> = combine(
@@ -47,8 +47,8 @@ class PlanPickerViewModel(
         selectedPlan.value = plan
     }
 
-    fun selectDay(planDay: PlanDay) {
-        selectedDay.value = planDay
+    fun selectDay(plannedTraining: PlannedTraining) {
+        selectedDay.value = plannedTraining
     }
 
     fun selectDate(millis: Long) {
@@ -61,7 +61,7 @@ class PlanPickerViewModel(
         val plan = selectedPlan.value ?: return@launch
         val day = selectedDay.value ?: return@launch
         val date = selectedDate.value
-        trainingsRepository.createTraining(date = date, planName = plan.name, planDay = day)
+        trainingsRepository.createTraining(date = date, planName = plan.name, plannedTraining = day)
     }
 
     private fun getToday(): LocalDate {

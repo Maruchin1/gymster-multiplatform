@@ -1,8 +1,8 @@
 package com.maruchin.gymster.data.plans.repository
 
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlanDay
-import com.maruchin.gymster.data.plans.model.PlanExercise
+import com.maruchin.gymster.data.plans.model.PlannedExercise
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +29,7 @@ class FakePlansRepository : PlansRepository {
         val newPlan = Plan(
             id = id,
             name = name,
+            weeksDuration = Plan.DEFAULT_WEEKS_DURATION,
             days = emptyList()
         )
         collection.value += id to newPlan
@@ -41,6 +42,12 @@ class FakePlansRepository : PlansRepository {
         }
     }
 
+    override suspend fun changePlanDuration(planId: String, newDuration: Int) {
+        collection.value[planId]?.let { trainingPlan ->
+            collection.value += planId to trainingPlan.copy(weeksDuration = newDuration)
+        }
+    }
+
     override suspend fun deletePlan(planId: String) {
         collection.value -= planId
     }
@@ -49,7 +56,7 @@ class FakePlansRepository : PlansRepository {
         val plans = collection.value
         val days = collection.value[planId]?.days ?: emptyList()
         val id = (days.size + 1).toString()
-        val newDay = PlanDay(
+        val newDay = PlannedTraining(
             id = id,
             name = name,
             exercises = emptyList()
@@ -89,7 +96,7 @@ class FakePlansRepository : PlansRepository {
         val days = plans[planId]?.days ?: emptyList()
         val exercises = days.find { it.id == dayId }?.exercises ?: emptyList()
         val id = (exercises.size + 1).toString()
-        val newExercise = PlanExercise(
+        val newExercise = PlannedExercise(
             id = id,
             name = name,
             sets = sets,

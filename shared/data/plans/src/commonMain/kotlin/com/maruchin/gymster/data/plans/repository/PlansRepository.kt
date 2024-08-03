@@ -15,6 +15,8 @@ interface PlansRepository {
 
     suspend fun changePlanName(planId: String, newName: String)
 
+    suspend fun changePlanDuration(planId: String, newDuration: Int)
+
     suspend fun deletePlan(planId: String)
 
     suspend fun addDay(planId: String, name: String): String

@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.trainings.repository
 
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.Training
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,11 @@ interface TrainingsRepository {
 
     fun observeTraining(trainingId: String): Flow<Training?>
 
-    suspend fun createTraining(date: LocalDate, planName: String, planDay: PlanDay): Training
+    suspend fun createTraining(
+        date: LocalDate,
+        planName: String,
+        plannedTraining: PlannedTraining
+    ): Training
 
     suspend fun updateProgress(
         trainingId: String,

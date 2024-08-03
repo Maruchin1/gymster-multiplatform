@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import kotlinx.datetime.LocalDate
 
 data class Training(
@@ -8,16 +8,16 @@ data class Training(
     val name: String,
     val planName: String,
     val date: LocalDate,
-    val exercises: List<TrainingExercise>
+    val exercises: List<Exercise>
 ) {
 
-    internal constructor(date: LocalDate, planName: String, planDay: PlanDay) : this(
+    internal constructor(date: LocalDate, planName: String, plannedTraining: PlannedTraining) : this(
         id = "",
-        name = planDay.name,
+        name = plannedTraining.name,
         planName = planName,
         date = date,
-        exercises = planDay.exercises.map { TrainingExercise(it) }
+        exercises = plannedTraining.exercises.map { Exercise(it) }
     )
 
-    fun getExercise(exerciseId: String): TrainingExercise = exercises.first { it.id == exerciseId }
+    fun getExercise(exerciseId: String): Exercise = exercises.first { it.id == exerciseId }
 }

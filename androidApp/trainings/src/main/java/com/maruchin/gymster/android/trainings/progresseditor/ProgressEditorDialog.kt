@@ -34,8 +34,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
+import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.gymster.data.trainings.model.TrainingExercise
 import com.maruchin.gymster.data.trainings.model.sampleTrainings
 import com.maruchin.gymster.feature.trainings.progresseditor.ProgressEditorUiState
 
@@ -110,7 +110,7 @@ internal fun ProgressEditorDialog(
 }
 
 @Composable
-private fun ExerciseInfo(exercise: TrainingExercise?) {
+private fun ExerciseInfo(exercise: Exercise?) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()

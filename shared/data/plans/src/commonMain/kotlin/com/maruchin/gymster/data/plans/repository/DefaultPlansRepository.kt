@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.plans.repository
 
-import com.maruchin.gymster.core.database.schema.TrainingPlanDbModel
+import com.maruchin.gymster.core.database.schema.PlanDbModel
 import com.maruchin.gymster.data.plans.datasource.PlansLocalDataSource
 import com.maruchin.gymster.data.plans.mapper.toDomain
 import com.maruchin.gymster.data.plans.model.Plan
@@ -14,7 +14,7 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
     PlansRepository {
 
     override fun observeAllPlans(): Flow<List<Plan>> = localDataSource.observeAllPlans().map {
-        it.map(TrainingPlanDbModel::toDomain)
+        it.map(PlanDbModel::toDomain)
     }
 
     override fun observePlan(planId: String): Flow<Plan?> =
@@ -23,12 +23,22 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         }
 
     override suspend fun createPlan(name: String): String {
-        val id = localDataSource.createPlan(name = name)
+        val id = localDataSource.createPlan(
+            name = name,
+            weeksDuration = Plan.DEFAULT_WEEKS_DURATION
+        )
         return id.toString()
     }
 
     override suspend fun changePlanName(planId: String, newName: String) {
         localDataSource.changePlanName(planId = RealmUUID.from(planId), newName = newName)
+    }
+
+    override suspend fun changePlanDuration(planId: String, newDuration: Int) {
+        localDataSource.changePlanDuration(
+            planId = RealmUUID.from(planId),
+            newDuration = newDuration
+        )
     }
 
     override suspend fun deletePlan(planId: String) {

@@ -29,11 +29,15 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun DayFormDialog(day: PlanDay?, onClose: () -> Unit, onSave: (name: String) -> Unit) {
+internal fun DayFormDialog(
+    plannedTraining: PlannedTraining?,
+    onClose: () -> Unit,
+    onSave: (name: String) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,7 +54,9 @@ internal fun DayFormDialog(day: PlanDay?, onClose: () -> Unit, onSave: (name: St
         modifier = Modifier.imePadding()
     ) { contentPadding ->
         val focusRequester = remember { FocusRequester() }
-        var name by rememberSaveable(day) { mutableStateOf(day?.name.orEmpty()) }
+        var name by rememberSaveable(plannedTraining) {
+            mutableStateOf(plannedTraining?.name.orEmpty())
+        }
 
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -89,7 +95,7 @@ internal fun DayFormDialog(day: PlanDay?, onClose: () -> Unit, onSave: (name: St
 private fun DayFormDialogPreview() {
     AppTheme {
         DayFormDialog(
-            day = null,
+            plannedTraining = null,
             onClose = {},
             onSave = {}
         )

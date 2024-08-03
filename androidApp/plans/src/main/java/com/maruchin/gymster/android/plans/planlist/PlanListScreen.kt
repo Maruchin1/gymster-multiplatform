@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,7 +28,7 @@ import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.EmptyContent
 import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.plans.planlist.PlanListUiState
 
@@ -53,7 +54,9 @@ internal fun PlanListScreen(
             targetState = state,
             contentKey = { it::class },
             label = "PlanListScreenAnimatedContent",
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         ) { targetState ->
             when (targetState) {
                 PlanListUiState.Loading -> LoadingContent()
@@ -94,7 +97,7 @@ private fun LoadedContent(plans: List<Plan>, onEditTrainingPlan: (String) -> Uni
 }
 
 @Composable
-private fun PlanItem(name: String, days: List<PlanDay>, onClick: () -> Unit) {
+private fun PlanItem(name: String, days: List<PlannedTraining>, onClick: () -> Unit) {
     ElevatedCard(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(12.dp),

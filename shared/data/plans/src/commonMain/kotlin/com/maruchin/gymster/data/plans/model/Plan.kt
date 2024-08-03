@@ -1,6 +1,15 @@
 package com.maruchin.gymster.data.plans.model
 
-data class Plan(val id: String, val name: String, val days: List<PlanDay>) {
+data class Plan(
+    val id: String,
+    val name: String,
+    val weeksDuration: Int,
+    val days: List<PlannedTraining>
+) {
+
+    init {
+        require(weeksDuration > 0) { "weeksDuration must be greater than 0" }
+    }
 
     fun findDay(dayId: String) = days.find { it.id == dayId }
 
@@ -16,4 +25,9 @@ data class Plan(val id: String, val name: String, val days: List<PlanDay>) {
             }
         }
     )
+
+    companion object {
+
+        const val DEFAULT_WEEKS_DURATION = 8
+    }
 }

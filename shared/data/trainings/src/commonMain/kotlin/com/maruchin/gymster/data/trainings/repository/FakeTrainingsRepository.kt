@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.trainings.repository
 
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.Training
 import kotlinx.coroutines.flow.Flow
@@ -25,11 +25,15 @@ class FakeTrainingsRepository : TrainingsRepository {
     override suspend fun createTraining(
         date: LocalDate,
         planName: String,
-        planDay: PlanDay
+        plannedTraining: PlannedTraining
     ): Training {
         val trainings = collection.value
         val id = (trainings.size + 1).toString()
-        val newTraining = Training(date = date, planName = planName, planDay = planDay)
+        val newTraining = Training(
+            date = date,
+            planName = planName,
+            plannedTraining = plannedTraining
+        )
             .copy(id = id)
         collection.value += id to newTraining
         return newTraining

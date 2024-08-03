@@ -1,10 +1,10 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.data.plans.model.PlanExercise
+import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 
-data class TrainingExercise(
+data class Exercise(
     val id: String,
     val name: String,
     val sets: Sets,
@@ -12,12 +12,12 @@ data class TrainingExercise(
     val progress: List<Progress>
 ) {
 
-    internal constructor(planExercise: PlanExercise) : this(
+    internal constructor(plannedExercise: PlannedExercise) : this(
         id = "",
-        name = planExercise.name,
-        sets = planExercise.sets,
-        reps = planExercise.reps,
-        progress = List(planExercise.sets.total) { Progress() }
+        name = plannedExercise.name,
+        sets = plannedExercise.sets,
+        reps = plannedExercise.reps,
+        progress = List(plannedExercise.sets.total) { Progress() }
     )
 
     init {

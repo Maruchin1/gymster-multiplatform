@@ -15,6 +15,7 @@ internal data class PlanEditorRoute(val planId: String)
 internal fun NavGraphBuilder.planEditorScreen(
     onBack: () -> Unit,
     onEditName: (planId: String) -> Unit,
+    onEditWeeksDuration: (planId: String) -> Unit,
     onAddDay: (planId: String) -> Unit,
     onEditDay: (planId: String, dayId: String) -> Unit,
     onAddExercise: (planId: String, dayId: String) -> Unit,
@@ -31,6 +32,7 @@ internal fun NavGraphBuilder.planEditorScreen(
             state = state,
             onBack = onBack,
             onEditName = { onEditName(planId) },
+            onEditWeeksDuration = { onEditWeeksDuration(planId) },
             onDeletePlan = { viewModel.deletePlan().invokeOnCompletion { onBack() } },
             onAddDay = { onAddDay(planId) },
             onEditDay = { dayId -> onEditDay(planId, dayId) },

@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.trainings.planpicker.PlanPickerUiState
 import kotlinx.datetime.LocalDate
@@ -47,7 +47,7 @@ internal fun PlanPickerDialog(
     state: PlanPickerUiState,
     onClose: () -> Unit,
     onSelectPlan: (Plan) -> Unit,
-    onSelectDay: (PlanDay) -> Unit,
+    onSelectDay: (PlannedTraining) -> Unit,
     onSelectDate: (Long) -> Unit,
     onStartTraining: () -> Unit
 ) {
@@ -80,7 +80,7 @@ internal fun PlanPickerDialog(
 private fun LoadedContent(
     state: PlanPickerUiState.Loaded,
     onSelectPlan: (Plan) -> Unit,
-    onSelectDay: (PlanDay) -> Unit,
+    onSelectDay: (PlannedTraining) -> Unit,
     onSelectDate: (Long) -> Unit,
     onStartTraining: () -> Unit
 ) {

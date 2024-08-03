@@ -29,6 +29,8 @@ import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -73,6 +75,7 @@ internal fun PlanEditorScreen(
     onBack: () -> Unit,
     onEditName: () -> Unit,
     onDeletePlan: () -> Unit,
+    onEditWeeksDuration: () -> Unit,
     onAddDay: () -> Unit,
     onEditDay: (dayId: String) -> Unit,
     onDeleteDay: (dayId: String) -> Unit,
@@ -106,6 +109,7 @@ internal fun PlanEditorScreen(
                 is PlanEditorUiState.Loaded -> LoadedContent(
                     plan = targetState.plan,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
+                    onEditWeeksDuration = onEditWeeksDuration,
                     onAddDay = onAddDay,
                     onEditDay = onEditDay,
                     onDeleteDay = onDeleteDay,
@@ -171,6 +175,7 @@ private fun LoadingContent() {
 private fun LoadedContent(
     plan: Plan,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
+    onEditWeeksDuration: () -> Unit,
     onAddDay: () -> Unit,
     onEditDay: (dayId: String) -> Unit,
     onDeleteDay: (dayId: String) -> Unit,
@@ -198,6 +203,9 @@ private fun LoadedContent(
             .fillMaxSize()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
+        item {
+            WeeksDurationItem(weeksDuration = plan.weeksDuration, onClick = onEditWeeksDuration)
+        }
         mutablePlan.days.forEach { day ->
             stickyHeader {
                 DayHeader(
@@ -233,6 +241,25 @@ private fun LoadedContent(
         item {
             AddDayButton(onClick = onAddDay)
         }
+    }
+}
+
+@Composable
+private fun WeeksDurationItem(weeksDuration: Int, onClick: () -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Text(
+            text = "Duration: $weeksDuration weeks",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(12.dp)
+        )
     }
 }
 
@@ -414,6 +441,7 @@ private fun PlanEditorScreen_LoadedPreview() {
             onBack = {},
             onEditName = {},
             onDeletePlan = {},
+            onEditWeeksDuration = {},
             onAddDay = {},
             onEditDay = {},
             onDeleteDay = {},
@@ -434,6 +462,7 @@ private fun PlanEditorScreen_EmptyPreview() {
             onBack = {},
             onEditName = {},
             onDeletePlan = {},
+            onEditWeeksDuration = {},
             onAddDay = {},
             onEditDay = {},
             onDeleteDay = {},
@@ -454,6 +483,7 @@ private fun PlanEditorScreen_LoadingPreview() {
             onBack = {},
             onEditName = {},
             onDeletePlan = {},
+            onEditWeeksDuration = {},
             onAddDay = {},
             onEditDay = {},
             onDeleteDay = {},

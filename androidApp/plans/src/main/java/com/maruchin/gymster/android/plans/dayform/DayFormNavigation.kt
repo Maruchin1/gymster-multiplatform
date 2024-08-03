@@ -21,7 +21,7 @@ internal fun NavGraphBuilder.dayFormDialog(onClose: () -> Unit) {
         val day by viewModel.day.collectAsStateWithLifecycle()
 
         DayFormDialog(
-            day = day,
+            plannedTraining = day,
             onClose = onClose,
             onSave = { name ->
                 viewModel.saveDay(name).invokeOnCompletion { onClose() }

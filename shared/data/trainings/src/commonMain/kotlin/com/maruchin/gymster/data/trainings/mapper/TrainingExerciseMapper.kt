@@ -1,14 +1,14 @@
 package com.maruchin.gymster.data.trainings.mapper
 
-import com.maruchin.gymster.core.database.schema.TrainingExerciseDbModel
+import com.maruchin.gymster.core.database.schema.ExerciseDbModel
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
+import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.gymster.data.trainings.model.TrainingExercise
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 
-internal fun TrainingExercise.toDbModel() = TrainingExerciseDbModel().also {
+internal fun Exercise.toDbModel() = ExerciseDbModel().also {
     if (id.isNotBlank()) {
         it.id = RealmUUID.from(id)
     }
@@ -20,7 +20,7 @@ internal fun TrainingExercise.toDbModel() = TrainingExerciseDbModel().also {
     it.progress = progress.map(Progress::toDbModel).toRealmList()
 }
 
-internal fun TrainingExerciseDbModel.toDomainModel() = TrainingExercise(
+internal fun ExerciseDbModel.toDomainModel() = Exercise(
     id = id.toString(),
     name = name,
     sets = Sets(regular = regularSets, drop = dropSets),

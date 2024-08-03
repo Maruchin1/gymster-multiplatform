@@ -1,10 +1,10 @@
 package com.maruchin.gymster.core.database.schema
 
 internal val databaseSchema = setOf(
-    TrainingPlanDbModel::class,
-    TrainingPlanDayDbModel::class,
-    TrainingPlanExerciseDbModel::class,
+    PlanDbModel::class,
+    PlannedTrainingDbModel::class,
+    PlannedExerciseDbModel::class,
     TrainingDbModel::class,
-    TrainingExerciseDbModel::class,
+    ExerciseDbModel::class,
     ProgressDbModel::class
 )

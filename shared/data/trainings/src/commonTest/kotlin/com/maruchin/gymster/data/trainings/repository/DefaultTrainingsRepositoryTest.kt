@@ -47,7 +47,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         repository.observeAllTrainings().test {
             awaitItem().shouldBeEmpty()
 
-            repository.createTraining(date = today, planName = plan.name, planDay = planDay)
+            repository.createTraining(date = today, planName = plan.name, plannedTraining = planDay)
 
             awaitItem().let { trainings ->
                 trainings shouldHaveSize 1
@@ -117,7 +117,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val training = repository.createTraining(
             date = today,
             planName = plan.name,
-            planDay = planDay
+            plannedTraining = planDay
         )
         val exercise = training.exercises.first()
         val newProgress = Progress(weight = 70.0, reps = 5)
@@ -144,7 +144,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val training = repository.createTraining(
             date = today,
             planName = plan.name,
-            planDay = planDay
+            plannedTraining = planDay
         )
 
         repository.observeAllTrainings().test {

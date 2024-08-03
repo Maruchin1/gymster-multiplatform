@@ -3,6 +3,7 @@ package com.maruchin.gymster.data.plans.repository
 import app.cash.turbine.test
 import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
+import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -59,6 +60,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             repository.changePlanName(planId = planId, newName = newName)
 
             awaitItem()!!.name shouldBe newName
+        }
+    }
+
+    @Test
+    fun `change plan duration`() = runTest {
+        val planName = "Push Pull"
+        val planId = repository.createPlan(name = planName)
+        val newDuration = 8
+        repository.observePlan(planId).test {
+            awaitItem()!!.weeksDuration shouldBe Plan.DEFAULT_WEEKS_DURATION
+
+            repository.changePlanDuration(planId = planId, newDuration = newDuration)
+
+            awaitItem()!!.weeksDuration shouldBe newDuration
         }
     }
 

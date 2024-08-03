@@ -14,5 +14,5 @@ class TrainingDbModel : RealmObject {
     var name: String = ""
     var planName: String = ""
     var date: String = ""
-    var exercises: RealmList<TrainingExerciseDbModel> = realmListOf()
+    var exercises: RealmList<ExerciseDbModel> = realmListOf()
 }

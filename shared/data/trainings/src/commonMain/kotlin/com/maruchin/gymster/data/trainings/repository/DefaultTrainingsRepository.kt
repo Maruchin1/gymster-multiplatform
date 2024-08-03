@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.repository
 
 import com.maruchin.gymster.core.database.schema.TrainingDbModel
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.trainings.datasource.TrainingsLocalDataSource
 import com.maruchin.gymster.data.trainings.mapper.toDbModel
 import com.maruchin.gymster.data.trainings.mapper.toDomainModel
@@ -26,9 +26,10 @@ internal class DefaultTrainingsRepository(private val localDataSource: Trainings
     override suspend fun createTraining(
         date: LocalDate,
         planName: String,
-        planDay: PlanDay
+        plannedTraining: PlannedTraining
     ): Training {
-        val newTraining = Training(date = date, planName = planName, planDay = planDay)
+        val newTraining =
+            Training(date = date, planName = planName, plannedTraining = plannedTraining)
         val newTrainingDbModel = newTraining.toDbModel()
         localDataSource.createTraining(training = newTrainingDbModel)
         return newTrainingDbModel.toDomainModel()

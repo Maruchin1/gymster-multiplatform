@@ -1,7 +1,7 @@
 package com.maruchin.gymster.feature.trainings.planpicker
 
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
@@ -14,11 +14,11 @@ sealed interface PlanPickerUiState {
     data class Loaded(
         val plans: List<Plan>,
         val selectedPlan: Plan?,
-        val selectedDay: PlanDay?,
+        val selectedDay: PlannedTraining?,
         val selectedDate: LocalDate
     ) : PlanPickerUiState {
 
-        val days: List<PlanDay>
+        val days: List<PlannedTraining>
             get() = selectedPlan?.days.orEmpty()
 
         val canStartTraining: Boolean

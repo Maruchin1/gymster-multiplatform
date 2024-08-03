@@ -5,6 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.maruchin.gymster.android.plans.dayform.DayFormRoute
 import com.maruchin.gymster.android.plans.dayform.dayFormDialog
+import com.maruchin.gymster.android.plans.durationform.DurationFormRoute
+import com.maruchin.gymster.android.plans.durationform.durationFormDialog
 import com.maruchin.gymster.android.plans.exerciseform.ExerciseFormRoute
 import com.maruchin.gymster.android.plans.exerciseform.exerciseFormDialog
 import com.maruchin.gymster.android.plans.planeditor.PlanEditorRoute
@@ -35,6 +37,9 @@ fun NavGraphBuilder.plansGraph(navController: NavController) {
             onEditName = { planId ->
                 navController.navigate(PlanFormRoute(planId))
             },
+            onEditWeeksDuration = { planId ->
+                navController.navigate(DurationFormRoute(planId))
+            },
             onAddDay = { planId ->
                 navController.navigate(DayFormRoute(planId, null))
             },
@@ -59,6 +64,11 @@ fun NavGraphBuilder.plansGraph(navController: NavController) {
             }
         )
         exerciseFormDialog(
+            onClose = {
+                navController.navigateUp()
+            }
+        )
+        durationFormDialog(
             onClose = {
                 navController.navigateUp()
             }

@@ -36,14 +36,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.data.plans.model.PlanExercise
+import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ExerciseFormDialog(
-    exercise: PlanExercise?,
+    exercise: PlannedExercise?,
     onClose: () -> Unit,
     onSave: (name: String, sets: Sets, reps: Reps) -> Unit
 ) {

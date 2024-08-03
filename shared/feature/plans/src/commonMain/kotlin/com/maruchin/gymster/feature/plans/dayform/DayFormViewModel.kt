@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.plans.dayform
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
-import com.maruchin.gymster.data.plans.model.PlanDay
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ class DayFormViewModel internal constructor(
     private val plansRepository: PlansRepository
 ) : ViewModel() {
 
-    val day: StateFlow<PlanDay?> = plansRepository.observePlan(planId)
+    val day: StateFlow<PlannedTraining?> = plansRepository.observePlan(planId)
         .map { it?.findDay(dayId.orEmpty()) }
         .stateIn(
             scope = viewModelScope,
