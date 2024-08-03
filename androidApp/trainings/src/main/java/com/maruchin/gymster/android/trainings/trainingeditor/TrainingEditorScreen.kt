@@ -12,14 +12,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -166,6 +169,7 @@ fun LoadedContent(
                 sets = exercise.sets,
                 reps = exercise.reps,
                 progress = exercise.progress,
+                isComplete = exercise.isComplete,
                 onEditProgress = { onEditProgress(exercise.id, it) }
             )
         }
@@ -178,11 +182,19 @@ internal fun ExerciseItem(
     name: String,
     sets: Sets,
     reps: Reps,
-    progress: List<Progress?>,
+    isComplete: Boolean,
+    progress: List<Progress>,
     onEditProgress: (index: Int) -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = if (isComplete) {
+            CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        } else {
+            CardDefaults.elevatedCardColors()
+        }
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         Row(
@@ -190,10 +202,17 @@ internal fun ExerciseItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (isComplete) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null)
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Sets: $sets",

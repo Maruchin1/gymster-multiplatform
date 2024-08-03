@@ -26,5 +26,8 @@ data class TrainingExercise(
         }
     }
 
+    val isComplete: Boolean
+        get() = progress.all { it.isComplete }
+
     fun getProgress(index: Int): Progress = progress[index]
 }

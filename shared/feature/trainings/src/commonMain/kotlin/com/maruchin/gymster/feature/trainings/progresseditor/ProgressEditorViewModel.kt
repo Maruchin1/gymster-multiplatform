@@ -24,8 +24,7 @@ class ProgressEditorViewModel internal constructor(
     val uiState: StateFlow<ProgressEditorUiState> = trainingsRepository.observeTraining(trainingId)
         .filterNotNull()
         .map { training ->
-            val progress = training.getExercise(exerciseId).getProgress(progressIndex)
-            ProgressEditorUiState.Loaded(progress)
+            ProgressEditorUiState.Loaded(training, exerciseId, progressIndex)
         }
         .stateIn(
             scope = viewModelScope,

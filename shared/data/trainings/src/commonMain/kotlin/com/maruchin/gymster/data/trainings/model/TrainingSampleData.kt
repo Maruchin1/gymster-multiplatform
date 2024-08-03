@@ -13,7 +13,7 @@ val sampleTrainings = listOf(
         exercises = listOf(
             TrainingExercise(
                 id = "1",
-                name = "Bench Press",
+                name = "Wyciskanie sztangi na ławce poziomej",
                 sets = Sets(regular = 3),
                 reps = Reps(4..6),
                 progress = listOf(
@@ -24,32 +24,34 @@ val sampleTrainings = listOf(
             ),
             TrainingExercise(
                 id = "2",
-                name = "Overhead Press",
-                sets = Sets(regular = 3),
+                name = "Rozpiętki hantlami na ławce skos dodatni",
+                sets = Sets(regular = 2, drop = 1),
                 reps = Reps(10..12),
                 progress = listOf(
-                    Progress(40.0 to 12),
-                    Progress(40.0 to 12),
-                    Progress(40.0 to 12)
+                    Progress(17.5 to 12),
+                    Progress(17.5 to 12),
+                    Progress(17.5 to 12)
                 )
             ),
             TrainingExercise(
                 id = "3",
-                name = "Triceps Extension",
-                sets = Sets(regular = 1, drop = 3),
-                reps = Reps(10..20),
-                progress = listOf(
-                    Progress(20.0 to 20),
-                    Progress(20.0 to 15),
-                    Progress(20.0 to 10),
-                    Progress(20.0 to 10)
-                )
+                name = "Wyciskanie hantlami nad głowę siedząc",
+                sets = Sets(regular = 2, drop = 1),
+                reps = Reps(8..10),
+                progress = listOf(Progress(), Progress(), Progress())
             ),
             TrainingExercise(
                 id = "4",
-                name = "Lateral Raises",
-                sets = Sets(regular = 3),
-                reps = Reps(12..15),
+                name = "Wznosy hantli bokiem stojąc",
+                sets = Sets(regular = 1, drop = 3),
+                reps = Reps(10..20),
+                progress = listOf(Progress(), Progress(), Progress(), Progress())
+            ),
+            TrainingExercise(
+                id = "5",
+                name = "Prostowanie ramion na wyciągu",
+                sets = Sets(regular = 2, drop = 1),
+                reps = Reps(10..12),
                 progress = listOf(Progress(), Progress(), Progress())
             )
         )

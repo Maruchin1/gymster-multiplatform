@@ -53,7 +53,7 @@ class ProgressEditorViewModelTest : KoinTest {
         viewModel.uiState.test {
             awaitItem() shouldBe ProgressEditorUiState.Loading
 
-            awaitItem() shouldBe ProgressEditorUiState.Loaded(progress)
+            awaitItem() shouldBe ProgressEditorUiState.Loaded(exercise, progress)
         }
     }
 
