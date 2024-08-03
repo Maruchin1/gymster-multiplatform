@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.maruchin.gymster.android.home.HomeGraph
 import com.maruchin.gymster.android.home.homeGraph
-import com.maruchin.gymster.android.plans.PlansGraph
 import com.maruchin.gymster.android.plans.plansGraph
 import com.maruchin.gymster.android.trainings.trainingsGraph
 
@@ -25,11 +24,7 @@ internal fun MainNavHost() {
                 .background(MaterialTheme.colorScheme.background)
                 .weight(1f)
         ) {
-            homeGraph(
-                onOpenTrainingPlans = {
-                    navController.navigate(PlansGraph)
-                }
-            )
+            homeGraph()
             trainingsGraph(navController = navController)
             plansGraph(navController = navController)
         }

@@ -54,7 +54,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 trainings.first().let { training ->
                     training.date shouldBe today
                     training.exercises[0].let { firstExercise ->
-                        firstExercise.name shouldBe "Bench Press"
+                        firstExercise.name shouldBe "Wyciskanie sztangi na ławce poziomej"
                         firstExercise.sets shouldBe Sets(regular = 3)
                         firstExercise.reps shouldBe Reps(4..6)
                         firstExercise.progress shouldContainExactly listOf(
@@ -64,8 +64,8 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                         )
                     }
                     training.exercises[1].let { secondExercise ->
-                        secondExercise.name shouldBe "Overhead Press"
-                        secondExercise.sets shouldBe Sets(regular = 3)
+                        secondExercise.name shouldBe "Rozpiętki hantlami na ławce skos dodatni"
+                        secondExercise.sets shouldBe Sets(regular = 2, drop = 1)
                         secondExercise.reps shouldBe Reps(10..12)
                         secondExercise.progress shouldContainExactly listOf(
                             Progress(),
@@ -74,10 +74,31 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                         )
                     }
                     training.exercises[2].let { thirdExercise ->
-                        thirdExercise.name shouldBe "Triceps Extension"
-                        thirdExercise.sets shouldBe Sets(regular = 1, drop = 2)
-                        thirdExercise.reps shouldBe Reps(10..20)
+                        thirdExercise.name shouldBe "Wyciskanie hantlami nad głowę siedząc"
+                        thirdExercise.sets shouldBe Sets(regular = 2, drop = 1)
+                        thirdExercise.reps shouldBe Reps(8..10)
                         thirdExercise.progress shouldContainExactly listOf(
+                            Progress(),
+                            Progress(),
+                            Progress()
+                        )
+                    }
+                    training.exercises[3].let { fourthExercise ->
+                        fourthExercise.name shouldBe "Wznosy hantli bokiem stojąc"
+                        fourthExercise.sets shouldBe Sets(regular = 1, drop = 3)
+                        fourthExercise.reps shouldBe Reps(10..20)
+                        fourthExercise.progress shouldContainExactly listOf(
+                            Progress(),
+                            Progress(),
+                            Progress(),
+                            Progress()
+                        )
+                    }
+                    training.exercises[4].let { fifthExercise ->
+                        fifthExercise.name shouldBe "Prostowanie ramion na wyciągu"
+                        fifthExercise.sets shouldBe Sets(regular = 2, drop = 1)
+                        fifthExercise.reps shouldBe Reps(10..12)
+                        fifthExercise.progress shouldContainExactly listOf(
                             Progress(),
                             Progress(),
                             Progress()

@@ -11,6 +11,7 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
+            export(projects.shared.feature.home)
             export(projects.shared.feature.plans)
             export(projects.shared.feature.trainings)
         }
@@ -18,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.shared.feature.home)
             api(projects.shared.feature.plans)
             api(projects.shared.feature.trainings)
             implementation(projects.shared.data.plans)

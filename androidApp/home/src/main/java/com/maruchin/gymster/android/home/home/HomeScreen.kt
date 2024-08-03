@@ -17,12 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun HomeScreen(onOpenTrainingPlans: () -> Unit) {
+internal fun HomeScreen(onSeedData: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("Gymster 2")
+                    Text("Gymster")
                 }
             )
         }
@@ -34,8 +34,8 @@ internal fun HomeScreen(onOpenTrainingPlans: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Button(onClick = onOpenTrainingPlans) {
-                Text("Training Plan List")
+            Button(onClick = onSeedData) {
+                Text("Seed data")
             }
         }
     }
@@ -45,6 +45,6 @@ internal fun HomeScreen(onOpenTrainingPlans: () -> Unit) {
 @Composable
 private fun HomeScreenPreview() {
     MaterialTheme {
-        HomeScreen(onOpenTrainingPlans = {})
+        HomeScreen(onSeedData = {})
     }
 }

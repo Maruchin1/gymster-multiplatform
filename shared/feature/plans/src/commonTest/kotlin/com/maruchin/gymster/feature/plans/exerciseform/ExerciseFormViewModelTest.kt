@@ -74,21 +74,21 @@ class ExerciseFormViewModelTest : KoinTest {
     fun `add new exercise when exercise not selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.days.last()
-        val exerciseName = "Bench press"
+        val day = plan.days.first()
+        val exerciseName = "Brzuszki na ławce skośnej"
         val exerciseSets = Sets(regular = 3)
         val exerciseReps = Reps(10..12)
         val viewModel: ExerciseFormViewModel = get { parametersOf(plan.id, day.id, null) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.days.last().exercises.shouldBeEmpty()
+            awaitItem()!!.days.last().exercises shouldHaveSize 5
 
             viewModel.saveExercise(name = exerciseName, sets = exerciseSets, reps = exerciseReps)
 
             awaitItem()!!.let { plan ->
-                plan.days.last().exercises.let { exercises ->
-                    exercises shouldHaveSize 1
-                    exercises.first().let { exercise ->
+                plan.days.first().exercises.let { exercises ->
+                    exercises shouldHaveSize 6
+                    exercises.last().let { exercise ->
                         exercise.name shouldBe exerciseName
                         exercise.sets shouldBe exerciseSets
                         exercise.reps shouldBe exerciseReps
