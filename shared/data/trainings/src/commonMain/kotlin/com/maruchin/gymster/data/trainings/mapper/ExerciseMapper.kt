@@ -9,9 +9,7 @@ import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 
 internal fun Exercise.toDbModel() = ExerciseDbModel().also {
-    if (id.isNotBlank()) {
-        it.id = RealmUUID.from(id)
-    }
+    it.id = id.takeIf(String::isNotBlank)?.let(RealmUUID.Companion::from) ?: RealmUUID.random()
     it.name = name
     it.regularSets = sets.regular
     it.dropSets = sets.drop

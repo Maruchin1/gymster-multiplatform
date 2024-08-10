@@ -1,29 +1,26 @@
 package com.maruchin.gymster.data.trainings.repository
 
-import com.maruchin.gymster.data.plans.model.PlannedTraining
+import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.gymster.data.trainings.model.Training
+import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.LocalDate
 
 interface TrainingsRepository {
 
-    fun observeAllTrainings(): Flow<List<Training>>
+    fun observeAllTrainingBlocks(): Flow<List<TrainingBlock>>
 
-    fun observeTraining(trainingId: String): Flow<Training?>
+    fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?>
 
-    suspend fun createTraining(
-        date: LocalDate,
-        planName: String,
-        plannedTraining: PlannedTraining
-    ): Training
+    suspend fun createTrainingBlock(plan: Plan): TrainingBlock
+
+    suspend fun deleteTrainingBlock(trainingBlockId: String)
 
     suspend fun updateProgress(
+        trainingBlockId: String,
+        weekNumber: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int,
         newProgress: Progress
     )
-
-    suspend fun deleteTraining(trainingId: String)
 }

@@ -30,7 +30,7 @@ class FakePlansRepository : PlansRepository {
             id = id,
             name = name,
             weeksDuration = Plan.DEFAULT_WEEKS_DURATION,
-            days = emptyList()
+            trainings = emptyList()
         )
         collection.value += id to newPlan
         return id
@@ -54,34 +54,34 @@ class FakePlansRepository : PlansRepository {
 
     override suspend fun addDay(planId: String, name: String): String {
         val plans = collection.value
-        val days = collection.value[planId]?.days ?: emptyList()
+        val days = collection.value[planId]?.trainings ?: emptyList()
         val id = (days.size + 1).toString()
         val newDay = PlannedTraining(
             id = id,
             name = name,
             exercises = emptyList()
         )
-        collection.value += planId to collection.value[planId]!!.copy(days = days + newDay)
+        collection.value += planId to collection.value[planId]!!.copy(trainings = days + newDay)
         return id
     }
 
     override suspend fun changeDayName(planId: String, dayId: String, newName: String) {
         collection.value[planId]?.let { plan ->
-            val newDays = plan.days.map { day ->
+            val newDays = plan.trainings.map { day ->
                 if (day.id == dayId) {
                     day.copy(name = newName)
                 } else {
                     day
                 }
             }
-            collection.value += planId to plan.copy(days = newDays)
+            collection.value += planId to plan.copy(trainings = newDays)
         }
     }
 
     override suspend fun deleteDay(planId: String, dayId: String) {
         collection.value[planId]?.let { plan ->
-            val newDays = plan.days.filter { it.id != dayId }
-            collection.value += planId to plan.copy(days = newDays)
+            val newDays = plan.trainings.filter { it.id != dayId }
+            collection.value += planId to plan.copy(trainings = newDays)
         }
     }
 
@@ -93,7 +93,7 @@ class FakePlansRepository : PlansRepository {
         reps: Reps
     ): String {
         val plans = collection.value
-        val days = plans[planId]?.days ?: emptyList()
+        val days = plans[planId]?.trainings ?: emptyList()
         val exercises = days.find { it.id == dayId }?.exercises ?: emptyList()
         val id = (exercises.size + 1).toString()
         val newExercise = PlannedExercise(
@@ -109,7 +109,7 @@ class FakePlansRepository : PlansRepository {
                 day
             }
         }
-        collection.value += planId to plans[planId]!!.copy(days = newDays)
+        collection.value += planId to plans[planId]!!.copy(trainings = newDays)
         return id
     }
 
@@ -122,7 +122,7 @@ class FakePlansRepository : PlansRepository {
         newReps: Reps
     ) {
         collection.value[planId]?.let { plan ->
-            val newDays = plan.days.map { day ->
+            val newDays = plan.trainings.map { day ->
                 if (day.id == dayId) {
                     val newExercises = day.exercises.map { exercise ->
                         if (exercise.id == exerciseId) {
@@ -136,13 +136,13 @@ class FakePlansRepository : PlansRepository {
                     day
                 }
             }
-            collection.value += planId to plan.copy(days = newDays)
+            collection.value += planId to plan.copy(trainings = newDays)
         }
     }
 
     override suspend fun deleteExercise(planId: String, dayId: String, exerciseId: String) {
         collection.value[planId]?.let { plan ->
-            val newDays = plan.days.map { day ->
+            val newDays = plan.trainings.map { day ->
                 if (day.id == dayId) {
                     val newExercises = day.exercises.filter { it.id != exerciseId }
                     day.copy(exercises = newExercises)
@@ -150,7 +150,7 @@ class FakePlansRepository : PlansRepository {
                     day
                 }
             }
-            collection.value += planId to plan.copy(days = newDays)
+            collection.value += planId to plan.copy(trainings = newDays)
         }
     }
 
@@ -160,7 +160,7 @@ class FakePlansRepository : PlansRepository {
         exercisesIds: List<String>
     ) {
         collection.value[planId]?.let { plan ->
-            val newDays = plan.days.map { day ->
+            val newDays = plan.trainings.map { day ->
                 if (day.id == dayId) {
                     val newExercises = day.exercises.sortedBy { exercisesIds.indexOf(it.id) }
                     day.copy(exercises = newExercises)
@@ -168,7 +168,7 @@ class FakePlansRepository : PlansRepository {
                     day
                 }
             }
-            collection.value += planId to plan.copy(days = newDays)
+            collection.value += planId to plan.copy(trainings = newDays)
         }
     }
 }

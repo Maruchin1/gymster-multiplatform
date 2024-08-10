@@ -62,7 +62,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         }
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            plan.days.add(newDay)
+            plan.trainings.add(newDay)
         }
         return newDay.id
     }
@@ -70,7 +70,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
     suspend fun changeDayName(planId: RealmUUID, dayId: RealmUUID, name: String) {
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            val day = plan.days.find { it.id == dayId }
+            val day = plan.trainings.find { it.id == dayId }
             day?.name = name
         }
     }
@@ -78,8 +78,8 @@ internal class PlansLocalDataSource(private val realm: Realm) {
     suspend fun deleteDay(planId: RealmUUID, dayId: RealmUUID) {
         realm.write {
             val trainingPlan = query<PlanDbModel>("_id == $0", planId).find().first()
-            val day = trainingPlan.days.find { it.id == dayId }
-            trainingPlan.days.remove(day)
+            val day = trainingPlan.trainings.find { it.id == dayId }
+            trainingPlan.trainings.remove(day)
         }
     }
 
@@ -99,7 +99,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         }
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            val day = plan.days.find { it.id == dayId }
+            val day = plan.trainings.find { it.id == dayId }
             day?.exercises?.add(newExercise)
         }
         return newExercise.id
@@ -115,7 +115,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
     ) {
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            val day = plan.days.find { it.id == dayId }
+            val day = plan.trainings.find { it.id == dayId }
             val exercise = day?.exercises?.find { it.id == exerciseId }
             exercise?.name = newName
             exercise?.regularSets = newSets.regular
@@ -131,7 +131,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         exercisesIds: List<RealmUUID>
     ) {
         val plan = realm.query<PlanDbModel>("_id == $0", planId).find().first()
-        val day = plan.days.find { it.id == dayId } ?: return
+        val day = plan.trainings.find { it.id == dayId } ?: return
         val reorderedExercises = realmListOf<PlannedExerciseDbModel>()
         for (id in exercisesIds) {
             val exercise = day.exercises.find { it.id == id } ?: continue
@@ -147,7 +147,7 @@ internal class PlansLocalDataSource(private val realm: Realm) {
     suspend fun deleteExercise(planId: RealmUUID, dayId: RealmUUID, exerciseId: RealmUUID) {
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            val day = plan.days.find { it.id == dayId }
+            val day = plan.trainings.find { it.id == dayId }
             val exercise = day?.exercises?.find { it.id == exerciseId }
             day?.exercises?.remove(exercise)
         }

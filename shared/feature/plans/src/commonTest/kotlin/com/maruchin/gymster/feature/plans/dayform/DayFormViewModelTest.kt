@@ -45,7 +45,7 @@ class DayFormViewModelTest : KoinTest {
     fun `emit day when selected and available`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.days.random()
+        val day = plan.trainings.random()
         val viewModel: DayFormViewModel = get { parametersOf(plan.id, day.id) }
 
         viewModel.day.test {
@@ -76,13 +76,13 @@ class DayFormViewModelTest : KoinTest {
         val viewModel: DayFormViewModel = get { parametersOf(plan.id, null) }
 
         trainingPlansRepository.observePlan(plan.id).test {
-            awaitItem()!!.days.shouldBeEmpty()
+            awaitItem()!!.trainings.shouldBeEmpty()
 
             viewModel.saveDay(name = dayName)
 
             awaitItem()!!.let {
-                it.days shouldHaveSize 1
-                it.days.first().name shouldBe dayName
+                it.trainings shouldHaveSize 1
+                it.trainings.first().name shouldBe dayName
             }
         }
     }
@@ -91,16 +91,16 @@ class DayFormViewModelTest : KoinTest {
     fun `change day name on save when day selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.days[2]
+        val day = plan.trainings[2]
         val dayNewName = "Push Hyper"
         val viewModel: DayFormViewModel = get { parametersOf(plan.id, day.id) }
 
         trainingPlansRepository.observePlan(plan.id).test {
-            awaitItem()!!.days[2].name shouldBe day.name
+            awaitItem()!!.trainings[2].name shouldBe day.name
 
             viewModel.saveDay(name = dayNewName)
 
-            awaitItem()!!.days[2].name shouldBe dayNewName
+            awaitItem()!!.trainings[2].name shouldBe dayNewName
         }
     }
 }

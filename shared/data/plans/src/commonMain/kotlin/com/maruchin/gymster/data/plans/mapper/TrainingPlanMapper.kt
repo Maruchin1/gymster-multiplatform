@@ -7,5 +7,5 @@ internal fun PlanDbModel.toDomain() = Plan(
     id = id.toString(),
     name = name,
     weeksDuration = weeksDuration,
-    days = days.map { it.toDomainModel() }
+    trainings = trainings.map { it.toDomainModel() }
 )

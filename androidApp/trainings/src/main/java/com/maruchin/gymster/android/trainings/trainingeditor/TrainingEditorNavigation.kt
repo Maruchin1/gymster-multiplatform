@@ -10,15 +10,21 @@ import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorViewM
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class TrainingEditorRoute(val trainingId: String)
+internal data class TrainingEditorRoute(
+    val trainingBlockId: String,
+    val weekNumber: Int,
+    val trainingId: String
+)
 
 internal fun NavGraphBuilder.trainingEditorScreen(
     onBack: () -> Unit,
     onEditProgress: (trainingId: String, exerciseId: String, progressIndex: Int) -> Unit
 ) {
     composable<TrainingEditorRoute> {
-        val (trainingId) = it.toRoute<TrainingEditorRoute>()
-        val viewModel = viewModel { TrainingEditorViewModel.get(trainingId) }
+        val (trainingBlockId, weekNumber, trainingId) = it.toRoute<TrainingEditorRoute>()
+        val viewModel = viewModel {
+            TrainingEditorViewModel.get(trainingBlockId, weekNumber, trainingId)
+        }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         TrainingEditorScreen(
@@ -26,8 +32,7 @@ internal fun NavGraphBuilder.trainingEditorScreen(
             onBack = onBack,
             onEditProgress = { exerciseId, progressIndex ->
                 onEditProgress(trainingId, exerciseId, progressIndex)
-            },
-            onDeleteTraining = { viewModel.deleteTraining().invokeOnCompletion { onBack() } }
+            }
         )
     }
 }

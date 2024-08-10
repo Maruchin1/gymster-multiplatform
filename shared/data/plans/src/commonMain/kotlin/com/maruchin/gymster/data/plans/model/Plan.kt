@@ -4,20 +4,20 @@ data class Plan(
     val id: String,
     val name: String,
     val weeksDuration: Int,
-    val days: List<PlannedTraining>
+    val trainings: List<PlannedTraining>
 ) {
 
     init {
         require(weeksDuration > 0) { "weeksDuration must be greater than 0" }
     }
 
-    fun findDay(dayId: String) = days.find { it.id == dayId }
+    fun findDay(dayId: String) = trainings.find { it.id == dayId }
 
     fun findExercise(exerciseId: String) =
-        days.flatMap { it.exercises }.find { it.id == exerciseId }
+        trainings.flatMap { it.exercises }.find { it.id == exerciseId }
 
     fun changeExercisesOrder(fromId: String, toId: String) = copy(
-        days = days.map { day ->
+        trainings = trainings.map { day ->
             if (day.exercises.find { it.id == fromId } != null) {
                 day.changeExercisesOrder(fromId, toId)
             } else {

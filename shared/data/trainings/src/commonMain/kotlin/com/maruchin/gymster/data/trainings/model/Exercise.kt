@@ -12,14 +12,6 @@ data class Exercise(
     val progress: List<Progress>
 ) {
 
-    internal constructor(plannedExercise: PlannedExercise) : this(
-        id = "",
-        name = plannedExercise.name,
-        sets = plannedExercise.sets,
-        reps = plannedExercise.reps,
-        progress = List(plannedExercise.sets.total) { Progress() }
-    )
-
     init {
         require(progress.size == sets.total) {
             "Progress list size must be equal to total sets"
@@ -30,4 +22,15 @@ data class Exercise(
         get() = progress.all { it.isComplete }
 
     fun getProgress(index: Int): Progress = progress[index]
+
+    companion object {
+
+        internal fun from(plannedExercise: PlannedExercise) = Exercise(
+            id = "",
+            name = plannedExercise.name,
+            sets = plannedExercise.sets,
+            reps = plannedExercise.reps,
+            progress = List(plannedExercise.sets.total) { Progress.empty }
+        )
+    }
 }

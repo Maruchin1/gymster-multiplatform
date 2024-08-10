@@ -7,11 +7,10 @@ import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-class PlanDbModel : RealmObject {
+class TrainingBlockDbModel : RealmObject {
     @PersistedName("_id")
     @PrimaryKey
     var id: RealmUUID = RealmUUID.random()
-    var name: String = ""
-    var weeksDuration: Int = 0
-    var trainings: RealmList<PlannedTrainingDbModel> = realmListOf()
+    var planName: String = ""
+    var weeks: RealmList<TrainingWeekDbModel> = realmListOf()
 }

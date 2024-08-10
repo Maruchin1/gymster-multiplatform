@@ -96,11 +96,11 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planId = repository.createPlan(planName)
         val dayName = "Push 1"
         repository.observePlan(planId).test {
-            awaitItem()!!.days.shouldBeEmpty()
+            awaitItem()!!.trainings.shouldBeEmpty()
 
             repository.addDay(planId = planId, name = dayName)
 
-            awaitItem()!!.days.let {
+            awaitItem()!!.trainings.let {
                 it shouldHaveSize 1
                 it.first().name shouldBe dayName
             }
@@ -115,7 +115,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val dayId = repository.addDay(planId = planId, name = dayName)
         val updatedDayName = "Push 2"
         repository.observePlan(planId).test {
-            awaitItem()!!.days.first().name shouldBe dayName
+            awaitItem()!!.trainings.first().name shouldBe dayName
 
             repository.changeDayName(
                 planId = planId,
@@ -123,7 +123,7 @@ class DefaultPlansRepositoryTest : KoinTest {
                 newName = updatedDayName
             )
 
-            awaitItem()!!.days.first().name shouldBe updatedDayName
+            awaitItem()!!.trainings.first().name shouldBe updatedDayName
         }
     }
 
@@ -134,11 +134,11 @@ class DefaultPlansRepositoryTest : KoinTest {
         val dayName = "Push 1"
         val dayId = repository.addDay(planId = planId, name = dayName)
         repository.observePlan(planId).test {
-            awaitItem()!!.days shouldHaveSize 1
+            awaitItem()!!.trainings shouldHaveSize 1
 
             repository.deleteDay(planId = planId, dayId = dayId)
 
-            awaitItem()!!.days.shouldBeEmpty()
+            awaitItem()!!.trainings.shouldBeEmpty()
         }
     }
 
@@ -152,7 +152,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val exerciseSets = Sets(regular = 3, drop = 0)
         val exerciseReps = Reps(10..12)
         repository.observePlan(planId).test {
-            awaitItem()!!.days.first().exercises.shouldBeEmpty()
+            awaitItem()!!.trainings.first().exercises.shouldBeEmpty()
 
             repository.addExercise(
                 planId = planId,
@@ -163,7 +163,7 @@ class DefaultPlansRepositoryTest : KoinTest {
             )
 
             awaitItem()!!.let { plan ->
-                plan.days.first().exercises.let { exercises ->
+                plan.trainings.first().exercises.let { exercises ->
                     exercises shouldHaveSize 1
                     exercises.first().let { exercise ->
                         exercise.name shouldBe exerciseName
@@ -195,7 +195,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val updatedSets = Sets(regular = 4, drop = 1)
         val updatedReps = Reps(8..10)
         repository.observePlan(planId).test {
-            awaitItem()!!.days.first().exercises.first().name shouldBe exerciseName
+            awaitItem()!!.trainings.first().exercises.first().name shouldBe exerciseName
 
             repository.updateExercise(
                 planId = planId,
@@ -206,7 +206,7 @@ class DefaultPlansRepositoryTest : KoinTest {
                 newReps = updatedReps
             )
 
-            awaitItem()!!.days.first().exercises.first().name shouldBe updatedExerciseName
+            awaitItem()!!.trainings.first().exercises.first().name shouldBe updatedExerciseName
         }
     }
 
@@ -227,7 +227,7 @@ class DefaultPlansRepositoryTest : KoinTest {
             reps = exerciseReps
         )
         repository.observePlan(planId).test {
-            awaitItem()!!.days.first().exercises shouldHaveSize 1
+            awaitItem()!!.trainings.first().exercises shouldHaveSize 1
 
             repository.deleteExercise(
                 planId = planId,
@@ -235,7 +235,7 @@ class DefaultPlansRepositoryTest : KoinTest {
                 exerciseId = exerciseId
             )
 
-            awaitItem()!!.days.first().exercises.shouldBeEmpty()
+            awaitItem()!!.trainings.first().exercises.shouldBeEmpty()
         }
     }
 
@@ -266,7 +266,7 @@ class DefaultPlansRepositoryTest : KoinTest {
             reps = secondExerciseReps
         )
         repository.observeAllPlans().test {
-            awaitItem().first().days.first().exercises.let {
+            awaitItem().first().trainings.first().exercises.let {
                 it[0].id shouldBe exerciseId1
                 it[1].id shouldBe exerciseId2
             }
@@ -277,7 +277,7 @@ class DefaultPlansRepositoryTest : KoinTest {
                 exercisesIds = listOf(exerciseId2, exerciseId1)
             )
 
-            awaitItem().first().days.first().exercises.let {
+            awaitItem().first().trainings.first().exercises.let {
                 it[0].id shouldBe exerciseId2
                 it[1].id shouldBe exerciseId1
             }

@@ -11,6 +11,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class ProgressEditorRoute(
+    val trainingBlockId: String,
+    val weekNumber: Int,
     val trainingId: String,
     val exerciseId: String,
     val progressIndex: Int
@@ -18,9 +20,16 @@ internal data class ProgressEditorRoute(
 
 internal fun NavGraphBuilder.progressEditorDialog(onClose: () -> Unit) {
     fullScreenDialog<ProgressEditorRoute> { entry ->
-        val (trainingId, exerciseId, progressIndex) = entry.toRoute<ProgressEditorRoute>()
+        val (trainingBlockId, weekNumber, trainingId, exerciseId, progressIndex) =
+            entry.toRoute<ProgressEditorRoute>()
         val viewModel = viewModel {
-            ProgressEditorViewModel.get(trainingId, exerciseId, progressIndex)
+            ProgressEditorViewModel.get(
+                trainingBlockId,
+                weekNumber,
+                trainingId,
+                exerciseId,
+                progressIndex
+            )
         }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 

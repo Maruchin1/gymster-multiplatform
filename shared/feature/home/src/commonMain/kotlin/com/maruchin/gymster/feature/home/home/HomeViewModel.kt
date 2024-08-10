@@ -13,7 +13,7 @@ class HomeViewModel(private val plansRepository: PlansRepository) : ViewModel() 
     fun seedData() = viewModelScope.launch {
         val plan = samplePlans.first()
         val planId = plansRepository.createPlan(name = plan.name)
-        plan.days.forEach { day ->
+        plan.trainings.forEach { day ->
             val dayId = plansRepository.addDay(planId = planId, name = day.name)
             day.exercises.forEach { exercise ->
                 plansRepository.addExercise(

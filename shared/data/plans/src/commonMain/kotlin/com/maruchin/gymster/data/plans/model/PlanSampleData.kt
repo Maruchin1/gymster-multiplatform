@@ -5,7 +5,7 @@ val samplePlans = listOf(
         id = "1",
         name = "Push Pull Legs",
         weeksDuration = 8,
-        days = listOf(
+        trainings = listOf(
             PlannedTraining(
                 id = "1",
                 name = "Push",
@@ -116,5 +116,5 @@ val samplePlans = listOf(
             )
         )
     ),
-    Plan(id = "2", name = "Full Body Workout", weeksDuration = 8, days = emptyList())
+    Plan(id = "2", name = "Full Body Workout", weeksDuration = 8, trainings = emptyList())
 )

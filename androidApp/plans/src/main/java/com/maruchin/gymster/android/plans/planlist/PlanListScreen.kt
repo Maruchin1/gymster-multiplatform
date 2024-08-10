@@ -89,7 +89,7 @@ private fun LoadedContent(plans: List<Plan>, onEditTrainingPlan: (String) -> Uni
         items(plans) { plan ->
             PlanItem(
                 name = plan.name,
-                days = plan.days,
+                days = plan.trainings,
                 onClick = { onEditTrainingPlan(plan.id) }
             )
         }

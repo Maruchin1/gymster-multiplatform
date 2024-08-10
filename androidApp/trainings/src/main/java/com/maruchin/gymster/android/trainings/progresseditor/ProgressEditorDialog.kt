@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.gymster.data.trainings.model.sampleTrainings
+import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.progresseditor.ProgressEditorUiState
 
 @Composable
@@ -156,8 +156,15 @@ private fun ProgressEditorDialogPreview() {
     AppTheme {
         ProgressEditorDialog(
             state = ProgressEditorUiState.Loaded(
-                exercise = sampleTrainings.first().exercises.first(),
-                progress = sampleTrainings.first().exercises.first().progress.first()
+                exercise = sampleTrainingBlocks.first()
+                    .weeks.first()
+                    .trainings.first()
+                    .exercises.first(),
+                progress = sampleTrainingBlocks.first()
+                    .weeks.first()
+                    .trainings.first()
+                    .exercises.first()
+                    .progress.first()
             ),
             onClose = {},
             onSave = {}

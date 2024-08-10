@@ -2,10 +2,9 @@ package com.maruchin.gymster.feature.trainings.trainingeditor
 
 import app.cash.turbine.test
 import com.maruchin.gymster.data.trainings.di.dataTrainingsTestModule
-import com.maruchin.gymster.data.trainings.model.sampleTrainings
+import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
 import com.maruchin.gymster.feature.trainings.di.featureTrainingsModule
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -25,9 +24,13 @@ import org.koin.test.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class TrainingEditorViewModelTest : KoinTest {
 
-    private val selectedTraining = sampleTrainings.first()
+    private val trainingBlock = sampleTrainingBlocks.first()
+    private val week = trainingBlock.weeks.first()
+    private val training = week.trainings.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
-    private val viewModel: TrainingEditorViewModel by inject { parametersOf(selectedTraining.id) }
+    private val viewModel: TrainingEditorViewModel by inject {
+        parametersOf(trainingBlock.id, week.number, training.id)
+    }
 
     @BeforeTest
     fun setUp() {
@@ -43,36 +46,23 @@ class TrainingEditorViewModelTest : KoinTest {
 
     @Test
     fun `emit loaded state when selected training available`() = runTest {
-        trainingsRepository.setTrainings(sampleTrainings)
+        trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
 
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingEditorUiState.Loading
 
-            awaitItem() shouldBe TrainingEditorUiState.Loaded(selectedTraining)
+            awaitItem() shouldBe TrainingEditorUiState.Loaded(training)
         }
     }
 
     @Test
     fun `don not emit when selected training not available`() = runTest {
-        trainingsRepository.setTrainings(emptyList())
+        trainingsRepository.setTrainingBlocks(emptyList())
 
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingEditorUiState.Loading
 
             expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `delete training`() = runTest {
-        trainingsRepository.setTrainings(sampleTrainings)
-
-        trainingsRepository.observeTraining(selectedTraining.id).test {
-            awaitItem() shouldBe selectedTraining
-
-            viewModel.deleteTraining()
-
-            awaitItem().shouldBeNull()
         }
     }
 }

@@ -18,10 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,16 +26,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -49,7 +41,7 @@ import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.trainings.model.Progress
-import com.maruchin.gymster.data.trainings.model.sampleTrainings
+import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +49,6 @@ import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorUiSta
 internal fun TrainingEditorScreen(
     state: TrainingEditorUiState,
     onBack: () -> Unit,
-    onDeleteTraining: () -> Unit,
     onEditProgress: (exerciseId: String, progressIndex: Int) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -67,8 +58,7 @@ internal fun TrainingEditorScreen(
             TopBar(
                 state = state as? TrainingEditorUiState.Loaded,
                 scrollBehavior = scrollBehavior,
-                onBack = onBack,
-                onDelete = onDeleteTraining
+                onBack = onBack
             )
         }
     ) { contentPadding ->
@@ -97,11 +87,8 @@ internal fun TrainingEditorScreen(
 internal fun TopBar(
     state: TrainingEditorUiState.Loaded?,
     scrollBehavior: TopAppBarScrollBehavior,
-    onBack: () -> Unit,
-    onDelete: () -> Unit
+    onBack: () -> Unit
 ) {
-    var isConfirmingDeletion by rememberSaveable { mutableStateOf(false) }
-
     LargeTopAppBar(
         title = {
             Text(text = state?.training?.name.orEmpty())
@@ -111,44 +98,8 @@ internal fun TopBar(
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
-        actions = {
-            IconButton(onClick = { isConfirmingDeletion = true }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = null)
-            }
-        },
         scrollBehavior = scrollBehavior
     )
-
-    if (isConfirmingDeletion) {
-        AlertDialog(
-            onDismissRequest = { isConfirmingDeletion = false },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        isConfirmingDeletion = false
-                        onDelete()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Confirm")
-                }
-            },
-            dismissButton = {
-                OutlinedButton(
-                    onClick = { isConfirmingDeletion = false },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Cancel")
-                }
-            },
-            icon = {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = null)
-            },
-            title = {
-                Text(text = "Delete training?")
-            }
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -250,9 +201,10 @@ internal fun ExerciseItem(
 private fun TrainingEditorScreenPreview() {
     AppTheme {
         TrainingEditorScreen(
-            state = TrainingEditorUiState.Loaded(training = sampleTrainings.first()),
+            state = TrainingEditorUiState.Loaded(
+                training = sampleTrainingBlocks.first().weeks.first().trainings.first()
+            ),
             onBack = {},
-            onDeleteTraining = {},
             onEditProgress = { _, _ -> }
         )
     }

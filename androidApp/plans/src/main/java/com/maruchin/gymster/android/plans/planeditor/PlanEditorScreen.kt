@@ -206,7 +206,7 @@ private fun LoadedContent(
         item {
             WeeksDurationItem(weeksDuration = plan.weeksDuration, onClick = onEditWeeksDuration)
         }
-        mutablePlan.days.forEach { day ->
+        mutablePlan.trainings.forEach { day ->
             stickyHeader {
                 DayHeader(
                     name = day.name,

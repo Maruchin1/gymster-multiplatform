@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.datasource
 
 import com.maruchin.gymster.core.database.schema.ProgressDbModel
-import com.maruchin.gymster.core.database.schema.TrainingDbModel
+import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmUUID
@@ -10,39 +10,44 @@ import kotlinx.coroutines.flow.map
 
 internal class TrainingsLocalDataSource(private val realm: Realm) {
 
-    fun observeAllTrainings(): Flow<List<TrainingDbModel>> =
-        realm.query<TrainingDbModel>().asFlow().map { change ->
+    fun observeAllTrainingBlocks(): Flow<List<TrainingBlockDbModel>> =
+        realm.query<TrainingBlockDbModel>().asFlow().map { change ->
             change.list.toList()
         }
 
-    fun observeTraining(trainingId: RealmUUID): Flow<TrainingDbModel?> =
-        realm.query<TrainingDbModel>("_id == $0", trainingId).asFlow().map { change ->
+    fun observeTrainingBlock(trainingBlockId: RealmUUID): Flow<TrainingBlockDbModel?> =
+        realm.query<TrainingBlockDbModel>("_id == $0", trainingBlockId).asFlow().map { change ->
             change.list.firstOrNull()
         }
 
-    suspend fun createTraining(training: TrainingDbModel) {
+    suspend fun createTrainingBlock(trainingBlock: TrainingBlockDbModel): TrainingBlockDbModel =
         realm.write {
-            copyToRealm(training)
+            copyToRealm(trainingBlock)
+        }
+
+    suspend fun deleteTrainingBlock(trainingBlockId: RealmUUID) {
+        realm.write {
+            val trainingBlock =
+                query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
+            delete(trainingBlock)
         }
     }
 
     suspend fun updateProgress(
+        trainingBlockId: RealmUUID,
+        weekNumber: Int,
         trainingId: RealmUUID,
         exerciseId: RealmUUID,
         progressIndex: Int,
         newProgress: ProgressDbModel
     ) {
         realm.write {
-            val training = query<TrainingDbModel>("_id == $0", trainingId).find().first()
-            val exercise = training.exercises.find { it.id == exerciseId }!!
+            val trainingBlock =
+                query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
+            val trainingWeek = trainingBlock.weeks.first { it.number == weekNumber }
+            val training = trainingWeek.trainings.first { it.id == trainingId }
+            val exercise = training.exercises.first { it.id == exerciseId }
             exercise.progress[progressIndex] = newProgress
-        }
-    }
-
-    suspend fun deleteTraining(trainingId: RealmUUID) {
-        realm.write {
-            val training = query<TrainingDbModel>("_id == $0", trainingId).find().first()
-            delete(training)
         }
     }
 }
