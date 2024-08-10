@@ -22,6 +22,7 @@ internal fun NavGraphBuilder.planListScreen(
         PlanListScreen(
             state = state,
             onAddTrainingPlan = onAddTrainingPlan,
+            onStartNewTrainingBlock = { viewModel.startNewTrainingBlock(it) },
             onEditTrainingPlan = onEditTrainingPlan
         )
     }

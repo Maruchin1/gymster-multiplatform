@@ -5,13 +5,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +42,7 @@ import com.maruchin.gymster.feature.plans.planlist.PlanListUiState
 internal fun PlanListScreen(
     state: PlanListUiState,
     onAddTrainingPlan: () -> Unit,
+    onStartNewTrainingBlock: (planId: String) -> Unit,
     onEditTrainingPlan: (String) -> Unit
 ) {
     Scaffold(
@@ -63,6 +70,7 @@ internal fun PlanListScreen(
                 PlanListUiState.Empty -> EmptyContent(text = "No training plans yet")
                 is PlanListUiState.Loaded -> LoadedContent(
                     plans = targetState.plans,
+                    onStartNewTrainingBlock = onStartNewTrainingBlock,
                     onEditTrainingPlan = onEditTrainingPlan
                 )
             }
@@ -81,7 +89,11 @@ private fun TopBar() {
 }
 
 @Composable
-private fun LoadedContent(plans: List<Plan>, onEditTrainingPlan: (String) -> Unit) {
+private fun LoadedContent(
+    plans: List<Plan>,
+    onStartNewTrainingBlock: (planId: String) -> Unit,
+    onEditTrainingPlan: (planId: String) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -90,15 +102,21 @@ private fun LoadedContent(plans: List<Plan>, onEditTrainingPlan: (String) -> Uni
             PlanItem(
                 name = plan.name,
                 days = plan.trainings,
-                onClick = { onEditTrainingPlan(plan.id) }
+                onStartNewTrainingBlock = { onStartNewTrainingBlock(plan.id) },
+                onEditPlan = { onEditTrainingPlan(plan.id) }
             )
         }
     }
 }
 
 @Composable
-private fun PlanItem(name: String, days: List<PlannedTraining>, onClick: () -> Unit) {
-    ElevatedCard(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+private fun PlanItem(
+    name: String,
+    days: List<PlannedTraining>,
+    onStartNewTrainingBlock: () -> Unit,
+    onEditPlan: () -> Unit
+) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -112,6 +130,37 @@ private fun PlanItem(name: String, days: List<PlannedTraining>, onClick: () -> U
                 )
             }
         }
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            AssistChip(
+                onClick = onStartNewTrainingBlock,
+                label = {
+                    Text(text = "New training block")
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.FitnessCenter,
+                        contentDescription = null,
+                        modifier = Modifier.size(AssistChipDefaults.IconSize)
+                    )
+                }
+            )
+            AssistChip(
+                onClick = onEditPlan,
+                label = {
+                    Text(text = "Edit plan")
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(AssistChipDefaults.IconSize)
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -122,6 +171,7 @@ private fun PlanListScreen_LoadedPreview() {
         PlanListScreen(
             state = PlanListUiState.Loaded(plans = samplePlans),
             onAddTrainingPlan = {},
+            onStartNewTrainingBlock = {},
             onEditTrainingPlan = {}
         )
     }
@@ -134,6 +184,7 @@ private fun PlanListScreen_LoadingPreview() {
         PlanListScreen(
             state = PlanListUiState.Loading,
             onAddTrainingPlan = {},
+            onStartNewTrainingBlock = {},
             onEditTrainingPlan = {}
         )
     }
@@ -146,6 +197,7 @@ private fun PlanListScreen_EmptyPreview() {
         PlanListScreen(
             state = PlanListUiState.Empty,
             onAddTrainingPlan = {},
+            onStartNewTrainingBlock = {},
             onEditTrainingPlan = {}
         )
     }
