@@ -7,6 +7,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared.core.database)
+            implementation(projects.shared.core.coroutines)
         }
     }
 }

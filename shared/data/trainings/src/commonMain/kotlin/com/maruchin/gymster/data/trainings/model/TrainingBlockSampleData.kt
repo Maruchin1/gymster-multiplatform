@@ -2,11 +2,13 @@ package com.maruchin.gymster.data.trainings.model
 
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
+import kotlinx.datetime.LocalDate
 
 val sampleTrainingBlocks = listOf(
     TrainingBlock(
         id = "1",
         planName = "Push Pull Legs",
+        startDate = LocalDate(2024, 8, 12),
         weeks = listOf(
             TrainingWeek(
                 number = 1,

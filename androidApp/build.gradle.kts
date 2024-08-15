@@ -40,8 +40,8 @@ android {
 dependencies {
     implementation(projects.shared)
     implementation(projects.androidApp.home)
-    implementation(projects.androidApp.plans)
-    implementation(projects.androidApp.trainings)
+    implementation(projects.androidApp.planList)
+    implementation(projects.androidApp.planEditor)
     implementation(projects.androidApp.ui)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)

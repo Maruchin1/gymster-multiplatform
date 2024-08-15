@@ -4,6 +4,7 @@ import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 interface TrainingsRepository {
 
@@ -11,7 +12,7 @@ interface TrainingsRepository {
 
     fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?>
 
-    suspend fun createTrainingBlock(plan: Plan): TrainingBlock
+    suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock
 
     suspend fun deleteTrainingBlock(trainingBlockId: String)
 

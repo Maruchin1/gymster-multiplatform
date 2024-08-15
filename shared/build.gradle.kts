@@ -12,21 +12,22 @@ kotlin {
             baseName = "shared"
             isStatic = true
             export(projects.shared.feature.home)
-            export(projects.shared.feature.plans)
-            export(projects.shared.feature.trainings)
+            export(projects.shared.feature.planList)
+            export(projects.shared.feature.planEditor)
         }
     }
 
     sourceSets {
         commonMain.dependencies {
             api(projects.shared.feature.home)
-            api(projects.shared.feature.plans)
-            api(projects.shared.feature.trainings)
+            api(projects.shared.feature.planList)
+            api(projects.shared.feature.planEditor)
             implementation(projects.shared.data.plans)
             implementation(projects.shared.data.trainings)
             implementation(projects.shared.core.di)
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.clock)
+            implementation(projects.shared.core.coroutines)
         }
     }
 }

@@ -11,10 +11,10 @@ data class Plan(
         require(weeksDuration > 0) { "weeksDuration must be greater than 0" }
     }
 
-    fun findDay(dayId: String) = trainings.find { it.id == dayId }
+    fun getTraining(trainingId: String) = trainings.first { it.id == trainingId }
 
-    fun findExercise(exerciseId: String) =
-        trainings.flatMap { it.exercises }.find { it.id == exerciseId }
+    fun getExercise(exerciseId: String) =
+        trainings.flatMap { it.exercises }.first { it.id == exerciseId }
 
     fun changeExercisesOrder(fromId: String, toId: String) = copy(
         trainings = trainings.map { day ->

@@ -6,6 +6,7 @@ import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 
 class FakeTrainingsRepository : TrainingsRepository {
 
@@ -22,8 +23,8 @@ class FakeTrainingsRepository : TrainingsRepository {
     override fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?> =
         collection.map { it[trainingBlockId] }
 
-    override suspend fun createTrainingBlock(plan: Plan): TrainingBlock {
-        val newTrainingBlock = TrainingBlock.from(plan)
+    override suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock {
+        val newTrainingBlock = TrainingBlock.from(plan, startDate)
         collection.value += newTrainingBlock.id to newTrainingBlock
         return newTrainingBlock
     }

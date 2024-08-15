@@ -3,29 +3,22 @@ package com.maruchin.gymster.feature.home.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
-import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.PlansRepository
-import kotlinx.coroutines.launch
+import com.maruchin.gymster.data.trainings.repository.TrainingsRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.get
 
-class HomeViewModel(private val plansRepository: PlansRepository) : ViewModel() {
+class HomeViewModel(trainingsRepository: TrainingsRepository) : ViewModel() {
 
-    fun seedData() = viewModelScope.launch {
-        val plan = samplePlans.first()
-        val planId = plansRepository.createPlan(name = plan.name)
-        plan.trainings.forEach { day ->
-            val dayId = plansRepository.addDay(planId = planId, name = day.name)
-            day.exercises.forEach { exercise ->
-                plansRepository.addExercise(
-                    planId = planId,
-                    dayId = dayId,
-                    name = exercise.name,
-                    sets = exercise.sets,
-                    reps = exercise.reps
-                )
-            }
-        }
-    }
+    val uiState: StateFlow<HomeUiState> = trainingsRepository.observeAllTrainingBlocks()
+        .map { HomeUiState.from(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = HomeUiState.Loading
+        )
 
     companion object {
 

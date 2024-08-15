@@ -18,16 +18,20 @@ dependencyResolutionManagement {
 rootProject.name = "gymster-multiplatform"
 include(":androidApp")
 include(":androidApp:home")
-include(":androidApp:plans")
+include(":androidApp:plan-list")
+include(":androidApp:plan-editor")
 include(":androidApp:ui")
 
 include(":shared")
+
 include(":shared:core:di")
 include(":shared:core:database")
+include(":shared:core:clock")
+
 include(":shared:data:plans")
 include(":shared:data:trainings")
-include(":shared:feature:plans")
-include(":shared:feature:trainings")
-include(":androidApp:trainings")
-include(":shared:core:clock")
+
 include(":shared:feature:home")
+include(":shared:feature:plan-list")
+include(":shared:feature:plan-editor")
+include(":shared:core:coroutines")

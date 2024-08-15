@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(projects.shared.feature.home)
+    implementation(projects.androidApp.ui)
 }
 
 android {

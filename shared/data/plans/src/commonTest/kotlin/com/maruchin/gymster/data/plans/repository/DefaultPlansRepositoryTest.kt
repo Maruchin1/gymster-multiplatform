@@ -1,6 +1,7 @@
 package com.maruchin.gymster.data.plans.repository
 
 import app.cash.turbine.test
+import com.maruchin.gymster.core.coroutines.coreCoroutinesModule
 import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.plans.model.Plan
@@ -25,7 +26,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
     @BeforeTest
     fun setup() {
-        startKoin { modules(dataPlansModule, coreDatabaseTestModule) }
+        startKoin { modules(dataPlansModule, coreDatabaseTestModule, coreCoroutinesModule) }
     }
 
     @AfterTest
@@ -98,7 +99,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         repository.observePlan(planId).test {
             awaitItem()!!.trainings.shouldBeEmpty()
 
-            repository.addDay(planId = planId, name = dayName)
+            repository.addTraining(planId = planId, name = dayName)
 
             awaitItem()!!.trainings.let {
                 it shouldHaveSize 1
@@ -112,14 +113,14 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push 1"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         val updatedDayName = "Push 2"
         repository.observePlan(planId).test {
             awaitItem()!!.trainings.first().name shouldBe dayName
 
-            repository.changeDayName(
+            repository.changeTrainingName(
                 planId = planId,
-                dayId = dayId,
+                trainingId = dayId,
                 newName = updatedDayName
             )
 
@@ -132,11 +133,11 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push 1"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         repository.observePlan(planId).test {
             awaitItem()!!.trainings shouldHaveSize 1
 
-            repository.deleteDay(planId = planId, dayId = dayId)
+            repository.deleteTraining(planId = planId, trainingId = dayId)
 
             awaitItem()!!.trainings.shouldBeEmpty()
         }
@@ -147,7 +148,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push 1"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         val exerciseName = "Bench Press"
         val exerciseSets = Sets(regular = 3, drop = 0)
         val exerciseReps = Reps(10..12)
@@ -156,7 +157,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.addExercise(
                 planId = planId,
-                dayId = dayId,
+                trainingId = dayId,
                 name = exerciseName,
                 sets = exerciseSets,
                 reps = exerciseReps
@@ -180,13 +181,13 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push 1"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         val exerciseName = "Bench Press"
         val exerciseSets = Sets(regular = 3, drop = 0)
         val exerciseReps = Reps(10..12)
         val exerciseId = repository.addExercise(
             planId = planId,
-            dayId = dayId,
+            trainingId = dayId,
             name = exerciseName,
             sets = exerciseSets,
             reps = exerciseReps
@@ -199,7 +200,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.updateExercise(
                 planId = planId,
-                dayId = dayId,
+                trainingId = dayId,
                 exerciseId = exerciseId,
                 newName = updatedExerciseName,
                 newSets = updatedSets,
@@ -215,13 +216,13 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push 1"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         val exerciseName = "Bench Press"
         val exerciseSets = Sets(regular = 3, drop = 0)
         val exerciseReps = Reps(10..12)
         val exerciseId = repository.addExercise(
             planId = planId,
-            dayId = dayId,
+            trainingId = dayId,
             name = exerciseName,
             sets = exerciseSets,
             reps = exerciseReps
@@ -231,7 +232,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.deleteExercise(
                 planId = planId,
-                dayId = dayId,
+                trainingId = dayId,
                 exerciseId = exerciseId
             )
 
@@ -244,13 +245,13 @@ class DefaultPlansRepositoryTest : KoinTest {
         val planName = "Push Pull"
         val planId = repository.createPlan(name = planName)
         val dayName = "Push"
-        val dayId = repository.addDay(planId = planId, name = dayName)
+        val dayId = repository.addTraining(planId = planId, name = dayName)
         val firstExerciseName = "Bench press"
         val fistExerciseSets = Sets(regular = 3, drop = 0)
         val firstExerciseReps = Reps(10..12)
         val exerciseId1 = repository.addExercise(
             planId = planId,
-            dayId = dayId,
+            trainingId = dayId,
             name = firstExerciseName,
             sets = fistExerciseSets,
             reps = firstExerciseReps
@@ -260,7 +261,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val secondExerciseReps = Reps(10..12)
         val exerciseId2 = repository.addExercise(
             planId = planId,
-            dayId = dayId,
+            trainingId = dayId,
             name = secondExerciseName,
             sets = secondExerciseSets,
             reps = secondExerciseReps
@@ -273,7 +274,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.reorderExercises(
                 planId = planId,
-                dayId = dayId,
+                trainingId = dayId,
                 exercisesIds = listOf(exerciseId2, exerciseId1)
             )
 

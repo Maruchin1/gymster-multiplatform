@@ -8,6 +8,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.shared.data.plans)
             implementation(projects.shared.core.database)
+            implementation(projects.shared.core.coroutines)
         }
     }
 }

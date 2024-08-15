@@ -1,5 +1,7 @@
 package com.maruchin.gymster.android.home.home
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -9,12 +11,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object HomeRoute
 
-internal fun NavGraphBuilder.homeScreen() {
+internal fun NavGraphBuilder.homeScreen(onOpenPlans: () -> Unit) {
     composable<HomeRoute> {
         val viewModel = viewModel { HomeViewModel.get() }
+        val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         HomeScreen(
-            onSeedData = { viewModel.seedData() }
+            state = state,
+            onOpenPlans = onOpenPlans
         )
     }
 }

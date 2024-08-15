@@ -9,8 +9,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 object HomeGraph
 
-fun NavGraphBuilder.homeGraph() {
+fun NavGraphBuilder.homeGraph(onOpenPlans: () -> Unit) {
     navigation<HomeGraph>(startDestination = HomeRoute) {
-        homeScreen()
+        homeScreen(
+            onOpenPlans = onOpenPlans
+        )
     }
 }

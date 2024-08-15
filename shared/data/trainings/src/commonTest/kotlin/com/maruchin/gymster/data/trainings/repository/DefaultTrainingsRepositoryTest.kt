@@ -1,6 +1,7 @@
 package com.maruchin.gymster.data.trainings.repository
 
 import app.cash.turbine.test
+import com.maruchin.gymster.core.coroutines.coreCoroutinesModule
 import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
@@ -13,6 +14,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -25,7 +27,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(dataTrainingsModule, coreDatabaseTestModule) }
+        startKoin { modules(dataTrainingsModule, coreDatabaseTestModule, coreCoroutinesModule) }
     }
 
     @AfterTest
@@ -37,11 +39,12 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `create training block`() = runTest {
         val plan = samplePlans.first()
+        val startDate = LocalDate(2024, 8, 12)
 
         repository.observeAllTrainingBlocks().test {
             awaitItem().shouldBeEmpty()
 
-            repository.createTrainingBlock(plan)
+            repository.createTrainingBlock(plan, startDate)
 
             awaitItem() shouldHaveSize 1
         }
@@ -50,7 +53,8 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `delete training block`() = runTest {
         val plan = samplePlans.first()
-        val trainingBlock = repository.createTrainingBlock(plan)
+        val startDate = LocalDate(2024, 8, 12)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate)
 
         repository.observeAllTrainingBlocks().test {
             awaitItem() shouldHaveSize 1
@@ -64,7 +68,8 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     @Test
     fun `update progress`() = runTest {
         val plan = samplePlans.first()
-        val trainingBlock = repository.createTrainingBlock(plan)
+        val startDate = LocalDate(2024, 8, 12)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate)
         val week = trainingBlock.weeks.first()
         val training = week.trainings.first()
         val exercise = training.exercises.first()
