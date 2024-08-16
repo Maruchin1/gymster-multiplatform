@@ -11,7 +11,6 @@ val sampleTrainingBlocks = listOf(
         startDate = LocalDate(2024, 8, 12),
         weeks = listOf(
             TrainingWeek(
-                number = 1,
                 trainings = listOf(
                     Training(
                         id = "1",
@@ -165,7 +164,6 @@ val sampleTrainingBlocks = listOf(
             )
         ) + (2..8).map { weekNumber ->
             TrainingWeek(
-                number = weekNumber,
                 trainings = listOf(
                     Training(
                         id = "${weekNumber}1",

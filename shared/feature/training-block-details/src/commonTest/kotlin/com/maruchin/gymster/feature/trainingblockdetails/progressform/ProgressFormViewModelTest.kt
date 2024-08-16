@@ -26,6 +26,7 @@ import org.koin.test.inject
 class ProgressFormViewModelTest : KoinTest {
 
     private val trainingBlock = sampleTrainingBlocks.first()
+    private val weekIndex = 0
     private val week = trainingBlock.weeks.first()
     private val training = week.trainings.first()
     private val exercise = training.exercises.first()
@@ -33,7 +34,7 @@ class ProgressFormViewModelTest : KoinTest {
     private val progress = exercise.progress.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel: ProgressFormViewModel by inject {
-        parametersOf(trainingBlock.id, week.number, training.id, exercise.id, progressIndex)
+        parametersOf(trainingBlock.id, weekIndex, training.id, exercise.id, progressIndex)
     }
 
     @BeforeTest
@@ -76,14 +77,14 @@ class ProgressFormViewModelTest : KoinTest {
         val updatedProgress = Progress(weight = 100.0, reps = 10)
 
         trainingsRepository.observeTrainingBlock(trainingBlock.id).test {
-            awaitItem()!!.getWeek(week.number)
+            awaitItem()!!.getWeek(weekIndex)
                 .getTraining(training.id)
                 .getExercise(exercise.id)
                 .getProgress(progressIndex) shouldBe progress
 
             viewModel.saveProgress(updatedProgress)
 
-            awaitItem()!!.getWeek(week.number)
+            awaitItem()!!.getWeek(weekIndex)
                 .getTraining(training.id)
                 .getExercise(exercise.id)
                 .getProgress(progressIndex) shouldBe updatedProgress

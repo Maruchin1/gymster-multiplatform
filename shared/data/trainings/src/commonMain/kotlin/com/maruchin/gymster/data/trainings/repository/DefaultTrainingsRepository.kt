@@ -45,7 +45,7 @@ internal class DefaultTrainingsRepository(
 
     override suspend fun updateProgress(
         trainingBlockId: String,
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int,
@@ -53,7 +53,7 @@ internal class DefaultTrainingsRepository(
     ) = scope.async {
         localDataSource.updateProgress(
             trainingBlockId = RealmUUID.from(trainingBlockId),
-            weekNumber = weekNumber,
+            weekIndex = weekIndex,
             trainingId = RealmUUID.from(trainingId),
             exerciseId = RealmUUID.from(exerciseId),
             progressIndex = progressIndex,

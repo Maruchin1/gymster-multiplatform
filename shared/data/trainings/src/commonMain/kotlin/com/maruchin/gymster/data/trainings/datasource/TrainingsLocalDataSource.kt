@@ -35,7 +35,7 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
 
     suspend fun updateProgress(
         trainingBlockId: RealmUUID,
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: RealmUUID,
         exerciseId: RealmUUID,
         progressIndex: Int,
@@ -44,7 +44,7 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
-            val trainingWeek = trainingBlock.weeks.first { it.number == weekNumber }
+            val trainingWeek = trainingBlock.weeks[weekIndex]
             val training = trainingWeek.trainings.first { it.id == trainingId }
             val exercise = training.exercises.first { it.id == exerciseId }
             exercise.progress[progressIndex] = newProgress

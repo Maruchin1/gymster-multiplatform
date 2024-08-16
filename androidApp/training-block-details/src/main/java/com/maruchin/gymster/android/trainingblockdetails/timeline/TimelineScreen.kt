@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -67,7 +67,7 @@ internal fun TimelineScreen(
     state: TimelineUiState,
     onBack: () -> Unit,
     onEditProgress: (
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int
@@ -133,7 +133,7 @@ fun LoadedContent(
     state: TimelineUiState.Loaded,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
     onEditProgress: (
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int
@@ -141,7 +141,7 @@ fun LoadedContent(
 ) {
     val weeks = state.trainingBlock.weeks
     val pagerState = rememberPagerState(
-        initialPage = state.trainingBlock.getCurrentWeek().number - 1,
+        initialPage = state.trainingBlock.currentWeekIndex,
         pageCount = { weeks.size }
     )
     val scope = rememberCoroutineScope()
@@ -168,7 +168,7 @@ private fun WeeksTabs(weeks: List<TrainingWeek>, pagerState: PagerState, scope: 
                     scope.launch { pagerState.animateScrollToPage(index) }
                 },
                 text = {
-                    Text(text = "Week ${trainingWeek.number}")
+                    Text(text = "Week ${index + 1}")
                 }
             )
         }
@@ -181,7 +181,7 @@ private fun WeekPage(
     week: TrainingWeek,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
     onEditProgress: (
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int
@@ -205,11 +205,13 @@ private fun WeekPage(
                 )
             }
             if (trainingsListState.isExpanded(training)) {
-                items(training.exercises, key = { "exercise" + it.id }) { exercise ->
+                itemsIndexed(training.exercises, key = { _, exercise ->
+                    "exercise" + exercise.id
+                }) { index, exercise ->
                     ExerciseItem(
                         exercise = exercise,
                         onEditProgress = { progressIndex ->
-                            onEditProgress(week.number, training.id, exercise.id, progressIndex)
+                            onEditProgress(index, training.id, exercise.id, progressIndex)
                         }
                     )
                 }

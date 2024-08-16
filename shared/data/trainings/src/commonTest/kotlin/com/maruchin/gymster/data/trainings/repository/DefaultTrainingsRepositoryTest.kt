@@ -84,7 +84,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
 
             repository.updateProgress(
                 trainingBlockId = trainingBlock.id,
-                weekNumber = week.number,
+                weekIndex = 0,
                 trainingId = training.id,
                 exerciseId = exercise.id,
                 progressIndex = 0,

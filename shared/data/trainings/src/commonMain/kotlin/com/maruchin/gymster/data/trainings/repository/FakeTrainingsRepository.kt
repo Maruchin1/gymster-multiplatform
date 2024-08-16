@@ -35,7 +35,7 @@ class FakeTrainingsRepository : TrainingsRepository {
 
     override suspend fun updateProgress(
         trainingBlockId: String,
-        weekNumber: Int,
+        weekIndex: Int,
         trainingId: String,
         exerciseId: String,
         progressIndex: Int,
@@ -44,8 +44,8 @@ class FakeTrainingsRepository : TrainingsRepository {
         collection.value +=
             trainingBlockId to collection.value[trainingBlockId]!!.let { trainingBlock ->
                 trainingBlock.copy(
-                    weeks = trainingBlock.weeks.map { week ->
-                        if (week.number == weekNumber) {
+                    weeks = trainingBlock.weeks.mapIndexed { index, week ->
+                        if (index == weekIndex) {
                             week.copy(
                                 trainings = week.trainings.map { training ->
                                     if (training.id == trainingId) {

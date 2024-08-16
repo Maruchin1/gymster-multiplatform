@@ -36,7 +36,7 @@ class ProgressFormViewModel internal constructor(
     fun saveProgress(progress: Progress) = viewModelScope.launch {
         trainingsRepository.updateProgress(
             trainingBlockId = trainingBlockId,
-            weekNumber = weekNumber,
+            weekIndex = weekNumber,
             trainingId = trainingId,
             exerciseId = exerciseId,
             progressIndex = progressIndex,

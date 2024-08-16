@@ -15,9 +15,10 @@ data class TrainingBlock(
     val endDate: LocalDate
         get() = startDate.plus(DatePeriod(days = weeks.size * 7))
 
-    fun getWeek(weekNumber: Int) = weeks.first { it.number == weekNumber }
+    val currentWeekIndex: Int
+        get() = weeks.indexOfFirst { !it.isComplete }
 
-    fun getCurrentWeek(): TrainingWeek = weeks.firstOrNull { !it.isComplete } ?: weeks.last()
+    fun getWeek(index: Int) = weeks[index]
 
     companion object {
 
@@ -25,7 +26,7 @@ data class TrainingBlock(
             id = "",
             planName = plan.name,
             startDate = startDate,
-            weeks = List(plan.weeksDuration) { TrainingWeek.from(plan, it) }
+            weeks = List(plan.weeksDuration) { TrainingWeek.from(plan) }
         )
     }
 }
