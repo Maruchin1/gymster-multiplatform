@@ -11,14 +11,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object HomeRoute
 
-internal fun NavGraphBuilder.homeScreen(onOpenPlans: () -> Unit) {
+internal fun NavGraphBuilder.homeScreen(
+    onOpenPlans: () -> Unit,
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit
+) {
     composable<HomeRoute> {
         val viewModel = viewModel { HomeViewModel.get() }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         HomeScreen(
             state = state,
-            onOpenPlans = onOpenPlans
+            onOpenPlans = onOpenPlans,
+            onOpenTrainingBlock = onOpenTrainingBlock
         )
     }
 }

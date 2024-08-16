@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material3.AssistChip
@@ -45,6 +46,7 @@ internal fun PlanListScreen(
     state: PlanListUiState,
     onBack: () -> Unit,
     onAddPlan: () -> Unit,
+    onSeedPlans: () -> Unit,
     onStartTrainingBlock: (planId: String) -> Unit,
     onEditPlan: (String) -> Unit
 ) {
@@ -52,7 +54,12 @@ internal fun PlanListScreen(
 
     Scaffold(
         topBar = {
-            TopBar(scrollBehavior = topAppBarScrollBehavior, onBack = onBack, onAddPlan = onAddPlan)
+            TopBar(
+                scrollBehavior = topAppBarScrollBehavior,
+                onBack = onBack,
+                onAddPlan = onAddPlan,
+                onSeedPlans = onSeedPlans
+            )
         }
     ) { contentPadding ->
         AnimatedContent(
@@ -82,6 +89,7 @@ internal fun PlanListScreen(
 private fun TopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onBack: () -> Unit,
+    onSeedPlans: () -> Unit,
     onAddPlan: () -> Unit
 ) {
     LargeTopAppBar(
@@ -94,6 +102,9 @@ private fun TopBar(
             }
         },
         actions = {
+            IconButton(onClick = onSeedPlans) {
+                Icon(imageVector = Icons.Default.Dataset, contentDescription = null)
+            }
             IconButton(onClick = onAddPlan) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
@@ -175,6 +186,7 @@ private fun PlanListScreen_LoadedPreview() {
             state = PlanListUiState.Loaded(plans = samplePlans),
             onBack = {},
             onAddPlan = {},
+            onSeedPlans = {},
             onStartTrainingBlock = {},
             onEditPlan = {}
         )
@@ -189,6 +201,7 @@ private fun PlanListScreen_LoadingPreview() {
             state = PlanListUiState.Loading,
             onBack = {},
             onAddPlan = {},
+            onSeedPlans = {},
             onStartTrainingBlock = {},
             onEditPlan = {}
         )
@@ -203,6 +216,7 @@ private fun PlanListScreen_EmptyPreview() {
             state = PlanListUiState.Empty,
             onBack = {},
             onAddPlan = {},
+            onSeedPlans = {},
             onStartTrainingBlock = {},
             onEditPlan = {}
         )

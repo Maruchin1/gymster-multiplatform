@@ -36,44 +36,18 @@ import com.maruchin.gymster.feature.home.home.HomeUiState
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun HomeScreen(state: HomeUiState, onOpenPlans: () -> Unit) {
+internal fun HomeScreen(
+    state: HomeUiState,
+    onOpenPlans: () -> Unit,
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit
+) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text("Gymster")
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
-                    }
-                }
-            )
+            TopBar()
         },
         bottomBar = {
-            BottomAppBar(
-                actions = {
-                    IconButton(onClick = onOpenPlans) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ListAlt,
-                            contentDescription = null
-                        )
-                    }
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.TrendingUp,
-                            contentDescription = null
-                        )
-                    }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.FitnessCenter, contentDescription = null)
-                    }
-                }
-            )
+            BottomBar(onOpenPlans = onOpenPlans)
         }
     ) { contentPadding ->
         AnimatedContent(
@@ -85,14 +59,60 @@ internal fun HomeScreen(state: HomeUiState, onOpenPlans: () -> Unit) {
             when (it) {
                 HomeUiState.Loading -> LoadingContent()
                 HomeUiState.Empty -> EmptyContent(text = "No trainings yet")
-                is HomeUiState.Loaded -> LoadedContent(state = it)
+                is HomeUiState.Loaded -> LoadedContent(
+                    state = it,
+                    onOpenTrainingBlock = onOpenTrainingBlock
+                )
             }
         }
     }
 }
 
 @Composable
-private fun LoadedContent(state: HomeUiState.Loaded) {
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopBar() {
+    CenterAlignedTopAppBar(
+        title = {
+            Text("Gymster")
+        },
+        actions = {
+            IconButton(onClick = {}) {
+                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
+            }
+        }
+    )
+}
+
+@Composable
+private fun BottomBar(onOpenPlans: () -> Unit) {
+    BottomAppBar(
+        actions = {
+            IconButton(onClick = onOpenPlans) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ListAlt,
+                    contentDescription = null
+                )
+            }
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.TrendingUp,
+                    contentDescription = null
+                )
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Default.FitnessCenter, contentDescription = null)
+            }
+        }
+    )
+}
+
+@Composable
+private fun LoadedContent(
+    state: HomeUiState.Loaded,
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -101,15 +121,21 @@ private fun LoadedContent(state: HomeUiState.Loaded) {
             TrainingBlockItem(
                 name = trainingBlock.planName,
                 startDate = trainingBlock.startDate,
-                endDate = trainingBlock.endDate
+                endDate = trainingBlock.endDate,
+                onClick = { onOpenTrainingBlock(trainingBlock.id) }
             )
         }
     }
 }
 
 @Composable
-private fun TrainingBlockItem(name: String, startDate: LocalDate, endDate: LocalDate) {
-    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+private fun TrainingBlockItem(
+    name: String,
+    startDate: LocalDate,
+    endDate: LocalDate,
+    onClick: () -> Unit
+) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth(), onClick = onClick) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -131,6 +157,10 @@ private fun TrainingBlockItem(name: String, startDate: LocalDate, endDate: Local
 @Composable
 private fun HomeScreen_LoadedPreview() {
     AppTheme {
-        HomeScreen(state = HomeUiState.Loaded(sampleTrainingBlocks), onOpenPlans = {})
+        HomeScreen(
+            state = HomeUiState.Loaded(sampleTrainingBlocks),
+            onOpenPlans = {},
+            onOpenTrainingBlock = {}
+        )
     }
 }

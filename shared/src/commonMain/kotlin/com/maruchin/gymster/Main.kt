@@ -8,14 +8,19 @@ import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
 import com.maruchin.gymster.feature.home.di.featureHomeModule
 import com.maruchin.gymster.feature.planeditor.di.featurePlanEditorModule
+import com.maruchin.gymster.feature.trainingblockdetails.di.featureTrainingBlockDetailsModule
 import com.maruchin.gymster.planlist.di.featurePlanListModule
 
 private val coreModules = listOf(coreDatabaseModule, coreClockModule, coreCoroutinesModule)
 
 private val dataModules = listOf(dataPlansModule, dataTrainingsModule)
 
-private val featureModules =
-    listOf(featureHomeModule, featurePlanListModule, featurePlanEditorModule)
+private val featureModules = listOf(
+    featureHomeModule,
+    featurePlanListModule,
+    featurePlanEditorModule,
+    featureTrainingBlockDetailsModule
+)
 
 fun initSharedLibrary() {
     SharedLibraryKoin.init(coreModules + dataModules + featureModules)

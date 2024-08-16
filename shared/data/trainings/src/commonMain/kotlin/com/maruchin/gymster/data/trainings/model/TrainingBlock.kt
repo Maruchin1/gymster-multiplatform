@@ -17,6 +17,8 @@ data class TrainingBlock(
 
     fun getWeek(weekNumber: Int) = weeks.first { it.number == weekNumber }
 
+    fun getCurrentWeek(): TrainingWeek = weeks.firstOrNull { !it.isComplete } ?: weeks.last()
+
     companion object {
 
         internal fun from(plan: Plan, startDate: LocalDate) = TrainingBlock(

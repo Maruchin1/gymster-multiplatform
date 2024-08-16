@@ -4,6 +4,9 @@ import com.maruchin.gymster.data.plans.model.PlannedTraining
 
 data class Training(val id: String, val name: String, val exercises: List<Exercise>) {
 
+    val isComplete: Boolean
+        get() = exercises.all { it.isComplete }
+
     fun getExercise(exerciseId: String): Exercise = exercises.first { it.id == exerciseId }
 
     companion object {

@@ -176,33 +176,21 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wyciskanie sztangi na ławce poziomej",
                                 sets = Sets(regular = 3),
                                 reps = Reps(4..6),
-                                progress = listOf(
-                                    Progress(70.0 to 5),
-                                    Progress(70.0 to 4),
-                                    Progress(70.0 to 4)
-                                )
+                                progress = listOf(Progress.empty, Progress.empty, Progress.empty)
                             ),
                             Exercise(
                                 id = "${weekNumber}2",
                                 name = "Rozpiętki hantlami na ławce skos dodatni",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
-                                    Progress(10.0 to 12),
-                                    Progress(10.0 to 12),
-                                    Progress(5.0 to 12)
-                                )
+                                progress = listOf(Progress.empty, Progress.empty, Progress.empty)
                             ),
                             Exercise(
                                 id = "${weekNumber}3",
                                 name = "Wyciskanie hantlami nad głowę siedząc",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(8..10),
-                                progress = listOf(
-                                    Progress(15.0 to 10),
-                                    Progress(15.0 to 10),
-                                    Progress(15.0 to 10)
-                                )
+                                progress = listOf(Progress.empty, Progress.empty, Progress.empty)
                             ),
                             Exercise(
                                 id = "${weekNumber}4",
@@ -210,10 +198,10 @@ val sampleTrainingBlocks = listOf(
                                 sets = Sets(regular = 1, drop = 3),
                                 reps = Reps(10..20),
                                 progress = listOf(
-                                    Progress(7.5 to 15),
-                                    Progress(5.0 to 15),
-                                    Progress(3.0 to 14),
-                                    Progress(2.0 to 14)
+                                    Progress.empty,
+                                    Progress.empty,
+                                    Progress.empty,
+                                    Progress.empty
                                 )
                             ),
                             Exercise(
@@ -221,11 +209,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Prostowanie ramion na wyciągu",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
-                                    Progress(20.0 to 12),
-                                    Progress(20.0 to 12),
-                                    Progress(20.0 to 12)
-                                )
+                                progress = listOf(Progress.empty, Progress.empty, Progress.empty)
                             )
                         )
                     ),

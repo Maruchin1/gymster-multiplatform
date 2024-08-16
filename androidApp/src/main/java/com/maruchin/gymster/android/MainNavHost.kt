@@ -12,6 +12,8 @@ import com.maruchin.gymster.android.planeditor.PlanEditorGraph
 import com.maruchin.gymster.android.planeditor.planEditorGraph
 import com.maruchin.gymster.android.planlist.PlanListGraph
 import com.maruchin.gymster.android.planlist.planListGraph
+import com.maruchin.gymster.android.trainingblockdetails.TrainingBlockDetailsGraph
+import com.maruchin.gymster.android.trainingblockdetails.trainingBlockDetailsGraph
 
 @Composable
 internal fun MainNavHost() {
@@ -23,12 +25,14 @@ internal fun MainNavHost() {
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         homeGraph(
-            onOpenPlans = { navController.navigate(PlanListGraph) }
+            onOpenPlans = { navController.navigate(PlanListGraph) },
+            onOpenTrainingBlock = { navController.navigate(TrainingBlockDetailsGraph(it)) }
         )
         planListGraph(
             navController = navController,
             onEditPlan = { planId -> navController.navigate(PlanEditorGraph(planId)) }
         )
         planEditorGraph(navController = navController)
+        trainingBlockDetailsGraph(navController = navController)
     }
 }
