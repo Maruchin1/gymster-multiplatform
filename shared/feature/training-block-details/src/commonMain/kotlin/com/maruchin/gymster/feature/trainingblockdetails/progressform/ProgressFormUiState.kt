@@ -8,7 +8,7 @@ sealed interface ProgressFormUiState {
 
     data object Loading : ProgressFormUiState
 
-    data class Loaded(val exercise: Exercise, val progress: Progress) : ProgressFormUiState
+    data class Loaded(val exercise: Exercise, val progress: Progress?) : ProgressFormUiState
 
     companion object {
 

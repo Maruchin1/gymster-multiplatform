@@ -92,10 +92,7 @@ internal fun ProgressFormScreen(
             }
             Button(
                 onClick = {
-                    val progress = Progress(
-                        weight = weight.toDoubleOrNull(),
-                        reps = reps.toIntOrNull()
-                    )
+                    val progress = Progress(weight = weight.toDouble(), reps = reps.toInt())
                     onSave(progress)
                 },
                 enabled = weight.isNotBlank() && reps.isNotBlank(),
