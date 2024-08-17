@@ -20,6 +20,29 @@ data class TrainingBlock(
 
     fun getWeek(index: Int) = weeks[index]
 
+    fun getTraining(trainingId: String): Training = weeks.asSequence()
+        .flatMap { it.trainings }
+        .associateBy { it.id }
+        .getValue(trainingId)
+
+    fun getExercise(exerciseId: String): Exercise = weeks.asSequence()
+        .flatMap { it.trainings }
+        .flatMap { it.exercises }
+        .associateBy { it.id }
+        .getValue(exerciseId)
+
+    fun getExerciseForSetProgress(setProgressId: String): Exercise = weeks.asSequence()
+        .flatMap { it.trainings }
+        .flatMap { it.exercises }
+        .first { exercise -> exercise.progress.any { it.id == setProgressId } }
+
+    fun getSetProgress(setProgressId: String): SetProgress = weeks.asSequence()
+        .flatMap { it.trainings }
+        .flatMap { it.exercises }
+        .flatMap { it.progress }
+        .associateBy { it.id }
+        .getValue(setProgressId)
+
     companion object {
 
         internal fun from(plan: Plan, startDate: LocalDate) = TrainingBlock(

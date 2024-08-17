@@ -18,13 +18,7 @@ internal data object TimelineRoute
 internal fun NavGraphBuilder.timelineScreen(
     navController: NavController,
     onBack: () -> Unit,
-    onEditProgress: (
-        trainingBlockId: String,
-        weekNumber: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int
-    ) -> Unit
+    onEditProgress: (trainingBlockId: String, setProgressId: String) -> Unit
 ) {
     composable<TimelineRoute> {
         val (trainingBlockId) = remember(navController) {
@@ -37,8 +31,8 @@ internal fun NavGraphBuilder.timelineScreen(
         TimelineScreen(
             state = state,
             onBack = onBack,
-            onEditProgress = { weekNumber, trainingId, exerciseId, progressIndex ->
-                onEditProgress(trainingBlockId, weekNumber, trainingId, exerciseId, progressIndex)
+            onEditProgress = { setProgressId ->
+                onEditProgress(trainingBlockId, setProgressId)
             }
         )
     }

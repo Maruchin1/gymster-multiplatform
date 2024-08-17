@@ -26,15 +26,13 @@ import org.koin.test.inject
 class ProgressFormViewModelTest : KoinTest {
 
     private val trainingBlock = sampleTrainingBlocks.first()
-    private val weekIndex = 0
     private val week = trainingBlock.weeks.first()
     private val training = week.trainings.first()
     private val exercise = training.exercises.first()
-    private val progressIndex = 0
-    private val progress = exercise.progress.first()
+    private val setProgress = exercise.progress.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel: ProgressFormViewModel by inject {
-        parametersOf(trainingBlock.id, weekIndex, training.id, exercise.id, progressIndex)
+        parametersOf(trainingBlock.id, exercise.id, setProgress.id)
     }
 
     @BeforeTest
@@ -56,7 +54,7 @@ class ProgressFormViewModelTest : KoinTest {
         viewModel.uiState.test {
             awaitItem() shouldBe ProgressFormUiState.Loading
 
-            awaitItem() shouldBe ProgressFormUiState.Loaded(exercise, progress)
+            awaitItem() shouldBe ProgressFormUiState.Loaded(exercise, setProgress)
         }
     }
 
@@ -77,17 +75,11 @@ class ProgressFormViewModelTest : KoinTest {
         val updatedProgress = Progress(weight = 100.0, reps = 10)
 
         trainingsRepository.observeTrainingBlock(trainingBlock.id).test {
-            awaitItem()!!.getWeek(weekIndex)
-                .getTraining(training.id)
-                .getExercise(exercise.id)
-                .getProgress(progressIndex) shouldBe progress
+            awaitItem()!!.getSetProgress(setProgress.id).progress shouldBe setProgress.progress
 
             viewModel.saveProgress(updatedProgress)
 
-            awaitItem()!!.getWeek(weekIndex)
-                .getTraining(training.id)
-                .getExercise(exercise.id)
-                .getProgress(progressIndex) shouldBe updatedProgress
+            awaitItem()!!.getSetProgress(setProgress.id).progress shouldBe updatedProgress
         }
     }
 }

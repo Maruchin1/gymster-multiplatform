@@ -9,7 +9,7 @@ data class Exercise(
     val name: String,
     val sets: Sets,
     val reps: Reps,
-    val progress: List<Progress>
+    val progress: List<SetProgress>
 ) {
 
     init {
@@ -21,8 +21,6 @@ data class Exercise(
     val isComplete: Boolean
         get() = progress.all { it.isComplete }
 
-    fun getProgress(index: Int): Progress = progress[index]
-
     companion object {
 
         internal fun from(plannedExercise: PlannedExercise) = Exercise(
@@ -30,7 +28,11 @@ data class Exercise(
             name = plannedExercise.name,
             sets = plannedExercise.sets,
             reps = plannedExercise.reps,
-            progress = List(plannedExercise.sets.total) { Progress.empty }
+            progress = List(plannedExercise.sets.regular) {
+                SetProgress(id = "", type = SetProgress.Type.REGULAR, progress = null)
+            } + List(plannedExercise.sets.drop) {
+                SetProgress(id = "", type = SetProgress.Type.DROP, progress = null)
+            }
         )
     }
 }

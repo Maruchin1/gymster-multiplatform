@@ -10,26 +10,13 @@ import com.maruchin.gymster.feature.trainingblockdetails.progressform.ProgressFo
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ProgressFormRoute(
-    val trainingBlockId: String,
-    val weekNumber: Int,
-    val trainingId: String,
-    val exerciseId: String,
-    val progressIndex: Int
-)
+internal data class ProgressFormRoute(val trainingBlockId: String, val setProgressId: String)
 
 internal fun NavGraphBuilder.progressFormScreen(onBack: () -> Unit) {
     composable<ProgressFormRoute> { entry ->
-        val (trainingBlockId, weekNumber, trainingId, exerciseId, progressIndex) =
-            entry.toRoute<ProgressFormRoute>()
+        val (trainingBlockId, setProgressId) = entry.toRoute<ProgressFormRoute>()
         val viewModel = viewModel {
-            ProgressFormViewModel.get(
-                trainingBlockId,
-                weekNumber,
-                trainingId,
-                exerciseId,
-                progressIndex
-            )
+            ProgressFormViewModel.get(trainingBlockId, setProgressId)
         }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 

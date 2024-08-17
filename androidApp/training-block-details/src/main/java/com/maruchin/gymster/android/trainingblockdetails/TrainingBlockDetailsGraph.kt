@@ -17,16 +17,8 @@ fun NavGraphBuilder.trainingBlockDetailsGraph(navController: NavController) {
         timelineScreen(
             navController = navController,
             onBack = { navController.navigateUp() },
-            onEditProgress = { trainingBlockId, weekNumber, trainingId, exerciseId, progressIndex ->
-                navController.navigate(
-                    ProgressFormRoute(
-                        trainingBlockId,
-                        weekNumber,
-                        trainingId,
-                        exerciseId,
-                        progressIndex
-                    )
-                )
+            onEditProgress = { trainingBlockId, setProgressId ->
+                navController.navigate(ProgressFormRoute(trainingBlockId, setProgressId))
             }
         )
         progressFormScreen(

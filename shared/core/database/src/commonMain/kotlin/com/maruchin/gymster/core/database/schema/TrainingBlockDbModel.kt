@@ -13,5 +13,5 @@ class TrainingBlockDbModel : RealmObject {
     var id: RealmUUID = RealmUUID.random()
     var planName: String = ""
     var startDate: String = ""
-    var weeks: RealmList<TrainingWeekDbModel> = realmListOf()
+    var trainings: RealmList<TrainingDbModel> = realmListOf()
 }

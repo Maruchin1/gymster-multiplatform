@@ -8,6 +8,7 @@ import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
 import com.maruchin.gymster.data.trainings.model.Progress
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.realm.kotlin.Realm
 import kotlin.test.AfterTest
@@ -73,6 +74,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val week = trainingBlock.weeks.first()
         val training = week.trainings.first()
         val exercise = training.exercises.first()
+        val setProgress = exercise.progress.first()
         val newProgress = Progress(weight = 70.0, reps = 5)
 
         repository.observeTrainingBlock(trainingBlock.id).test {
@@ -80,14 +82,12 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .weeks.first()
                 .trainings.first()
                 .exercises.first()
-                .progress.first() shouldBe Progress.empty
+                .progress.first()
+                .progress.shouldBeNull()
 
             repository.updateProgress(
                 trainingBlockId = trainingBlock.id,
-                weekIndex = 0,
-                trainingId = training.id,
-                exerciseId = exercise.id,
-                progressIndex = 0,
+                setProgressId = setProgress.id,
                 newProgress = newProgress
             )
 
@@ -95,7 +95,8 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .weeks.first()
                 .trainings.first()
                 .exercises.first()
-                .progress.first() shouldBe newProgress
+                .progress.first()
+                .progress shouldBe newProgress
         }
     }
 }

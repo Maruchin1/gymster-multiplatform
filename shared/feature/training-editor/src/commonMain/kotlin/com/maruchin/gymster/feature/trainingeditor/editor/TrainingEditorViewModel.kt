@@ -13,7 +13,6 @@ import org.koin.core.component.get
 
 class TrainingEditorViewModel internal constructor(
     private val trainingBlockId: String,
-    private val weekNumber: Int,
     private val trainingId: String,
     private val trainingsRepository: TrainingsRepository
 ) : ViewModel() {
@@ -21,8 +20,7 @@ class TrainingEditorViewModel internal constructor(
     val uiState: StateFlow<TrainingEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
         .filterNotNull()
-        .map { it.getWeek(weekNumber).getTraining(trainingId) }
-        .map { TrainingEditorUiState.Loaded(it) }
+        .map { TrainingEditorUiState.from(it, trainingId) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -31,6 +29,7 @@ class TrainingEditorViewModel internal constructor(
 
     companion object {
 
-        fun get(): TrainingEditorViewModel = SharedLibraryKoin.get()
+        fun get(trainingBlockId: String, trainingId: String): TrainingEditorViewModel =
+            SharedLibraryKoin.get()
     }
 }

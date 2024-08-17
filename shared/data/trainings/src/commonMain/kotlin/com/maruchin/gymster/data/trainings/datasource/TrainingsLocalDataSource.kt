@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.datasource
 
-import com.maruchin.gymster.core.database.schema.ProgressDbModel
 import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
+import com.maruchin.gymster.data.trainings.model.Progress
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmUUID
@@ -35,19 +35,17 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
 
     suspend fun updateProgress(
         trainingBlockId: RealmUUID,
-        weekIndex: Int,
-        trainingId: RealmUUID,
-        exerciseId: RealmUUID,
-        progressIndex: Int,
-        newProgress: ProgressDbModel
+        setProgressId: RealmUUID,
+        newProgress: Progress
     ) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
-            val trainingWeek = trainingBlock.weeks[weekIndex]
-            val training = trainingWeek.trainings.first { it.id == trainingId }
-            val exercise = training.exercises.first { it.id == exerciseId }
-            exercise.progress[progressIndex] = newProgress
+            val allExercises = trainingBlock.trainings.flatMap { it.exercises }
+            val allSetProgress = allExercises.flatMap { it.progress }
+            val setProgress = allSetProgress.first { it.id == setProgressId }
+            setProgress.weight = newProgress.weight
+            setProgress.reps = newProgress.reps
         }
     }
 }

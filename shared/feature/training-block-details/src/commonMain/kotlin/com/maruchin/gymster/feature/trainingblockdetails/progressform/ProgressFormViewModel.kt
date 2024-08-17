@@ -16,17 +16,14 @@ import org.koin.core.parameter.parametersOf
 
 class ProgressFormViewModel internal constructor(
     private val trainingBlockId: String,
-    private val weekNumber: Int,
-    private val trainingId: String,
-    private val exerciseId: String,
-    private val progressIndex: Int,
+    private val setProgressId: String,
     private val trainingsRepository: TrainingsRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<ProgressFormUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
         .filterNotNull()
-        .map { ProgressFormUiState.from(it, weekNumber, trainingId, exerciseId, progressIndex) }
+        .map { ProgressFormUiState.from(it, setProgressId) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -36,24 +33,14 @@ class ProgressFormViewModel internal constructor(
     fun saveProgress(progress: Progress) = viewModelScope.launch {
         trainingsRepository.updateProgress(
             trainingBlockId = trainingBlockId,
-            weekIndex = weekNumber,
-            trainingId = trainingId,
-            exerciseId = exerciseId,
-            progressIndex = progressIndex,
+            setProgressId = setProgressId,
             newProgress = progress
         )
     }
 
     companion object {
 
-        fun get(
-            trainingBlockId: String,
-            weekNumber: Int,
-            trainingId: String,
-            exerciseId: String,
-            progressIndex: Int
-        ): ProgressFormViewModel = SharedLibraryKoin.get {
-            parametersOf(trainingBlockId, weekNumber, trainingId, exerciseId, progressIndex)
-        }
+        fun get(trainingBlockId: String, setProgressId: String): ProgressFormViewModel =
+            SharedLibraryKoin.get { parametersOf(trainingBlockId, setProgressId) }
     }
 }

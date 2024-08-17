@@ -6,22 +6,7 @@ import org.koin.dsl.module
 
 val featureTrainingBlockDetailsModule = module {
 
-    factory { (trainingBlockId: String) -> TimelineViewModel(trainingBlockId, get()) }
+    factory { TimelineViewModel(it[0], get()) }
 
-    factory { (
-        trainingBlockId: String,
-        weekNumber: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int
-    ) ->
-        ProgressFormViewModel(
-            trainingBlockId,
-            weekNumber,
-            trainingId,
-            exerciseId,
-            progressIndex,
-            get()
-        )
-    }
+    factory { ProgressFormViewModel(it[0], it[1], get()) }
 }

@@ -4,7 +4,7 @@ import com.maruchin.gymster.core.database.schema.ExerciseDbModel
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.trainings.model.Exercise
-import com.maruchin.gymster.data.trainings.model.Progress
+import com.maruchin.gymster.data.trainings.model.SetProgress
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 
@@ -15,7 +15,7 @@ internal fun Exercise.toDbModel() = ExerciseDbModel().also {
     it.dropSets = sets.drop
     it.minReps = reps.min
     it.maxReps = reps.max
-    it.progress = progress.map(Progress::toDbModel).toRealmList()
+    it.progress = progress.map(SetProgress::toDbModel).toRealmList()
 }
 
 internal fun ExerciseDbModel.toDomainModel() = Exercise(

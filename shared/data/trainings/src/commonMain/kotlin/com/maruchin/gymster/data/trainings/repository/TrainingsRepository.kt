@@ -18,10 +18,7 @@ interface TrainingsRepository {
 
     suspend fun updateProgress(
         trainingBlockId: String,
-        weekIndex: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int,
+        setProgressId: String,
         newProgress: Progress
     )
 }

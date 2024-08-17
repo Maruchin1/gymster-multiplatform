@@ -52,8 +52,8 @@ internal fun ProgressFormScreen(
         modifier = Modifier.imePadding()
     ) { contentPadding ->
         val loadedState = state as? ProgressFormUiState.Loaded
-        val initialWeight = loadedState?.progress?.weight?.toString().orEmpty()
-        val initialReps = loadedState?.progress?.reps?.toString().orEmpty()
+        val initialWeight = loadedState?.setProgress?.progress?.weight?.toString().orEmpty()
+        val initialReps = loadedState?.setProgress?.progress?.reps?.toString().orEmpty()
 
         var weight by rememberSaveable(initialWeight) { mutableStateOf(initialWeight) }
         var reps by rememberSaveable(initialReps) { mutableStateOf(initialReps) }
@@ -157,7 +157,7 @@ private fun ProgressFormScreen_LoadedPreview() {
                     .weeks.first()
                     .trainings.first()
                     .exercises.first(),
-                progress = sampleTrainingBlocks.first()
+                setProgress = sampleTrainingBlocks.first()
                     .weeks.first()
                     .trainings.first()
                     .exercises.first()

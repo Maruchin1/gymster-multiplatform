@@ -35,44 +35,68 @@ class FakeTrainingsRepository : TrainingsRepository {
 
     override suspend fun updateProgress(
         trainingBlockId: String,
-        weekIndex: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int,
+        setProgressId: String,
         newProgress: Progress
     ) {
-        collection.value +=
-            trainingBlockId to collection.value[trainingBlockId]!!.let { trainingBlock ->
-                trainingBlock.copy(
-                    weeks = trainingBlock.weeks.mapIndexed { index, week ->
-                        if (index == weekIndex) {
-                            week.copy(
-                                trainings = week.trainings.map { training ->
-                                    if (training.id == trainingId) {
-                                        training.copy(
-                                            exercises = training.exercises.map { exercise ->
-                                                if (exercise.id == exerciseId) {
-                                                    exercise.copy(
-                                                        progress = exercise.progress.toMutableList()
-                                                            .apply {
-                                                                set(progressIndex, newProgress)
-                                                            }
-                                                    )
-                                                } else {
-                                                    exercise
-                                                }
-                                            }
-                                        )
-                                    } else {
-                                        training
-                                    }
-                                }
-                            )
-                        } else {
-                            week
-                        }
+        val trainingBlock = collection.value[trainingBlockId]!!
+        val matchingTrainingWeek = trainingBlock.weeks.first { week ->
+            week.trainings.any { training ->
+                training.exercises.any { exercise ->
+                    exercise.progress.any { setProgress ->
+                        setProgress.id == setProgressId
                     }
-                )
+                }
             }
+        }
+        val matchingWeekIndex = trainingBlock.weeks.indexOf(matchingTrainingWeek)
+        val matchingTraining = matchingTrainingWeek.trainings.first { training ->
+            training.exercises.any { exercise ->
+                exercise.progress.any { setProgress ->
+                    setProgress.id == setProgressId
+                }
+            }
+        }
+        val matchingExercise = matchingTraining.exercises.first { exercise ->
+            exercise.progress.any { setProgress ->
+                setProgress.id == setProgressId
+            }
+        }
+
+        collection.value += trainingBlockId to trainingBlock.copy(
+            weeks = trainingBlock.weeks.mapIndexed { index, week ->
+                if (index == matchingWeekIndex) {
+                    week.copy(
+                        trainings = week.trainings.map { training ->
+                            if (training.id == matchingTraining.id) {
+                                training.copy(
+                                    exercises = training.exercises.map { exercise ->
+                                        if (exercise.id == matchingExercise.id) {
+                                            exercise.copy(
+                                                progress = exercise.progress
+                                                    .map { setProgress ->
+                                                        if (setProgress.id == setProgressId) {
+                                                            setProgress.copy(
+                                                                progress = newProgress
+                                                            )
+                                                        } else {
+                                                            setProgress
+                                                        }
+                                                    }
+                                            )
+                                        } else {
+                                            exercise
+                                        }
+                                    }
+                                )
+                            } else {
+                                training
+                            }
+                        }
+                    )
+                } else {
+                    week
+                }
+            }
+        )
     }
 }

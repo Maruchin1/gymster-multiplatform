@@ -7,8 +7,6 @@ data class Training(val id: String, val name: String, val exercises: List<Exerci
     val isComplete: Boolean
         get() = exercises.all { it.isComplete }
 
-    fun getExercise(exerciseId: String): Exercise = exercises.first { it.id == exerciseId }
-
     companion object {
 
         internal fun from(plannedTraining: PlannedTraining) = Training(

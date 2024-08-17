@@ -25,12 +25,11 @@ import org.koin.test.inject
 class TrainingEditorViewModelTest : KoinTest {
 
     private val trainingBlock = sampleTrainingBlocks.first()
-    private val weekIndex = 0
-    private val week = trainingBlock.weeks[weekIndex]
+    private val week = trainingBlock.weeks.first()
     private val training = week.trainings.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel: TrainingEditorViewModel by inject {
-        parametersOf(trainingBlock.id, weekIndex, training.id)
+        parametersOf(trainingBlock.id, training.id)
     }
 
     @BeforeTest

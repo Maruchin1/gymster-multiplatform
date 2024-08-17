@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -66,12 +66,7 @@ import kotlinx.coroutines.launch
 internal fun TimelineScreen(
     state: TimelineUiState,
     onBack: () -> Unit,
-    onEditProgress: (
-        weekIndex: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int
-    ) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -132,12 +127,7 @@ private fun TopBar(
 fun LoadedContent(
     state: TimelineUiState.Loaded,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onEditProgress: (
-        weekIndex: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int
-    ) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit
 ) {
     val weeks = state.trainingBlock.weeks
     val pagerState = rememberPagerState(
@@ -180,12 +170,7 @@ private fun WeeksTabs(weeks: List<TrainingWeek>, pagerState: PagerState, scope: 
 private fun WeekPage(
     week: TrainingWeek,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onEditProgress: (
-        weekIndex: Int,
-        trainingId: String,
-        exerciseId: String,
-        progressIndex: Int
-    ) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit
 ) {
     val trainingsListState = rememberTrainingsListState(
         expandedTrainings = week.notCompleteTrainings
@@ -205,14 +190,10 @@ private fun WeekPage(
                 )
             }
             if (trainingsListState.isExpanded(training)) {
-                itemsIndexed(training.exercises, key = { _, exercise ->
-                    "exercise" + exercise.id
-                }) { index, exercise ->
+                items(training.exercises, key = { "exercise" + it.id }) { exercise ->
                     ExerciseItem(
                         exercise = exercise,
-                        onEditProgress = { progressIndex ->
-                            onEditProgress(index, training.id, exercise.id, progressIndex)
-                        }
+                        onEditProgress = onEditProgress
                     )
                 }
                 if (index != week.trainings.lastIndex) {
@@ -274,7 +255,7 @@ private fun LazyItemScope.TrainingHeader(
 @OptIn(ExperimentalLayoutApi::class)
 private fun LazyItemScope.ExerciseItem(
     exercise: Exercise,
-    onEditProgress: (progressIndex: Int) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -325,11 +306,11 @@ private fun LazyItemScope.ExerciseItem(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         ) {
-            exercise.progress.forEachIndexed { index, progress ->
+            exercise.progress.forEach { progress ->
                 AssistChip(
-                    onClick = { onEditProgress(index) },
+                    onClick = { onEditProgress(progress.id) },
                     label = {
-                        Text(text = progress.toString())
+                        Text(text = progress.progress?.toString() ?: "----")
                     }
                 )
             }
@@ -344,8 +325,8 @@ private fun TimelineScreen_LoadedPreview() {
     AppTheme {
         TimelineScreen(
             state = TimelineUiState.Loaded(trainingBlock = sampleTrainingBlocks.first()),
-            onBack = {},
-            onEditProgress = { _, _, _, _ -> }
+            onBack = { },
+            onEditProgress = { }
         )
     }
 }
