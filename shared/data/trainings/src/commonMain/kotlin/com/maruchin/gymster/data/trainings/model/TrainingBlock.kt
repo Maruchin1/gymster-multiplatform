@@ -34,12 +34,12 @@ data class TrainingBlock(
     fun getExerciseForSetProgress(setProgressId: String): Exercise = weeks.asSequence()
         .flatMap { it.trainings }
         .flatMap { it.exercises }
-        .first { exercise -> exercise.progress.any { it.id == setProgressId } }
+        .first { exercise -> exercise.setProgress.any { it.id == setProgressId } }
 
     fun getSetProgress(setProgressId: String): SetProgress = weeks.asSequence()
         .flatMap { it.trainings }
         .flatMap { it.exercises }
-        .flatMap { it.progress }
+        .flatMap { it.setProgress }
         .associateBy { it.id }
         .getValue(setProgressId)
 

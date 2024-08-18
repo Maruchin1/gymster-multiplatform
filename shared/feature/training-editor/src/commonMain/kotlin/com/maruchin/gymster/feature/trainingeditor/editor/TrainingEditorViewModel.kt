@@ -3,13 +3,16 @@ package com.maruchin.gymster.feature.trainingeditor.editor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
+import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.repository.TrainingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 
 class TrainingEditorViewModel internal constructor(
     private val trainingBlockId: String,
@@ -27,9 +30,17 @@ class TrainingEditorViewModel internal constructor(
             initialValue = TrainingEditorUiState.Loading
         )
 
+    fun updateSetProgress(setProgressId: String, progress: Progress) = viewModelScope.launch {
+        trainingsRepository.updateProgress(
+            trainingBlockId = trainingBlockId,
+            setProgressId = setProgressId,
+            newProgress = progress
+        )
+    }
+
     companion object {
 
         fun get(trainingBlockId: String, trainingId: String): TrainingEditorViewModel =
-            SharedLibraryKoin.get()
+            SharedLibraryKoin.get { parametersOf(trainingBlockId, trainingId) }
     }
 }

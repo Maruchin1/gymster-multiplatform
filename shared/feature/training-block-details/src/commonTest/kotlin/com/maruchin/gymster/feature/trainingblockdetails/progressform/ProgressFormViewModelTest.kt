@@ -29,7 +29,7 @@ class ProgressFormViewModelTest : KoinTest {
     private val week = trainingBlock.weeks.first()
     private val training = week.trainings.first()
     private val exercise = training.exercises.first()
-    private val setProgress = exercise.progress.first()
+    private val setProgress = exercise.setProgress.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel: ProgressFormViewModel by inject {
         parametersOf(trainingBlock.id, exercise.id, setProgress.id)

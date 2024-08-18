@@ -14,6 +14,8 @@ import com.maruchin.gymster.android.planlist.PlanListGraph
 import com.maruchin.gymster.android.planlist.planListGraph
 import com.maruchin.gymster.android.trainingblockdetails.TrainingBlockDetailsGraph
 import com.maruchin.gymster.android.trainingblockdetails.trainingBlockDetailsGraph
+import com.maruchin.gymster.android.trainingeditor.TrainingEditorGraph
+import com.maruchin.gymster.android.trainingeditor.trainingEditorGraph
 
 @Composable
 internal fun MainNavHost() {
@@ -33,6 +35,12 @@ internal fun MainNavHost() {
             onEditPlan = { planId -> navController.navigate(PlanEditorGraph(planId)) }
         )
         planEditorGraph(navController = navController)
-        trainingBlockDetailsGraph(navController = navController)
+        trainingBlockDetailsGraph(
+            navController = navController,
+            onOpenTraining = { trainingBlockId, trainingId ->
+                navController.navigate(TrainingEditorGraph(trainingBlockId, trainingId))
+            }
+        )
+        trainingEditorGraph(navController)
     }
 }

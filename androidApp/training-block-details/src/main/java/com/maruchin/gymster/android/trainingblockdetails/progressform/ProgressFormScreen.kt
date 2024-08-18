@@ -161,7 +161,7 @@ private fun ProgressFormScreen_LoadedPreview() {
                     .weeks.first()
                     .trainings.first()
                     .exercises.first()
-                    .progress.first()
+                    .setProgress.first()
             ),
             onBack = {},
             onSave = {}

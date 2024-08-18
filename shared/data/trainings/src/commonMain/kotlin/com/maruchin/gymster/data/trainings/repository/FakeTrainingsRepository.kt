@@ -42,7 +42,7 @@ class FakeTrainingsRepository : TrainingsRepository {
         val matchingTrainingWeek = trainingBlock.weeks.first { week ->
             week.trainings.any { training ->
                 training.exercises.any { exercise ->
-                    exercise.progress.any { setProgress ->
+                    exercise.setProgress.any { setProgress ->
                         setProgress.id == setProgressId
                     }
                 }
@@ -51,13 +51,13 @@ class FakeTrainingsRepository : TrainingsRepository {
         val matchingWeekIndex = trainingBlock.weeks.indexOf(matchingTrainingWeek)
         val matchingTraining = matchingTrainingWeek.trainings.first { training ->
             training.exercises.any { exercise ->
-                exercise.progress.any { setProgress ->
+                exercise.setProgress.any { setProgress ->
                     setProgress.id == setProgressId
                 }
             }
         }
         val matchingExercise = matchingTraining.exercises.first { exercise ->
-            exercise.progress.any { setProgress ->
+            exercise.setProgress.any { setProgress ->
                 setProgress.id == setProgressId
             }
         }
@@ -72,7 +72,7 @@ class FakeTrainingsRepository : TrainingsRepository {
                                     exercises = training.exercises.map { exercise ->
                                         if (exercise.id == matchingExercise.id) {
                                             exercise.copy(
-                                                progress = exercise.progress
+                                                setProgress = exercise.setProgress
                                                     .map { setProgress ->
                                                         if (setProgress.id == setProgressId) {
                                                             setProgress.copy(

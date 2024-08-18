@@ -15,6 +15,7 @@ kotlin {
             export(projects.shared.feature.planList)
             export(projects.shared.feature.planEditor)
             export(projects.shared.feature.trainingBlockDetails)
+            export(projects.shared.feature.trainingEditor)
         }
     }
 
@@ -24,6 +25,7 @@ kotlin {
             api(projects.shared.feature.planList)
             api(projects.shared.feature.planEditor)
             api(projects.shared.feature.trainingBlockDetails)
+            api(projects.shared.feature.trainingEditor)
             implementation(projects.shared.data.plans)
             implementation(projects.shared.data.trainings)
             implementation(projects.shared.core.di)

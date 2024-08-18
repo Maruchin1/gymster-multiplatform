@@ -15,7 +15,7 @@ internal fun Exercise.toDbModel() = ExerciseDbModel().also {
     it.dropSets = sets.drop
     it.minReps = reps.min
     it.maxReps = reps.max
-    it.progress = progress.map(SetProgress::toDbModel).toRealmList()
+    it.progress = setProgress.map(SetProgress::toDbModel).toRealmList()
 }
 
 internal fun ExerciseDbModel.toDomainModel() = Exercise(
@@ -23,5 +23,5 @@ internal fun ExerciseDbModel.toDomainModel() = Exercise(
     name = name,
     sets = Sets(regular = regularSets, drop = dropSets),
     reps = Reps(min = minReps, max = maxReps),
-    progress = progress.map { it.toDomainModel() }
+    setProgress = progress.map { it.toDomainModel() }
 )

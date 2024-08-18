@@ -9,17 +9,17 @@ data class Exercise(
     val name: String,
     val sets: Sets,
     val reps: Reps,
-    val progress: List<SetProgress>
+    val setProgress: List<SetProgress>
 ) {
 
     init {
-        require(progress.size == sets.total) {
+        require(setProgress.size == sets.total) {
             "Progress list size must be equal to total sets"
         }
     }
 
     val isComplete: Boolean
-        get() = progress.all { it.isComplete }
+        get() = setProgress.all { it.isComplete }
 
     companion object {
 
@@ -28,7 +28,7 @@ data class Exercise(
             name = plannedExercise.name,
             sets = plannedExercise.sets,
             reps = plannedExercise.reps,
-            progress = List(plannedExercise.sets.regular) {
+            setProgress = List(plannedExercise.sets.regular) {
                 SetProgress(id = "", type = SetProgress.Type.REGULAR, progress = null)
             } + List(plannedExercise.sets.drop) {
                 SetProgress(id = "", type = SetProgress.Type.DROP, progress = null)

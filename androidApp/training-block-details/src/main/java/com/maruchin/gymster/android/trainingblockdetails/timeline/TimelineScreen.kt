@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -66,7 +67,8 @@ import kotlinx.coroutines.launch
 internal fun TimelineScreen(
     state: TimelineUiState,
     onBack: () -> Unit,
-    onEditProgress: (setProgressId: String) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit,
+    onOpenTraining: (trainingId: String) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -92,7 +94,8 @@ internal fun TimelineScreen(
                 is TimelineUiState.Loaded -> LoadedContent(
                     state = it,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onEditProgress = onEditProgress
+                    onEditProgress = onEditProgress,
+                    onOpenTraining = onOpenTraining
                 )
             }
         }
@@ -127,7 +130,8 @@ private fun TopBar(
 fun LoadedContent(
     state: TimelineUiState.Loaded,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onEditProgress: (setProgressId: String) -> Unit
+    onEditProgress: (setProgressId: String) -> Unit,
+    onOpenTraining: (trainingId: String) -> Unit
 ) {
     val weeks = state.trainingBlock.weeks
     val pagerState = rememberPagerState(
@@ -142,7 +146,8 @@ fun LoadedContent(
             WeekPage(
                 week = weeks[page],
                 topAppBarScrollBehavior = topAppBarScrollBehavior,
-                onEditProgress = onEditProgress
+                onEditProgress = onEditProgress,
+                onOpenTraining = onOpenTraining
             )
         }
     }
@@ -170,6 +175,7 @@ private fun WeeksTabs(weeks: List<TrainingWeek>, pagerState: PagerState, scope: 
 private fun WeekPage(
     week: TrainingWeek,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
+    onOpenTraining: (trainingId: String) -> Unit,
     onEditProgress: (setProgressId: String) -> Unit
 ) {
     val trainingsListState = rememberTrainingsListState(
@@ -186,7 +192,8 @@ private fun WeekPage(
                 TrainingHeader(
                     training = training,
                     isExpanded = trainingsListState.isExpanded(training),
-                    onToggleExpanded = { trainingsListState.toggleExpanded(training) }
+                    onToggleExpanded = { trainingsListState.toggleExpanded(training) },
+                    onOpenTraining = { onOpenTraining(training.id) }
                 )
             }
             if (trainingsListState.isExpanded(training)) {
@@ -210,7 +217,8 @@ private fun WeekPage(
 private fun LazyItemScope.TrainingHeader(
     training: Training,
     isExpanded: Boolean,
-    onToggleExpanded: () -> Unit
+    onToggleExpanded: () -> Unit,
+    onOpenTraining: () -> Unit
 ) {
     val arrowRotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
@@ -218,7 +226,7 @@ private fun LazyItemScope.TrainingHeader(
     )
 
     Surface(modifier = Modifier.animateItem()) {
-        Column {
+        Column(modifier = Modifier.clickable { onOpenTraining() }) {
             Row(
                 modifier = Modifier
                     .padding(vertical = 12.dp)
@@ -306,7 +314,7 @@ private fun LazyItemScope.ExerciseItem(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         ) {
-            exercise.progress.forEach { progress ->
+            exercise.setProgress.forEach { progress ->
                 AssistChip(
                     onClick = { onEditProgress(progress.id) },
                     label = {
@@ -326,7 +334,8 @@ private fun TimelineScreen_LoadedPreview() {
         TimelineScreen(
             state = TimelineUiState.Loaded(trainingBlock = sampleTrainingBlocks.first()),
             onBack = { },
-            onEditProgress = { }
+            onEditProgress = { },
+            onOpenTraining = {}
         )
     }
 }

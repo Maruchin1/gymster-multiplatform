@@ -21,7 +21,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wyciskanie sztangi na ławce poziomej",
                                 sets = Sets(regular = 3),
                                 reps = Reps(4..6),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "1",
                                         type = SetProgress.Type.REGULAR,
@@ -44,7 +44,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Rozpiętki hantlami na ławce skos dodatni",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "4",
                                         type = SetProgress.Type.REGULAR,
@@ -67,7 +67,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wyciskanie hantlami nad głowę siedząc",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(8..10),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "7",
                                         type = SetProgress.Type.REGULAR,
@@ -90,26 +90,26 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wznosy hantli bokiem stojąc",
                                 sets = Sets(regular = 1, drop = 3),
                                 reps = Reps(10..20),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "10",
                                         type = SetProgress.Type.REGULAR,
-                                        progress = Progress(7.5 to 15)
+                                        progress = null
                                     ),
                                     SetProgress(
                                         id = "11",
                                         type = SetProgress.Type.DROP,
-                                        progress = Progress(5.0 to 15)
+                                        progress = null
                                     ),
                                     SetProgress(
                                         id = "12",
                                         type = SetProgress.Type.DROP,
-                                        progress = Progress(3.0 to 14)
+                                        progress = null
                                     ),
                                     SetProgress(
                                         id = "13",
                                         type = SetProgress.Type.DROP,
-                                        progress = Progress(2.0 to 14)
+                                        progress = null
                                     )
                                 )
                             ),
@@ -118,21 +118,21 @@ val sampleTrainingBlocks = listOf(
                                 name = "Prostowanie ramion na wyciągu",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "14",
                                         type = SetProgress.Type.REGULAR,
-                                        progress = Progress(20.0 to 12)
+                                        progress = null
                                     ),
                                     SetProgress(
                                         id = "15",
                                         type = SetProgress.Type.REGULAR,
-                                        progress = Progress(20.0 to 12)
+                                        progress = null
                                     ),
                                     SetProgress(
                                         id = "16",
                                         type = SetProgress.Type.DROP,
-                                        progress = Progress(20.0 to 12)
+                                        progress = null
                                     )
                                 )
                             )
@@ -389,7 +389,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wyciskanie sztangi na ławce poziomej",
                                 sets = Sets(regular = 3),
                                 reps = Reps(4..6),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "${weekNumber}46",
                                         type = SetProgress.Type.REGULAR,
@@ -412,7 +412,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Rozpiętki hantlami na ławce skos dodatni",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "${weekNumber}49",
                                         type = SetProgress.Type.REGULAR,
@@ -435,7 +435,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wyciskanie hantlami nad głowę siedząc",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(8..10),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "${weekNumber}52",
                                         type = SetProgress.Type.REGULAR,
@@ -458,7 +458,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wznosy hantli bokiem stojąc",
                                 sets = Sets(regular = 1, drop = 3),
                                 reps = Reps(10..20),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "${weekNumber}55",
                                         type = SetProgress.Type.REGULAR,
@@ -486,7 +486,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Prostowanie ramion na wyciągu",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                progress = listOf(
+                                setProgress = listOf(
                                     SetProgress(
                                         id = "${weekNumber}59",
                                         type = SetProgress.Type.REGULAR,

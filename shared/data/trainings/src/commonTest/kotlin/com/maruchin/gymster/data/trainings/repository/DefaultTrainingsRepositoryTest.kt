@@ -74,7 +74,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val week = trainingBlock.weeks.first()
         val training = week.trainings.first()
         val exercise = training.exercises.first()
-        val setProgress = exercise.progress.first()
+        val setProgress = exercise.setProgress.first()
         val newProgress = Progress(weight = 70.0, reps = 5)
 
         repository.observeTrainingBlock(trainingBlock.id).test {
@@ -82,7 +82,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .weeks.first()
                 .trainings.first()
                 .exercises.first()
-                .progress.first()
+                .setProgress.first()
                 .progress.shouldBeNull()
 
             repository.updateProgress(
@@ -95,7 +95,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .weeks.first()
                 .trainings.first()
                 .exercises.first()
-                .progress.first()
+                .setProgress.first()
                 .progress shouldBe newProgress
         }
     }
