@@ -26,6 +26,6 @@ private val featureModules = listOf(
     featureTrainingEditorModule
 )
 
-fun initSharedLibrary() {
-    SharedLibraryKoin.init(coreModules + dataModules + featureModules)
+fun initSharedLibrary(platform: Platform) {
+    SharedLibraryKoin.init(coreModules + dataModules + featureModules + platform.module)
 }
