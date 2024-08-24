@@ -20,7 +20,7 @@ internal fun TrainingBlock.toDbModel() = TrainingBlockDbModel().also {
     }.toRealmList()
 }
 
-internal fun TrainingBlockDbModel.toDomainModel() = TrainingBlock(
+internal fun TrainingBlockDbModel.toDomainModel(activeTrainingBlockId: String?) = TrainingBlock(
     id = id.toString(),
     planName = planName,
     startDate = LocalDate.parse(startDate),
@@ -28,5 +28,6 @@ internal fun TrainingBlockDbModel.toDomainModel() = TrainingBlock(
         TrainingWeek(
             trainings = trainings.map { it.toDomainModel() }
         )
-    }
+    },
+    isActive = id.toString() == activeTrainingBlockId
 )

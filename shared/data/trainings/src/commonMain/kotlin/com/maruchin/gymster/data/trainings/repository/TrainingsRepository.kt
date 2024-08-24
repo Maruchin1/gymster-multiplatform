@@ -21,4 +21,6 @@ interface TrainingsRepository {
         setProgressId: String,
         newProgress: Progress
     )
+
+    suspend fun setActiveTrainingBlock(trainingBlockId: String)
 }

@@ -9,6 +9,7 @@ val sampleTrainingBlocks = listOf(
         id = "1",
         planName = "Push Pull Legs",
         startDate = LocalDate(2024, 8, 12),
+        isActive = false,
         weeks = listOf(
             TrainingWeek(
                 trainings = listOf(
@@ -746,5 +747,12 @@ val sampleTrainingBlocks = listOf(
                 )
             )
         }
+    ),
+    TrainingBlock(
+        id = "2",
+        planName = "Full Body Workout",
+        startDate = LocalDate(2024, 10, 7),
+        weeks = emptyList(),
+        isActive = false
     )
 )

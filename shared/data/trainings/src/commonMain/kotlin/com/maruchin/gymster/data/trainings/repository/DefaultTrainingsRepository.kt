@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.repository
 
-import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
 import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.trainings.datasource.ActiveTrainingLocalDataSource
 import com.maruchin.gymster.data.trainings.datasource.TrainingsLocalDataSource
 import com.maruchin.gymster.data.trainings.mapper.toDbModel
 import com.maruchin.gymster.data.trainings.mapper.toDomainModel
@@ -11,36 +11,41 @@ import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.datetime.LocalDate
 
 internal class DefaultTrainingsRepository(
-    private val localDataSource: TrainingsLocalDataSource,
+    private val trainingsLocalDataSource: TrainingsLocalDataSource,
+    private val activeTrainingLocalDataSource: ActiveTrainingLocalDataSource,
     private val scope: CoroutineScope
 ) : TrainingsRepository {
 
-    override fun observeAllTrainingBlocks(): Flow<List<TrainingBlock>> =
-        localDataSource.observeAllTrainingBlocks().map {
-            it.map(TrainingBlockDbModel::toDomainModel)
-        }
+    override fun observeAllTrainingBlocks(): Flow<List<TrainingBlock>> = combine(
+        trainingsLocalDataSource.observeAllTrainingBlocks(),
+        activeTrainingLocalDataSource.observeActiveTrainingBlockId()
+    ) { trainingBlocks, activeTrainingBlockId ->
+        trainingBlocks.map { it.toDomainModel(activeTrainingBlockId) }
+    }
 
-    override fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?> =
-        localDataSource.observeTrainingBlock(RealmUUID.from(trainingBlockId)).map {
-            it?.toDomainModel()
-        }
+    override fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?> = combine(
+        trainingsLocalDataSource.observeTrainingBlock(RealmUUID.from(trainingBlockId)),
+        activeTrainingLocalDataSource.observeActiveTrainingBlockId()
+    ) { trainingBlock, activeTrainingBlockId ->
+        trainingBlock?.toDomainModel(activeTrainingBlockId)
+    }
 
     override suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock =
         scope.async {
             val trainingBlock = TrainingBlock.from(plan, startDate)
             val trainingBlockDbModel = trainingBlock.toDbModel()
-            val createdTrainingBlockDbModel = localDataSource.createTrainingBlock(
+            val createdTrainingBlockDbModel = trainingsLocalDataSource.createTrainingBlock(
                 trainingBlockDbModel
             )
-            createdTrainingBlockDbModel.toDomainModel()
+            createdTrainingBlockDbModel.toDomainModel(activeTrainingBlockId = null)
         }.await()
 
     override suspend fun deleteTrainingBlock(trainingBlockId: String) = scope.async {
-        localDataSource.deleteTrainingBlock(RealmUUID.from(trainingBlockId))
+        trainingsLocalDataSource.deleteTrainingBlock(RealmUUID.from(trainingBlockId))
     }.await()
 
     override suspend fun updateProgress(
@@ -48,10 +53,14 @@ internal class DefaultTrainingsRepository(
         setProgressId: String,
         newProgress: Progress
     ) = scope.async {
-        localDataSource.updateProgress(
+        trainingsLocalDataSource.updateProgress(
             trainingBlockId = RealmUUID.from(trainingBlockId),
             setProgressId = RealmUUID.from(setProgressId),
             newProgress = newProgress
         )
     }.await()
+
+    override suspend fun setActiveTrainingBlock(trainingBlockId: String) {
+        activeTrainingLocalDataSource.setActiveTrainingBlock(trainingBlockId)
+    }
 }

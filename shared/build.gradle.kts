@@ -32,6 +32,7 @@ kotlin {
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.clock)
             implementation(projects.shared.core.coroutines)
+            implementation(projects.shared.core.settings)
         }
     }
 }

@@ -11,17 +11,22 @@ import kotlinx.datetime.LocalDate
 class FakeTrainingsRepository : TrainingsRepository {
 
     private val collection = MutableStateFlow<Map<String, TrainingBlock>>(emptyMap())
+    private val activeTrainingBlockId = MutableStateFlow<String?>(null)
 
     fun setTrainingBlocks(trainingBlocks: List<TrainingBlock>) {
         collection.value = trainingBlocks.associateBy { it.id }
     }
 
     override fun observeAllTrainingBlocks(): Flow<List<TrainingBlock>> = collection.map {
-        it.values.toList()
+        it.values.toList().map { trainingBlock ->
+            trainingBlock.copy(isActive = trainingBlock.id == activeTrainingBlockId.value)
+        }
     }
 
     override fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?> =
-        collection.map { it[trainingBlockId] }
+        collection.map {
+            it[trainingBlockId]?.copy(isActive = trainingBlockId == activeTrainingBlockId.value)
+        }
 
     override suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock {
         val newTrainingBlock = TrainingBlock.from(plan, startDate)
@@ -98,5 +103,9 @@ class FakeTrainingsRepository : TrainingsRepository {
                 }
             }
         )
+    }
+
+    override suspend fun setActiveTrainingBlock(trainingBlockId: String) {
+        activeTrainingBlockId.value = trainingBlockId
     }
 }

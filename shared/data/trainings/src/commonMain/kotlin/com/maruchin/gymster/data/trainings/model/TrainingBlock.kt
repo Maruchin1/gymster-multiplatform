@@ -9,7 +9,8 @@ data class TrainingBlock(
     val id: String,
     val planName: String,
     val startDate: LocalDate,
-    val weeks: List<TrainingWeek>
+    val weeks: List<TrainingWeek>,
+    val isActive: Boolean
 ) {
 
     val endDate: LocalDate
@@ -49,7 +50,8 @@ data class TrainingBlock(
             id = "",
             planName = plan.name,
             startDate = startDate,
-            weeks = List(plan.weeksDuration) { TrainingWeek.from(plan) }
+            weeks = List(plan.weeksDuration) { TrainingWeek.from(plan) },
+            isActive = false
         )
     }
 }

@@ -3,9 +3,12 @@ package com.maruchin.gymster.data.trainings.repository
 import app.cash.turbine.test
 import com.maruchin.gymster.core.coroutines.coreCoroutinesModule
 import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
+import com.maruchin.gymster.core.datastore.di.coreSettingsTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
 import com.maruchin.gymster.data.trainings.model.Progress
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
@@ -28,7 +31,14 @@ class DefaultTrainingsRepositoryTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(dataTrainingsModule, coreDatabaseTestModule, coreCoroutinesModule) }
+        startKoin {
+            modules(
+                dataTrainingsModule,
+                coreDatabaseTestModule,
+                coreSettingsTestModule,
+                coreCoroutinesModule
+            )
+        }
     }
 
     @AfterTest
@@ -97,6 +107,21 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .exercises.first()
                 .setProgress.first()
                 .progress shouldBe newProgress
+        }
+    }
+
+    @Test
+    fun `set active training block`() = runTest {
+        val plan = samplePlans.first()
+        val startDate = LocalDate(2024, 8, 12)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate)
+
+        repository.observeTrainingBlock(trainingBlock.id).test {
+            awaitItem()!!.isActive.shouldBeFalse()
+
+            repository.setActiveTrainingBlock(trainingBlock.id)
+
+            awaitItem()!!.isActive.shouldBeTrue()
         }
     }
 }
