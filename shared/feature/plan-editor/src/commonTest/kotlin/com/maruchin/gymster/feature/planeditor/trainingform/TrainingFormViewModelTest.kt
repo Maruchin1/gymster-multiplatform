@@ -47,7 +47,9 @@ class DayFormViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.random()
-        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, training.id) }
+        val viewModel: TrainingFormViewModel = get {
+            parametersOf(plan.id, training.weekIndex, training.id)
+        }
 
         viewModel.training.test {
             awaitItem().shouldBeNull()
@@ -60,7 +62,7 @@ class DayFormViewModelTest : KoinTest {
     fun `emit null when training not selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, null) }
+        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, 0, null) }
 
         viewModel.training.test {
             awaitItem().shouldBeNull()
@@ -74,7 +76,7 @@ class DayFormViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.last()
         val trainingName = "Push 1"
-        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, null) }
+        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, 0, null) }
 
         trainingPlansRepository.observePlan(plan.id).test {
             awaitItem()!!.trainings.shouldBeEmpty()
@@ -94,7 +96,9 @@ class DayFormViewModelTest : KoinTest {
         val plan = samplePlans.first()
         val training = plan.trainings[2]
         val trainingNewName = "Push Hyper"
-        val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, training.id) }
+        val viewModel: TrainingFormViewModel = get {
+            parametersOf(plan.id, training.weekIndex, training.id)
+        }
 
         trainingPlansRepository.observePlan(plan.id).test {
             awaitItem()!!.trainings[2].name shouldBe training.name

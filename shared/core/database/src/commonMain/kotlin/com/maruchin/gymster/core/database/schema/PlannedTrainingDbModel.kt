@@ -8,5 +8,6 @@ import io.realm.kotlin.types.RealmUUID
 class PlannedTrainingDbModel : EmbeddedRealmObject {
     var id: RealmUUID = RealmUUID.random()
     var name: String = ""
+    var weekIndex: Int = 0
     var exercises: RealmList<PlannedExerciseDbModel> = realmListOf()
 }

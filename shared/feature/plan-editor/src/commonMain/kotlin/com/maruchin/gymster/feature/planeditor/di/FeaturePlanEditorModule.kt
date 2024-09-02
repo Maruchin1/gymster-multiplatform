@@ -9,17 +9,13 @@ import org.koin.dsl.module
 
 val featurePlanEditorModule = module {
 
-    factory { (planId: String) -> DurationFormViewModel(planId, get()) }
+    factory { DurationFormViewModel(it[0], get()) }
 
-    factory { (planId: String, trainingId: String, exerciseId: String?) ->
-        ExerciseFormViewModel(planId, trainingId, exerciseId, get())
-    }
+    factory { ExerciseFormViewModel(it[0], it[1], it[2], get()) }
 
-    factory { (planId: String) -> PlanEditorViewModel(planId, get()) }
+    factory { PlanEditorViewModel(it[0], get()) }
 
-    factory { (planId: String) -> PlanFormViewModel(planId, get()) }
+    factory { PlanFormViewModel(it[0], get()) }
 
-    factory { (planId: String, trainingId: String) ->
-        TrainingFormViewModel(planId, trainingId, get())
-    }
+    factory { TrainingFormViewModel(it[0], it[1], it[2], get()) }
 }

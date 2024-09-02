@@ -25,17 +25,24 @@ class PlanListViewModel internal constructor(private val plansRepository: PlansR
 
     fun seedPlans() = viewModelScope.launch {
         samplePlans.first().let { plan ->
-            val planId = plansRepository.createPlan(plan.name)
-            plansRepository.changePlanDuration(planId, plan.weeksDuration)
+            val createdPlan = plansRepository.createPlan(plan.name)
+            plansRepository.changePlanDuration(
+                planId = createdPlan.id,
+                newDuration = plan.weeksDuration
+            )
             plan.trainings.forEach { training ->
-                val trainingId = plansRepository.addTraining(planId, training.name)
+                val createdTraining = plansRepository.addTraining(
+                    planId = createdPlan.id,
+                    weekIndex = training.weekIndex,
+                    name = training.name
+                )
                 training.exercises.forEach { exercise ->
                     plansRepository.addExercise(
-                        planId,
-                        trainingId,
-                        exercise.name,
-                        exercise.sets,
-                        exercise.reps
+                        planId = createdPlan.id,
+                        trainingId = createdTraining.id,
+                        name = exercise.name,
+                        sets = exercise.sets,
+                        reps = exercise.reps
                     )
                 }
             }

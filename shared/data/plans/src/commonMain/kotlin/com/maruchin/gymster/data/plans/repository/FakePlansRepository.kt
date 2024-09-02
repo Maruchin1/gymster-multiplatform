@@ -23,7 +23,7 @@ class FakePlansRepository : PlansRepository {
 
     override fun observePlan(planId: String): Flow<Plan?> = collection.map { it[planId] }
 
-    override suspend fun createPlan(name: String): String {
+    override suspend fun createPlan(name: String): Plan {
         val plans = collection.value
         val id = (plans.size + 1).toString()
         val newPlan = Plan(
@@ -33,7 +33,7 @@ class FakePlansRepository : PlansRepository {
             trainings = emptyList()
         )
         collection.value += id to newPlan
-        return id
+        return newPlan
     }
 
     override suspend fun changePlanName(planId: String, newName: String) {
@@ -52,17 +52,22 @@ class FakePlansRepository : PlansRepository {
         collection.value -= planId
     }
 
-    override suspend fun addTraining(planId: String, name: String): String {
-        val plans = collection.value
+    override suspend fun addTraining(
+        planId: String,
+        weekIndex: Int,
+        name: String
+    ): PlannedTraining {
         val days = collection.value[planId]?.trainings ?: emptyList()
         val id = (days.size + 1).toString()
-        val newDay = PlannedTraining(
+        val newTraining = PlannedTraining(
             id = id,
             name = name,
+            weekIndex = weekIndex,
             exercises = emptyList()
         )
-        collection.value += planId to collection.value[planId]!!.copy(trainings = days + newDay)
-        return id
+        collection.value +=
+            planId to collection.value[planId]!!.copy(trainings = days + newTraining)
+        return newTraining
     }
 
     override suspend fun changeTrainingName(planId: String, trainingId: String, newName: String) {
@@ -91,7 +96,7 @@ class FakePlansRepository : PlansRepository {
         name: String,
         sets: Sets,
         reps: Reps
-    ): String {
+    ): PlannedExercise {
         val plans = collection.value
         val days = plans[planId]?.trainings ?: emptyList()
         val exercises = days.find { it.id == trainingId }?.exercises ?: emptyList()
@@ -110,7 +115,7 @@ class FakePlansRepository : PlansRepository {
             }
         }
         collection.value += planId to plans[planId]!!.copy(trainings = newDays)
-        return id
+        return newExercise
     }
 
     override suspend fun updateExercise(

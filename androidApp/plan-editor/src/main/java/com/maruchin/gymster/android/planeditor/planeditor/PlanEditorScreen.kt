@@ -205,16 +205,16 @@ private fun LoadedContent(
         item {
             WeeksDurationItem(weeksDuration = plan.weeksDuration, onClick = onEditWeeksDuration)
         }
-        mutablePlan.trainings.forEach { Training ->
+        mutablePlan.trainings.forEach { training ->
             stickyHeader {
                 TrainingHeader(
-                    name = Training.name,
-                    onEdit = { onEditTraining(Training.id) },
-                    onDelete = { onDeleteTraining(Training.id) }
+                    name = training.name,
+                    onEdit = { onEditTraining(training.id) },
+                    onDelete = { onDeleteTraining(training.id) }
                 )
             }
-            items(Training.exercises, key = { it.id }) { exercise ->
-                val currentTraining by rememberUpdatedState(Training)
+            items(training.exercises, key = { it.id }) { exercise ->
+                val currentTraining by rememberUpdatedState(training)
                 ExerciseItem(
                     reorderableLazyListState = reorderableLazyListState,
                     id = exercise.id,
@@ -222,19 +222,19 @@ private fun LoadedContent(
                     sets = exercise.sets,
                     reps = exercise.reps,
                     onEdit = {
-                        onEditExercise(Training.id, exercise.id)
+                        onEditExercise(training.id, exercise.id)
                     },
                     onDelete = {
-                        onDeleteExercise(Training.id, exercise.id)
+                        onDeleteExercise(training.id, exercise.id)
                     },
                     onDragStopped = {
                         val exercisesIds = currentTraining.exercises.map { it.id }
-                        onReorderExercises(Training.id, exercisesIds)
+                        onReorderExercises(training.id, exercisesIds)
                     }
                 )
             }
             item {
-                AddExerciseButton(onClick = { onAddExercise(Training.id) })
+                AddExerciseButton(onClick = { onAddExercise(training.id) })
             }
         }
         item {

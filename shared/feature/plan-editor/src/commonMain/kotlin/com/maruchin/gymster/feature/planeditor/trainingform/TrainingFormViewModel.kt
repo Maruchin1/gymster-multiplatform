@@ -16,6 +16,7 @@ import org.koin.core.parameter.parametersOf
 
 class TrainingFormViewModel internal constructor(
     private val planId: String,
+    private val weekIndex: Int,
     private val trainingId: String?,
     private val plansRepository: PlansRepository
 ) : ViewModel() {
@@ -31,7 +32,7 @@ class TrainingFormViewModel internal constructor(
 
     fun saveTraining(name: String) = viewModelScope.launch {
         if (trainingId == null) {
-            plansRepository.addTraining(planId = planId, name = name)
+            plansRepository.addTraining(planId = planId, weekIndex = weekIndex, name = name)
         } else {
             plansRepository.changeTrainingName(
                 planId = planId,

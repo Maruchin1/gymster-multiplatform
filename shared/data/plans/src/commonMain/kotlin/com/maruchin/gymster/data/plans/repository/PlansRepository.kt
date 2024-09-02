@@ -1,6 +1,8 @@
 package com.maruchin.gymster.data.plans.repository
 
 import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.plans.model.PlannedExercise
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +13,7 @@ interface PlansRepository {
 
     fun observePlan(planId: String): Flow<Plan?>
 
-    suspend fun createPlan(name: String): String
+    suspend fun createPlan(name: String): Plan
 
     suspend fun changePlanName(planId: String, newName: String)
 
@@ -19,7 +21,7 @@ interface PlansRepository {
 
     suspend fun deletePlan(planId: String)
 
-    suspend fun addTraining(planId: String, name: String): String
+    suspend fun addTraining(planId: String, weekIndex: Int, name: String): PlannedTraining
 
     suspend fun changeTrainingName(planId: String, trainingId: String, newName: String)
 
@@ -31,7 +33,7 @@ interface PlansRepository {
         name: String,
         sets: Sets,
         reps: Reps
-    ): String
+    ): PlannedExercise
 
     suspend fun updateExercise(
         planId: String,
