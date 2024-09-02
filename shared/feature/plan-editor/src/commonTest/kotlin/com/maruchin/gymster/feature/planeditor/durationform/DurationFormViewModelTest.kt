@@ -2,7 +2,6 @@ package com.maruchin.gymster.feature.planeditor.durationform
 
 import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
-import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import com.maruchin.gymster.feature.planeditor.di.featurePlanEditorModule
@@ -59,20 +58,6 @@ class DurationFormViewModelTest : KoinTest {
             awaitItem().shouldBeNull()
 
             expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `save duration`() = runTest {
-        plansRepository.setPlans(samplePlans)
-        val newDuration = 10
-
-        plansRepository.observePlan(plan.id).test {
-            awaitItem()!!.weeksDuration shouldBe Plan.DEFAULT_WEEKS_DURATION
-
-            viewModel.saveDuration(weeks = newDuration)
-
-            awaitItem()!!.weeksDuration shouldBe newDuration
         }
     }
 }

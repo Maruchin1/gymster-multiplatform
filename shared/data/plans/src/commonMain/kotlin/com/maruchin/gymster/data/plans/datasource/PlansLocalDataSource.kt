@@ -24,10 +24,9 @@ internal class PlansLocalDataSource(private val realm: Realm) {
             change.list.firstOrNull()
         }
 
-    suspend fun createPlan(name: String, weeksDuration: Int): PlanDbModel {
+    suspend fun createPlan(name: String): PlanDbModel {
         val newPlan = PlanDbModel().also {
             it.name = name
-            it.weeksDuration = weeksDuration
         }
         return realm.write {
             copyToRealm(newPlan)
@@ -41,18 +40,39 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         }
     }
 
-    suspend fun changePlanDuration(planId: RealmUUID, newDuration: Int) {
-        realm.write {
-            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-            plan.weeksDuration = newDuration
-        }
-    }
-
     suspend fun deletePlan(planId: RealmUUID) {
         realm.write {
             val plan = query<PlanDbModel>("_id == $0", planId).find().first()
             delete(plan)
         }
+    }
+
+    suspend fun addWeek(planId: RealmUUID): List<PlannedTrainingDbModel> = realm.write {
+        val plan = query<PlanDbModel>("_id == $0", planId).find().first()
+        val weeks = plan.trainings.sortedBy { it.weekIndex }.groupBy { it.weekIndex }.values
+        val lastWeek = weeks.last()
+        val newWeek = mutableListOf<PlannedTrainingDbModel>()
+        lastWeek.forEach { training ->
+            PlannedTrainingDbModel().apply {
+                name = training.name
+                weekIndex = training.weekIndex + 1
+                training.exercises.forEach { exercise ->
+                    PlannedExerciseDbModel().apply {
+                        name = exercise.name
+                        regularSets = exercise.regularSets
+                        dropSets = exercise.dropSets
+                        minReps = exercise.minReps
+                        maxReps = exercise.maxReps
+                    }.also {
+                        exercises.add(it)
+                    }
+                }
+            }.also {
+                newWeek.add(it)
+                plan.trainings.add(it)
+            }
+        }
+        newWeek
     }
 
     suspend fun addTraining(planId: RealmUUID, name: String): PlannedTrainingDbModel {

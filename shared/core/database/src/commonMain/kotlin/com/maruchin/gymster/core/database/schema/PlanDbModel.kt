@@ -12,6 +12,5 @@ class PlanDbModel : RealmObject {
     @PrimaryKey
     var id: RealmUUID = RealmUUID.random()
     var name: String = ""
-    var weeksDuration: Int = 0
     var trainings: RealmList<PlannedTrainingDbModel> = realmListOf()
 }

@@ -25,10 +25,7 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         }
 
     override suspend fun createPlan(name: String): Plan {
-        val planDbModel = localDataSource.createPlan(
-            name = name,
-            weeksDuration = Plan.DEFAULT_WEEKS_DURATION
-        )
+        val planDbModel = localDataSource.createPlan(name = name)
         return planDbModel.toDomainModel()
     }
 
@@ -36,15 +33,13 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         localDataSource.changePlanName(planId = RealmUUID.from(planId), newName = newName)
     }
 
-    override suspend fun changePlanDuration(planId: String, newDuration: Int) {
-        localDataSource.changePlanDuration(
-            planId = RealmUUID.from(planId),
-            newDuration = newDuration
-        )
-    }
-
     override suspend fun deletePlan(planId: String) {
         localDataSource.deletePlan(planId = RealmUUID.from(planId))
+    }
+
+    override suspend fun addWeek(planId: String): List<PlannedTraining> {
+        val plannedTrainingsDbModel = localDataSource.addWeek(RealmUUID.from(planId))
+        return plannedTrainingsDbModel.map { it.toDomainModel() }
     }
 
     override suspend fun addTraining(

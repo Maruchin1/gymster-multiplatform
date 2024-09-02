@@ -29,7 +29,6 @@ class FakePlansRepository : PlansRepository {
         val newPlan = Plan(
             id = id,
             name = name,
-            weeksDuration = Plan.DEFAULT_WEEKS_DURATION,
             trainings = emptyList()
         )
         collection.value += id to newPlan
@@ -42,14 +41,30 @@ class FakePlansRepository : PlansRepository {
         }
     }
 
-    override suspend fun changePlanDuration(planId: String, newDuration: Int) {
-        collection.value[planId]?.let { trainingPlan ->
-            collection.value += planId to trainingPlan.copy(weeksDuration = newDuration)
-        }
-    }
-
     override suspend fun deletePlan(planId: String) {
         collection.value -= planId
+    }
+
+    override suspend fun addWeek(planId: String): List<PlannedTraining> {
+        val plan = collection.value[planId]!!
+        val lastWeek = plan.weeks.last()
+        lastWeek.forEach { training ->
+            val newTraining = addTraining(
+                planId = plan.id,
+                weekIndex = training.weekIndex + 1,
+                name = training.name
+            )
+            training.exercises.forEach { exercise ->
+                addExercise(
+                    planId = plan.id,
+                    trainingId = newTraining.id,
+                    name = exercise.name,
+                    sets = exercise.sets,
+                    reps = exercise.reps
+                )
+            }
+        }
+        return collection.value[planId]!!.weeks.last()
     }
 
     override suspend fun addTraining(

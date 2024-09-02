@@ -19,14 +19,13 @@ internal fun NavGraphBuilder.planEditorScreen(
     navController: NavController,
     onBack: () -> Unit,
     onEditName: (planId: String) -> Unit,
-    onEditWeeksDuration: (planId: String) -> Unit,
     onAddTraining: (planId: String) -> Unit,
     onEditTraining: (planId: String, trainingId: String) -> Unit,
     onAddExercise: (planId: String, trainingId: String) -> Unit,
     onEditExercise: (planId: String, trainingId: String, exerciseId: String) -> Unit
 ) {
     composable<PlanEditorRoute> {
-        val (planId) = remember(navController) {
+        val (planId) = remember(navController, it) {
             navController.getBackStackEntry<PlanEditorGraph>().toRoute<PlanEditorGraph>()
         }
         val viewModel = viewModel { PlanEditorViewModel.get(planId) }
@@ -36,7 +35,6 @@ internal fun NavGraphBuilder.planEditorScreen(
             state = state,
             onBack = onBack,
             onEditName = { onEditName(planId) },
-            onEditWeeksDuration = { onEditWeeksDuration(planId) },
             onDeletePlan = { viewModel.deletePlan().invokeOnCompletion { onBack() } },
             onAddTraining = { onAddTraining(planId) },
             onEditTraining = { trainingId -> onEditTraining(planId, trainingId) },

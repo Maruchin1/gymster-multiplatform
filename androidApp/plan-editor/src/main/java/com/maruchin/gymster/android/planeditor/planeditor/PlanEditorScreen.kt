@@ -29,8 +29,6 @@ import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -75,7 +73,6 @@ internal fun PlanEditorScreen(
     onBack: () -> Unit,
     onEditName: () -> Unit,
     onDeletePlan: () -> Unit,
-    onEditWeeksDuration: () -> Unit,
     onAddTraining: () -> Unit,
     onEditTraining: (trainingId: String) -> Unit,
     onDeleteTraining: (trainingId: String) -> Unit,
@@ -108,7 +105,6 @@ internal fun PlanEditorScreen(
                 is PlanEditorUiState.Loaded -> LoadedContent(
                     plan = targetState.plan,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onEditWeeksDuration = onEditWeeksDuration,
                     onAddTraining = onAddTraining,
                     onEditTraining = onEditTraining,
                     onDeleteTraining = onDeleteTraining,
@@ -174,7 +170,6 @@ private fun LoadingContent() {
 private fun LoadedContent(
     plan: Plan,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onEditWeeksDuration: () -> Unit,
     onAddTraining: () -> Unit,
     onEditTraining: (trainingId: String) -> Unit,
     onDeleteTraining: (trainingId: String) -> Unit,
@@ -202,9 +197,6 @@ private fun LoadedContent(
             .fillMaxSize()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
-        item {
-            WeeksDurationItem(weeksDuration = plan.weeksDuration, onClick = onEditWeeksDuration)
-        }
         mutablePlan.trainings.forEach { training ->
             stickyHeader {
                 TrainingHeader(
@@ -240,25 +232,6 @@ private fun LoadedContent(
         item {
             AddTrainingButton(onClick = onAddTraining)
         }
-    }
-}
-
-@Composable
-private fun WeeksDurationItem(weeksDuration: Int, onClick: () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Text(
-            text = "Duration - $weeksDuration weeks",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(12.dp)
-        )
     }
 }
 
@@ -440,7 +413,6 @@ private fun PlanEditorScreen_LoadedPreview() {
             onBack = {},
             onEditName = {},
             onDeletePlan = {},
-            onEditWeeksDuration = {},
             onAddTraining = {},
             onEditTraining = {},
             onDeleteTraining = {},

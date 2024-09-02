@@ -6,6 +6,5 @@ import com.maruchin.gymster.data.plans.model.Plan
 internal fun PlanDbModel.toDomainModel() = Plan(
     id = id.toString(),
     name = name,
-    weeksDuration = weeksDuration,
     trainings = trainings.map { it.toDomainModel() }
 )

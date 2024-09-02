@@ -5,6 +5,8 @@ import com.maruchin.gymster.core.coroutines.coreCoroutinesModule
 import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.plans.model.PlannedExercise
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -38,51 +40,44 @@ class DefaultPlansRepositoryTest : KoinTest {
 
     @Test
     fun `create plan`() = runTest {
-        val name = "Push Pull"
         repository.observeAllPlans().test {
             awaitItem().shouldBeEmpty()
 
-            repository.createPlan(name = name)
+            val plan = repository.createPlan(name = "Push Pull")
 
-            awaitItem().let {
-                it shouldHaveSize 1
-                it.first().name shouldBe name
-            }
+            awaitItem() shouldContainExactly listOf(
+                Plan(
+                    id = plan.id,
+                    name = "Push Pull",
+                    trainings = emptyList()
+                )
+            )
         }
     }
 
     @Test
     fun `change plan name`() = runTest {
-        val originalName = "Push Pull"
-        val newName = "Push Pull Legs"
-        val plan = repository.createPlan(name = originalName)
+        val plan = repository.createPlan(name = "Push Pull")
         repository.observePlan(plan.id).test {
-            awaitItem()!!.name shouldBe originalName
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = emptyList()
+            )
 
-            repository.changePlanName(planId = plan.id, newName = newName)
+            repository.changePlanName(planId = plan.id, newName = "Push Pull Legs")
 
-            awaitItem()!!.name shouldBe newName
-        }
-    }
-
-    @Test
-    fun `change plan duration`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val newDuration = 8
-        repository.observePlan(plan.id).test {
-            awaitItem()!!.weeksDuration shouldBe Plan.DEFAULT_WEEKS_DURATION
-
-            repository.changePlanDuration(planId = plan.id, newDuration = newDuration)
-
-            awaitItem()!!.weeksDuration shouldBe newDuration
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull Legs",
+                trainings = emptyList()
+            )
         }
     }
 
     @Test
     fun `delete plan`() = runTest {
-        val name = "Push Pull"
-        val plan = repository.createPlan(name = name)
+        val plan = repository.createPlan(name = "Push Pull")
         repository.observeAllPlans().test {
             awaitItem() shouldHaveSize 1
 
@@ -93,169 +88,325 @@ class DefaultPlansRepositoryTest : KoinTest {
     }
 
     @Test
-    fun `add day`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+    fun `add week`() = runTest {
+        val plan = repository.createPlan(
+            name = "Push Pull"
+        )
+        val training = repository.addTraining(
+            planId = plan.id,
+            weekIndex = 0,
+            name = "Push 1"
+        )
+        val exercise = repository.addExercise(
+            planId = plan.id,
+            trainingId = training.id,
+            name = "Bench Press",
+            sets = Sets(regular = 3, drop = 0),
+            reps = Reps(10..12)
+        )
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.shouldBeEmpty()
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
+            )
 
-            repository.addTraining(planId = plan.id, weekIndex = weekIndex, name = trainingName)
+            val newWeek = repository.addWeek(plan.id)
 
-            awaitItem()!!.trainings.let {
-                it shouldHaveSize 1
-                it.first().name shouldBe trainingName
-            }
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    ),
+                    PlannedTraining(
+                        id = newWeek[0].id,
+                        name = "Push 1",
+                        weekIndex = 1,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = newWeek[0].exercises[0].id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
+            )
         }
     }
 
     @Test
-    fun `change day name`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+    fun `add training`() = runTest {
+        val plan = repository.createPlan(name = "Push Pull")
+        repository.observePlan(plan.id).test {
+            awaitItem()!!.trainings.shouldBeEmpty()
+
+            val addedTraining = repository.addTraining(
+                planId = plan.id,
+                weekIndex = 0,
+                name = "Push 1"
+            )
+
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = addedTraining.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = emptyList()
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `change training name`() = runTest {
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
-        val updatedTrainingName = "Push 2"
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.first().name shouldBe trainingName
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = emptyList()
+                    )
+                )
+            )
 
             repository.changeTrainingName(
                 planId = plan.id,
                 trainingId = training.id,
-                newName = updatedTrainingName
+                newName = "Push 2"
             )
 
-            awaitItem()!!.trainings.first().name shouldBe updatedTrainingName
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 2",
+                        weekIndex = 0,
+                        exercises = emptyList()
+                    )
+                )
+            )
         }
     }
 
     @Test
-    fun `delete day`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+    fun `delete training`() = runTest {
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings shouldHaveSize 1
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = emptyList()
+                    )
+                )
+            )
 
             repository.deleteTraining(planId = plan.id, trainingId = training.id)
 
-            awaitItem()!!.trainings.shouldBeEmpty()
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = emptyList()
+            )
         }
     }
 
     @Test
     fun `add exercise`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
-        val exerciseName = "Bench Press"
-        val exerciseSets = Sets(regular = 3, drop = 0)
-        val exerciseReps = Reps(10..12)
         repository.observePlan(plan.id).test {
             awaitItem()!!.trainings.first().exercises.shouldBeEmpty()
 
-            repository.addExercise(
+            val exercise = repository.addExercise(
                 planId = plan.id,
                 trainingId = training.id,
-                name = exerciseName,
-                sets = exerciseSets,
-                reps = exerciseReps
+                name = "Bench Press",
+                sets = Sets(regular = 3, drop = 0),
+                reps = Reps(10..12)
             )
 
-            awaitItem()!!.let { plan ->
-                plan.trainings.first().exercises.let { exercises ->
-                    exercises shouldHaveSize 1
-                    exercises.first().let { exercise ->
-                        exercise.name shouldBe exerciseName
-                        exercise.sets shouldBe exerciseSets
-                        exercise.reps shouldBe exerciseReps
-                    }
-                }
-            }
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
+            )
         }
     }
 
     @Test
     fun `update exercise`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
-        val exerciseName = "Bench Press"
-        val exerciseSets = Sets(regular = 3, drop = 0)
-        val exerciseReps = Reps(10..12)
         val exercise = repository.addExercise(
             planId = plan.id,
             trainingId = training.id,
-            name = exerciseName,
-            sets = exerciseSets,
-            reps = exerciseReps
+            name = "Bench Press",
+            sets = Sets(regular = 3, drop = 0),
+            reps = Reps(10..12)
         )
-        val updatedExerciseName = "Incline Bench Press"
-        val updatedSets = Sets(regular = 4, drop = 1)
-        val updatedReps = Reps(8..10)
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.first().exercises.first().name shouldBe exerciseName
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
+            )
 
             repository.updateExercise(
                 planId = plan.id,
                 trainingId = training.id,
                 exerciseId = exercise.id,
-                newName = updatedExerciseName,
-                newSets = updatedSets,
-                newReps = updatedReps
+                newName = "Incline Bench Press",
+                newSets = Sets(regular = 4, drop = 1),
+                newReps = Reps(8..10)
             )
 
-            awaitItem()!!.trainings.first().exercises.first().name shouldBe updatedExerciseName
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Incline Bench Press",
+                                sets = Sets(regular = 4, drop = 1),
+                                reps = Reps(8..10)
+                            )
+                        )
+                    )
+                )
+            )
         }
     }
 
     @Test
     fun `delete exercise`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push 1"
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
-        val exerciseName = "Bench Press"
-        val exerciseSets = Sets(regular = 3, drop = 0)
-        val exerciseReps = Reps(10..12)
         val exercise = repository.addExercise(
             planId = plan.id,
             trainingId = training.id,
-            name = exerciseName,
-            sets = exerciseSets,
-            reps = exerciseReps
+            name = "Bench Press",
+            sets = Sets(regular = 3, drop = 0),
+            reps = Reps(10..12)
         )
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.first().exercises shouldHaveSize 1
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
+            )
 
             repository.deleteExercise(
                 planId = plan.id,
@@ -263,45 +414,68 @@ class DefaultPlansRepositoryTest : KoinTest {
                 exerciseId = exercise.id
             )
 
-            awaitItem()!!.trainings.first().exercises.shouldBeEmpty()
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = emptyList()
+                    )
+                )
+            )
         }
     }
 
     @Test
     fun `reorder exercises`() = runTest {
-        val planName = "Push Pull"
-        val plan = repository.createPlan(name = planName)
-        val weekIndex = 0
-        val trainingName = "Push"
+        val plan = repository.createPlan(name = "Push Pull")
         val training = repository.addTraining(
             planId = plan.id,
-            weekIndex = weekIndex,
-            name = trainingName
+            weekIndex = 0,
+            name = "Push 1"
         )
-        val firstExerciseName = "Bench press"
-        val fistExerciseSets = Sets(regular = 3, drop = 0)
-        val firstExerciseReps = Reps(10..12)
         val exercise1 = repository.addExercise(
             planId = plan.id,
             trainingId = training.id,
-            name = firstExerciseName,
-            sets = fistExerciseSets,
-            reps = firstExerciseReps
+            name = "Bench Press",
+            sets = Sets(regular = 3, drop = 0),
+            reps = Reps(10..12)
         )
-        val secondExerciseName = "Overhead press"
-        val secondExerciseSets = Sets(regular = 3, drop = 0)
-        val secondExerciseReps = Reps(10..12)
         val exercise2 = repository.addExercise(
             planId = plan.id,
             trainingId = training.id,
-            name = secondExerciseName,
-            sets = secondExerciseSets,
-            reps = secondExerciseReps
+            name = "Overhead press",
+            sets = Sets(regular = 3, drop = 0),
+            reps = Reps(10..12)
         )
-        repository.observeAllPlans().test {
-            awaitItem().first().trainings.first().exercises shouldContainExactly listOf(
-                exercise1,
-                exercise2
+        repository.observePlan(plan.id).test {
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise1.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            ),
+                            PlannedExercise(
+                                id = exercise2.id,
+                                name = "Overhead press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
             )
 
             repository.reorderExercises(
@@ -310,9 +484,30 @@ class DefaultPlansRepositoryTest : KoinTest {
                 exercisesIds = listOf(exercise2.id, exercise1.id)
             )
 
-            awaitItem().first().trainings.first().exercises shouldContainExactly listOf(
-                exercise2,
-                exercise1
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                trainings = listOf(
+                    PlannedTraining(
+                        id = training.id,
+                        name = "Push 1",
+                        weekIndex = 0,
+                        exercises = listOf(
+                            PlannedExercise(
+                                id = exercise2.id,
+                                name = "Overhead press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            ),
+                            PlannedExercise(
+                                id = exercise1.id,
+                                name = "Bench Press",
+                                sets = Sets(regular = 3, drop = 0),
+                                reps = Reps(10..12)
+                            )
+                        )
+                    )
+                )
             )
         }
     }
