@@ -50,7 +50,7 @@ data class TrainingBlock(
             id = "",
             planName = plan.name,
             startDate = startDate,
-            weeks = List(plan.weeksDuration) { TrainingWeek.from(plan) },
+            weeks = plan.weeks.map { TrainingWeek.from(it) },
             isActive = false
         )
     }

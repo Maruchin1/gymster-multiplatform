@@ -197,7 +197,7 @@ private fun LoadedContent(
             .fillMaxSize()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
-        mutablePlan.trainings.forEach { training ->
+        mutablePlan.weeks.first().trainings.forEach { training ->
             stickyHeader {
                 TrainingHeader(
                     name = training.name,

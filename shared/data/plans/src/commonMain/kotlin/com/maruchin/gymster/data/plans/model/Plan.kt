@@ -2,25 +2,21 @@ package com.maruchin.gymster.data.plans.model
 
 import com.maruchin.gymster.core.utils.updated
 
-data class Plan(val id: String, val name: String, val trainings: List<PlannedTraining>) {
+data class Plan(val id: String, val name: String, val weeks: List<PlannedWeek>) {
 
-    val weeks: List<List<PlannedTraining>>
-        get() = trainings.groupBy { it.weekIndex }
-            .entries
-            .sortedBy { (week, _) -> week }
-            .map { (_, trainings) -> trainings }
-
-    val weeksDuration: Int
-        get() = trainings.map { it.weekIndex }.distinct().size
-
-    fun getTraining(trainingId: String) = trainings.first { it.id == trainingId }
+    fun getTraining(trainingId: String) =
+        weeks.flatMap { it.trainings }.first { it.id == trainingId }
 
     fun getExercise(exerciseId: String) =
-        trainings.flatMap { it.exercises }.first { it.id == exerciseId }
+        weeks.flatMap { it.trainings }.flatMap { it.exercises }.first { it.id == exerciseId }
 
     fun changeExercisesOrder(fromId: String, toId: String) = copy(
-        trainings = trainings.updated({ it.hasExercise(fromId) }) { plannedTraining ->
-            plannedTraining.changeExercisesOrder(fromId, toId)
+        weeks = weeks.updated({ it.hasExercise(fromId) }) { week ->
+            week.copy(
+                trainings = week.trainings.updated({ it.hasExercise(fromId) }) { training ->
+                    training.changeExercisesOrder(fromId, toId)
+                }
+            )
         }
     )
 }

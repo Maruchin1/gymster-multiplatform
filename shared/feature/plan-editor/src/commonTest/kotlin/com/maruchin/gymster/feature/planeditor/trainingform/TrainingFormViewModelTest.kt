@@ -46,9 +46,10 @@ class DayFormViewModelTest : KoinTest {
     fun `emit training when selected and available`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings.random()
+        val week = plan.weeks.first()
+        val training = week.trainings.random()
         val viewModel: TrainingFormViewModel = get {
-            parametersOf(plan.id, training.weekIndex, training.id)
+            parametersOf(plan.id, 0, training.id)
         }
 
         viewModel.training.test {
@@ -79,13 +80,13 @@ class DayFormViewModelTest : KoinTest {
         val viewModel: TrainingFormViewModel = get { parametersOf(plan.id, 0, null) }
 
         trainingPlansRepository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.shouldBeEmpty()
+            awaitItem()!!.weeks.first().trainings.shouldBeEmpty()
 
             viewModel.saveTraining(name = trainingName)
 
             awaitItem()!!.let {
-                it.trainings shouldHaveSize 1
-                it.trainings.first().name shouldBe trainingName
+                it.weeks.first().trainings shouldHaveSize 1
+                it.weeks.first().trainings.first().name shouldBe trainingName
             }
         }
     }
@@ -94,18 +95,19 @@ class DayFormViewModelTest : KoinTest {
     fun `change training name on save when training selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings[2]
+        val week = plan.weeks.first()
+        val training = week.trainings[2]
         val trainingNewName = "Push Hyper"
         val viewModel: TrainingFormViewModel = get {
-            parametersOf(plan.id, training.weekIndex, training.id)
+            parametersOf(plan.id, 0, training.id)
         }
 
         trainingPlansRepository.observePlan(plan.id).test {
-            awaitItem()!!.trainings[2].name shouldBe training.name
+            awaitItem()!!.weeks.first().trainings[2].name shouldBe training.name
 
             viewModel.saveTraining(name = trainingNewName)
 
-            awaitItem()!!.trainings[2].name shouldBe trainingNewName
+            awaitItem()!!.weeks.first().trainings[2].name shouldBe trainingNewName
         }
     }
 }

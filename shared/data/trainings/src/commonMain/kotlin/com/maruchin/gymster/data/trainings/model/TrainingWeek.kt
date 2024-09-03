@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.plans.model.PlannedWeek
 
 data class TrainingWeek(val trainings: List<Training>) {
 
@@ -12,8 +12,8 @@ data class TrainingWeek(val trainings: List<Training>) {
 
     companion object {
 
-        internal fun from(plan: Plan) = TrainingWeek(
-            trainings = plan.trainings.map { Training.from(it) }
+        internal fun from(plannedWeek: PlannedWeek) = TrainingWeek(
+            trainings = plannedWeek.trainings.map { Training.from(it) }
         )
     }
 }

@@ -2,12 +2,7 @@ package com.maruchin.gymster.data.plans.model
 
 import com.maruchin.gymster.core.utils.swap
 
-data class PlannedTraining(
-    val id: String,
-    val name: String,
-    val weekIndex: Int,
-    val exercises: List<PlannedExercise>
-) {
+data class PlannedTraining(val id: String, val name: String, val exercises: List<PlannedExercise>) {
 
     internal fun hasExercise(exerciseId: String) = exercises.any { it.id == exerciseId }
 

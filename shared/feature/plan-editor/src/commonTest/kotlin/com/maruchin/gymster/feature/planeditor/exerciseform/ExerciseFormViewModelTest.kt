@@ -47,7 +47,8 @@ class ExerciseFormViewModelTest : KoinTest {
     fun `emit exercise when selected and available`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings.first()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
         val exercise = training.exercises.random()
         val viewModel: ExerciseFormViewModel =
             get { parametersOf(plan.id, training.id, exercise.id) }
@@ -63,7 +64,8 @@ class ExerciseFormViewModelTest : KoinTest {
     fun `emit null when exercise not selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings.first()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
         val viewModel: ExerciseFormViewModel = get { parametersOf(plan.id, training.id, null) }
 
         viewModel.exercise.test {
@@ -75,19 +77,20 @@ class ExerciseFormViewModelTest : KoinTest {
     fun `add new exercise when exercise not selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings.first()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
         val exerciseName = "Brzuszki na ławce skośnej"
         val exerciseSets = Sets(regular = 3)
         val exerciseReps = Reps(10..12)
         val viewModel: ExerciseFormViewModel = get { parametersOf(plan.id, training.id, null) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.trainings.last().exercises shouldHaveSize 5
+            awaitItem()!!.weeks.first().trainings.last().exercises shouldHaveSize 5
 
             viewModel.saveExercise(name = exerciseName, sets = exerciseSets, reps = exerciseReps)
 
             awaitItem()!!.let { plan ->
-                plan.trainings.first().exercises.let { exercises ->
+                plan.weeks.first().trainings.first().exercises.let { exercises ->
                     exercises shouldHaveSize 6
                     exercises.last().let { exercise ->
                         exercise.name shouldBe exerciseName
@@ -103,7 +106,8 @@ class ExerciseFormViewModelTest : KoinTest {
     fun `change exercise name when exercise selected`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val training = plan.trainings.first()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
         val exercise = training.exercises.first()
         val exerciseNewName = "Pull ups"
         val exerciseNewSets = Sets(regular = 2, drop = 1)
@@ -112,7 +116,7 @@ class ExerciseFormViewModelTest : KoinTest {
             get { parametersOf(plan.id, training.id, exercise.id) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.trainings.first().exercises.first().let {
+            awaitItem()!!.weeks.first().trainings.first().exercises.first().let {
                 it.name shouldBe exercise.name
                 it.sets shouldBe exercise.sets
                 it.reps shouldBe exercise.reps
@@ -124,7 +128,7 @@ class ExerciseFormViewModelTest : KoinTest {
                 reps = exerciseNewReps
             )
 
-            awaitItem()!!.trainings.first().exercises.first().let {
+            awaitItem()!!.weeks.first().trainings.first().exercises.first().let {
                 it.name shouldBe exerciseNewName
                 it.sets shouldBe exerciseNewSets
                 it.reps shouldBe exerciseNewReps

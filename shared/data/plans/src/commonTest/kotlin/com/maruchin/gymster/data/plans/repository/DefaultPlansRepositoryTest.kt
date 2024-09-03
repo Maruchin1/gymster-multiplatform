@@ -7,11 +7,10 @@ import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
+import com.maruchin.gymster.data.plans.model.PlannedWeek
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.realm.kotlin.Realm
 import kotlin.test.AfterTest
@@ -41,7 +40,7 @@ class DefaultPlansRepositoryTest : KoinTest {
     @Test
     fun `create plan`() = runTest {
         repository.observeAllPlans().test {
-            awaitItem().shouldBeEmpty()
+            awaitItem() shouldBe emptyList()
 
             val plan = repository.createPlan(name = "Push Pull")
 
@@ -49,7 +48,9 @@ class DefaultPlansRepositoryTest : KoinTest {
                 Plan(
                     id = plan.id,
                     name = "Push Pull",
-                    trainings = emptyList()
+                    weeks = listOf(
+                        PlannedWeek(trainings = emptyList())
+                    )
                 )
             )
         }
@@ -62,7 +63,9 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = emptyList()
+                weeks = listOf(
+                    PlannedWeek(trainings = emptyList())
+                )
             )
 
             repository.changePlanName(planId = plan.id, newName = "Push Pull Legs")
@@ -70,7 +73,9 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull Legs",
-                trainings = emptyList()
+                weeks = listOf(
+                    PlannedWeek(trainings = emptyList())
+                )
             )
         }
     }
@@ -79,11 +84,19 @@ class DefaultPlansRepositoryTest : KoinTest {
     fun `delete plan`() = runTest {
         val plan = repository.createPlan(name = "Push Pull")
         repository.observeAllPlans().test {
-            awaitItem() shouldHaveSize 1
+            awaitItem() shouldBe listOf(
+                Plan(
+                    id = plan.id,
+                    name = "Push Pull",
+                    weeks = listOf(
+                        PlannedWeek(trainings = emptyList())
+                    )
+                )
+            )
 
             repository.deletePlan(planId = plan.id)
 
-            awaitItem().shouldBeEmpty()
+            awaitItem() shouldBe emptyList()
         }
     }
 
@@ -108,17 +121,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -130,30 +146,36 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     ),
-                    PlannedTraining(
-                        id = newWeek[0].id,
-                        name = "Push 1",
-                        weekIndex = 1,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = newWeek[0].exercises[0].id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = newWeek.trainings[0].id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = newWeek.trainings[0].exercises[0].id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -166,7 +188,13 @@ class DefaultPlansRepositoryTest : KoinTest {
     fun `add training`() = runTest {
         val plan = repository.createPlan(name = "Push Pull")
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.shouldBeEmpty()
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                weeks = listOf(
+                    PlannedWeek(trainings = emptyList())
+                )
+            )
 
             val addedTraining = repository.addTraining(
                 planId = plan.id,
@@ -177,12 +205,15 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = addedTraining.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = emptyList()
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = addedTraining.id,
+                                name = "Push 1",
+                                exercises = emptyList()
+                            )
+                        )
                     )
                 )
             )
@@ -201,12 +232,15 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = emptyList()
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = emptyList()
+                            )
+                        )
                     )
                 )
             )
@@ -220,12 +254,15 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 2",
-                        weekIndex = 0,
-                        exercises = emptyList()
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 2",
+                                exercises = emptyList()
+                            )
+                        )
                     )
                 )
             )
@@ -244,12 +281,15 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = emptyList()
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = emptyList()
+                            )
+                        )
                     )
                 )
             )
@@ -259,7 +299,9 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = emptyList()
+                weeks = listOf(
+                    PlannedWeek(trainings = emptyList())
+                )
             )
         }
     }
@@ -273,7 +315,21 @@ class DefaultPlansRepositoryTest : KoinTest {
             name = "Push 1"
         )
         repository.observePlan(plan.id).test {
-            awaitItem()!!.trainings.first().exercises.shouldBeEmpty()
+            awaitItem() shouldBe Plan(
+                id = plan.id,
+                name = "Push Pull",
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = emptyList()
+                            )
+                        )
+                    )
+                )
+            )
 
             val exercise = repository.addExercise(
                 planId = plan.id,
@@ -286,17 +342,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -324,17 +383,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -353,17 +415,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Incline Bench Press",
-                                sets = Sets(regular = 4, drop = 1),
-                                reps = Reps(8..10)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Incline Bench Press",
+                                        sets = Sets(regular = 4, drop = 1),
+                                        reps = Reps(8..10)
+                                    )
+                                )
                             )
                         )
                     )
@@ -391,17 +456,20 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -417,12 +485,15 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = emptyList()
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = emptyList()
+                            )
+                        )
                     )
                 )
             )
@@ -455,23 +526,26 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise1.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
-                            ),
-                            PlannedExercise(
-                                id = exercise2.id,
-                                name = "Overhead press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise1.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    ),
+                                    PlannedExercise(
+                                        id = exercise2.id,
+                                        name = "Overhead press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )
@@ -487,23 +561,26 @@ class DefaultPlansRepositoryTest : KoinTest {
             awaitItem() shouldBe Plan(
                 id = plan.id,
                 name = "Push Pull",
-                trainings = listOf(
-                    PlannedTraining(
-                        id = training.id,
-                        name = "Push 1",
-                        weekIndex = 0,
-                        exercises = listOf(
-                            PlannedExercise(
-                                id = exercise2.id,
-                                name = "Overhead press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
-                            ),
-                            PlannedExercise(
-                                id = exercise1.id,
-                                name = "Bench Press",
-                                sets = Sets(regular = 3, drop = 0),
-                                reps = Reps(10..12)
+                weeks = listOf(
+                    PlannedWeek(
+                        trainings = listOf(
+                            PlannedTraining(
+                                id = training.id,
+                                name = "Push 1",
+                                exercises = listOf(
+                                    PlannedExercise(
+                                        id = exercise2.id,
+                                        name = "Overhead press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    ),
+                                    PlannedExercise(
+                                        id = exercise1.id,
+                                        name = "Bench Press",
+                                        sets = Sets(regular = 3, drop = 0),
+                                        reps = Reps(10..12)
+                                    )
+                                )
                             )
                         )
                     )

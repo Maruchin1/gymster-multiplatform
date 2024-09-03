@@ -1,8 +1,10 @@
 package com.maruchin.gymster.data.plans.repository
 
+import com.maruchin.gymster.core.utils.updated
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
+import com.maruchin.gymster.data.plans.model.PlannedWeek
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
@@ -29,29 +31,29 @@ class FakePlansRepository : PlansRepository {
         val newPlan = Plan(
             id = id,
             name = name,
-            trainings = emptyList()
+            weeks = emptyList()
         )
         collection.value += id to newPlan
         return newPlan
     }
 
     override suspend fun changePlanName(planId: String, newName: String) {
-        collection.value[planId]?.let { trainingPlan ->
-            collection.value += planId to trainingPlan.copy(name = newName)
-        }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(name = newName)
+        collection.value += planId to updatedPlan
     }
 
     override suspend fun deletePlan(planId: String) {
         collection.value -= planId
     }
 
-    override suspend fun addWeek(planId: String): List<PlannedTraining> {
+    override suspend fun addWeek(planId: String): PlannedWeek {
         val plan = collection.value[planId]!!
         val lastWeek = plan.weeks.last()
-        lastWeek.forEach { training ->
+        lastWeek.trainings.forEach { training ->
             val newTraining = addTraining(
                 planId = plan.id,
-                weekIndex = training.weekIndex + 1,
+                weekIndex = plan.weeks.size,
                 name = training.name
             )
             training.exercises.forEach { exercise ->
@@ -72,37 +74,47 @@ class FakePlansRepository : PlansRepository {
         weekIndex: Int,
         name: String
     ): PlannedTraining {
-        val days = collection.value[planId]?.trainings ?: emptyList()
-        val id = (days.size + 1).toString()
+        val plan = collection.value[planId]!!
+        val allTrainings = plan.weeks.flatMap { it.trainings }
+        val id = (allTrainings.size + 1).toString()
         val newTraining = PlannedTraining(
             id = id,
             name = name,
-            weekIndex = weekIndex,
             exercises = emptyList()
         )
-        collection.value +=
-            planId to collection.value[planId]!!.copy(trainings = days + newTraining)
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated(weekIndex) { week ->
+                week.copy(trainings = week.trainings + newTraining)
+            }
+        )
+        collection.value += planId to updatedPlan
         return newTraining
     }
 
     override suspend fun changeTrainingName(planId: String, trainingId: String, newName: String) {
-        collection.value[planId]?.let { plan ->
-            val newDays = plan.trainings.map { day ->
-                if (day.id == trainingId) {
-                    day.copy(name = newName)
-                } else {
-                    day
-                }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.updated({ it.id == trainingId }) { training ->
+                        training.copy(name = newName)
+                    }
+                )
             }
-            collection.value += planId to plan.copy(trainings = newDays)
-        }
+        )
+        collection.value += planId to updatedPlan
     }
 
     override suspend fun deleteTraining(planId: String, trainingId: String) {
-        collection.value[planId]?.let { plan ->
-            val newDays = plan.trainings.filter { it.id != trainingId }
-            collection.value += planId to plan.copy(trainings = newDays)
-        }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.filter { it.id != trainingId }
+                )
+            }
+        )
+        collection.value += planId to updatedPlan
     }
 
     override suspend fun addExercise(
@@ -112,24 +124,28 @@ class FakePlansRepository : PlansRepository {
         sets: Sets,
         reps: Reps
     ): PlannedExercise {
-        val plans = collection.value
-        val days = plans[planId]?.trainings ?: emptyList()
-        val exercises = days.find { it.id == trainingId }?.exercises ?: emptyList()
-        val id = (exercises.size + 1).toString()
+        val plan = collection.value[planId]!!
+        val allExercises = plan.weeks.flatMap { it.trainings }.flatMap { it.exercises }
+        val newId = (allExercises.size + 1).toString()
         val newExercise = PlannedExercise(
-            id = id,
+            id = newId,
             name = name,
             sets = sets,
             reps = reps
         )
-        val newDays = days.map { day ->
-            if (day.id == trainingId) {
-                day.copy(exercises = exercises + newExercise)
-            } else {
-                day
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.updated({ it.id == trainingId }) { training ->
+                        val id = (training.exercises.size + 1).toString()
+                        training.copy(
+                            exercises = training.exercises + newExercise
+                        )
+                    }
+                )
             }
-        }
-        collection.value += planId to plans[planId]!!.copy(trainings = newDays)
+        )
+        collection.value += planId to updatedPlan
         return newExercise
     }
 
@@ -141,37 +157,39 @@ class FakePlansRepository : PlansRepository {
         newSets: Sets,
         newReps: Reps
     ) {
-        collection.value[planId]?.let { plan ->
-            val newDays = plan.trainings.map { day ->
-                if (day.id == trainingId) {
-                    val newExercises = day.exercises.map { exercise ->
-                        if (exercise.id == exerciseId) {
-                            exercise.copy(name = newName, sets = newSets, reps = newReps)
-                        } else {
-                            exercise
-                        }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.updated({ it.id == trainingId }) { training ->
+                        training.copy(
+                            exercises = training.exercises.updated({
+                                it.id == exerciseId
+                            }) { exercise ->
+                                exercise.copy(name = newName, sets = newSets, reps = newReps)
+                            }
+                        )
                     }
-                    day.copy(exercises = newExercises)
-                } else {
-                    day
-                }
+                )
             }
-            collection.value += planId to plan.copy(trainings = newDays)
-        }
+        )
+        collection.value += planId to updatedPlan
     }
 
     override suspend fun deleteExercise(planId: String, trainingId: String, exerciseId: String) {
-        collection.value[planId]?.let { plan ->
-            val newDays = plan.trainings.map { day ->
-                if (day.id == trainingId) {
-                    val newExercises = day.exercises.filter { it.id != exerciseId }
-                    day.copy(exercises = newExercises)
-                } else {
-                    day
-                }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.updated({ it.id == trainingId }) { training ->
+                        training.copy(
+                            exercises = training.exercises.filter { it.id != exerciseId }
+                        )
+                    }
+                )
             }
-            collection.value += planId to plan.copy(trainings = newDays)
-        }
+        )
+        collection.value += planId to updatedPlan
     }
 
     override suspend fun reorderExercises(
@@ -179,16 +197,19 @@ class FakePlansRepository : PlansRepository {
         trainingId: String,
         exercisesIds: List<String>
     ) {
-        collection.value[planId]?.let { plan ->
-            val newDays = plan.trainings.map { day ->
-                if (day.id == trainingId) {
-                    val newExercises = day.exercises.sortedBy { exercisesIds.indexOf(it.id) }
-                    day.copy(exercises = newExercises)
-                } else {
-                    day
-                }
+        val plan = collection.value[planId]!!
+        val updatedPlan = plan.copy(
+            weeks = plan.weeks.updated({ it.hasTraining(trainingId) }) { week ->
+                week.copy(
+                    trainings = week.trainings.updated({ it.id == trainingId }) { training ->
+                        val newExercises = training.exercises.sortedBy {
+                            exercisesIds.indexOf(it.id)
+                        }
+                        training.copy(exercises = newExercises)
+                    }
+                )
             }
-            collection.value += planId to plan.copy(trainings = newDays)
-        }
+        )
+        collection.value += planId to updatedPlan
     }
 }

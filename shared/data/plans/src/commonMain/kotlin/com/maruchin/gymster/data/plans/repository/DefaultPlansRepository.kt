@@ -6,6 +6,7 @@ import com.maruchin.gymster.data.plans.mapper.toDomainModel
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
+import com.maruchin.gymster.data.plans.model.PlannedWeek
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import io.realm.kotlin.types.RealmUUID
@@ -37,9 +38,9 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         localDataSource.deletePlan(planId = RealmUUID.from(planId))
     }
 
-    override suspend fun addWeek(planId: String): List<PlannedTraining> {
+    override suspend fun addWeek(planId: String): PlannedWeek {
         val plannedTrainingsDbModel = localDataSource.addWeek(RealmUUID.from(planId))
-        return plannedTrainingsDbModel.map { it.toDomainModel() }
+        return plannedTrainingsDbModel.toDomainModel()
     }
 
     override suspend fun addTraining(

@@ -89,15 +89,16 @@ class PlanEditorViewModelTest : KoinTest {
     fun `delete day`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.trainings.random()
+        val week = plan.weeks.first()
+        val training = week.trainings.random()
         val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.trainings shouldContain day
+            awaitItem()!!.weeks.first().trainings shouldContain training
 
-            viewModel.deleteTraining(dayId = day.id)
+            viewModel.deleteTraining(dayId = training.id)
 
-            awaitItem()!!.trainings shouldNotContain day
+            awaitItem()!!.weeks.first().trainings shouldNotContain training
         }
     }
 
@@ -105,16 +106,17 @@ class PlanEditorViewModelTest : KoinTest {
     fun `delete exercise`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.trainings.first()
-        val exercise = day.exercises.random()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
+        val exercise = training.exercises.random()
         val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.trainings.first().exercises shouldContain exercise
+            awaitItem()!!.weeks.first().trainings.first().exercises shouldContain exercise
 
-            viewModel.deleteExercise(dayId = day.id, exerciseId = exercise.id)
+            viewModel.deleteExercise(dayId = training.id, exerciseId = exercise.id)
 
-            awaitItem()!!.trainings.first().exercises shouldNotContain exercise
+            awaitItem()!!.weeks.first().trainings.first().exercises shouldNotContain exercise
         }
     }
 
@@ -122,20 +124,23 @@ class PlanEditorViewModelTest : KoinTest {
     fun `reorder exercises`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
-        val day = plan.trainings.first()
-        val originalExercises = day.exercises
-        val reorderedExercises = day.exercises.shuffled()
+        val week = plan.weeks.first()
+        val training = week.trainings.first()
+        val originalExercises = training.exercises
+        val reorderedExercises = training.exercises.shuffled()
         val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem()!!.trainings.first().exercises shouldContainInOrder originalExercises
+            awaitItem()!!.weeks.first().trainings.first().exercises shouldContainInOrder
+                originalExercises
 
             viewModel.reorderExercises(
-                dayId = day.id,
+                dayId = training.id,
                 exercisesIds = reorderedExercises.map { it.id }
             )
 
-            awaitItem()!!.trainings.first().exercises shouldContainInOrder reorderedExercises
+            awaitItem()!!.weeks.first().trainings.first().exercises shouldContainInOrder
+                reorderedExercises
         }
     }
 }

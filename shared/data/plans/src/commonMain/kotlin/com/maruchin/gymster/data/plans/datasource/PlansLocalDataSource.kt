@@ -47,32 +47,35 @@ internal class PlansLocalDataSource(private val realm: Realm) {
         }
     }
 
-    suspend fun addWeek(planId: RealmUUID): List<PlannedTrainingDbModel> = realm.write {
-        val plan = query<PlanDbModel>("_id == $0", planId).find().first()
-        val weeks = plan.trainings.sortedBy { it.weekIndex }.groupBy { it.weekIndex }.values
-        val lastWeek = weeks.last()
-        val newWeek = mutableListOf<PlannedTrainingDbModel>()
-        lastWeek.forEach { training ->
-            PlannedTrainingDbModel().apply {
-                name = training.name
-                weekIndex = training.weekIndex + 1
-                training.exercises.forEach { exercise ->
-                    PlannedExerciseDbModel().apply {
-                        name = exercise.name
-                        regularSets = exercise.regularSets
-                        dropSets = exercise.dropSets
-                        minReps = exercise.minReps
-                        maxReps = exercise.maxReps
-                    }.also {
-                        exercises.add(it)
+    suspend fun addWeek(planId: RealmUUID): Map.Entry<Int, List<PlannedTrainingDbModel>> {
+        realm.write {
+            val plan = query<PlanDbModel>("_id == $0", planId).find().first()
+            val weeks = plan.trainings.sortedBy { it.weekIndex }.groupBy { it.weekIndex }.values
+            val lastWeek = weeks.last()
+            lastWeek.forEach { training ->
+                PlannedTrainingDbModel().apply {
+                    name = training.name
+                    weekIndex = training.weekIndex + 1
+                    training.exercises.forEach { exercise ->
+                        PlannedExerciseDbModel().apply {
+                            name = exercise.name
+                            regularSets = exercise.regularSets
+                            dropSets = exercise.dropSets
+                            minReps = exercise.minReps
+                            maxReps = exercise.maxReps
+                        }.also {
+                            exercises.add(it)
+                        }
                     }
+                }.also {
+                    plan.trainings.add(it)
                 }
-            }.also {
-                newWeek.add(it)
-                plan.trainings.add(it)
             }
         }
-        newWeek
+        return realm.query<PlanDbModel>("_id == $0", planId).find().first().trainings
+            .groupBy { it.weekIndex }
+            .entries
+            .last()
     }
 
     suspend fun addTraining(planId: RealmUUID, name: String): PlannedTrainingDbModel {
