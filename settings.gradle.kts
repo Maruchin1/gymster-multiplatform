@@ -16,17 +16,23 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "gymster-multiplatform"
-include(":androidApp")
-include(":androidApp:home")
-include(":androidApp:plan-list")
-include(":androidApp:plan-editor")
-include(":androidApp:ui")
 
-include(":shared")
+include(":android:app")
+include(":android:home")
+include(":android:plan-list")
+include(":android:plan-editor")
+include(":android:training-block-details")
+include(":android:training-editor")
+include(":android:ui")
+
+include(":shared:umbrella")
 
 include(":shared:core:di")
 include(":shared:core:database")
 include(":shared:core:clock")
+include(":shared:core:coroutines")
+include(":shared:core:settings")
+include(":shared:core:utils")
 
 include(":shared:data:plans")
 include(":shared:data:trainings")
@@ -34,10 +40,5 @@ include(":shared:data:trainings")
 include(":shared:feature:home")
 include(":shared:feature:plan-list")
 include(":shared:feature:plan-editor")
-include(":shared:core:coroutines")
 include(":shared:feature:training-block-details")
-include(":androidApp:training-block-details")
-include(":androidApp:training-editor")
 include(":shared:feature:training-editor")
-include(":shared:core:settings")
-include(":shared:core:utils")
