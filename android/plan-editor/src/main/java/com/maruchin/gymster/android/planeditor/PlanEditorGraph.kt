@@ -7,8 +7,6 @@ import com.maruchin.gymster.android.planeditor.exerciseform.ExerciseFormRoute
 import com.maruchin.gymster.android.planeditor.exerciseform.exerciseFormDialog
 import com.maruchin.gymster.android.planeditor.planeditor.PlanEditorRoute
 import com.maruchin.gymster.android.planeditor.planeditor.planEditorScreen
-import com.maruchin.gymster.android.planeditor.planform.PlanFormRoute
-import com.maruchin.gymster.android.planeditor.planform.planFormDialog
 import com.maruchin.gymster.android.planeditor.trainingform.TrainingFormRoute
 import com.maruchin.gymster.android.planeditor.trainingform.trainingFormDialog
 import kotlinx.serialization.Serializable
@@ -21,7 +19,6 @@ fun NavGraphBuilder.planEditorGraph(navController: NavController) {
         planEditorScreen(
             navController = navController,
             onBack = { navController.popBackStack() },
-            onEditName = { planId -> navController.navigate(PlanFormRoute(planId)) },
             onAddTraining = { planId -> navController.navigate(TrainingFormRoute(planId)) },
             onEditTraining = { planId, trainingId ->
                 navController.navigate(TrainingFormRoute(planId, trainingId))
@@ -32,9 +29,6 @@ fun NavGraphBuilder.planEditorGraph(navController: NavController) {
             onEditExercise = { planId, trainingId, exerciseId ->
                 navController.navigate(ExerciseFormRoute(planId, trainingId, exerciseId))
             }
-        )
-        planFormDialog(
-            onDismiss = { navController.navigateUp() }
         )
         trainingFormDialog(
             onDismiss = { navController.navigateUp() }

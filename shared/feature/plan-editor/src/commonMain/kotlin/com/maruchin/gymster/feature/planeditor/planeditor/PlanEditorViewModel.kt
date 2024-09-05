@@ -27,6 +27,10 @@ class PlanEditorViewModel internal constructor(
             initialValue = PlanEditorUiState.Loading
         )
 
+    fun changePlanName(newName: String) = viewModelScope.launch {
+        plansRepository.changePlanName(planId = planId, newName = newName)
+    }
+
     fun deletePlan() = viewModelScope.launch {
         plansRepository.deletePlan(planId = planId)
     }

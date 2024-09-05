@@ -45,7 +45,6 @@ internal fun SetProgressFormModal(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        windowInsets = BottomSheetDefaults.windowInsets.only(WindowInsetsSides.Top)
     ) {
         SetProgressFormModal(
             setProgress = setProgress,

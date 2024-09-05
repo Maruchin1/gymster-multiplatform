@@ -13,3 +13,5 @@ fun <T> Collection<T>.swap(fromIndex: Int, toIndex: Int): List<T> {
     mutableList.add(toIndex, mutableList.removeAt(fromIndex))
     return mutableList
 }
+
+fun <T> Set<T>.toggle(value: T): Set<T> = if (contains(value)) minus(value) else plus(value)

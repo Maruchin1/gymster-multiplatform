@@ -9,3 +9,5 @@ captures
 .cxx
 local.properties
 xcuserdata
+ktlint-compose-0.4.11-all.jar
+default.realm.*
