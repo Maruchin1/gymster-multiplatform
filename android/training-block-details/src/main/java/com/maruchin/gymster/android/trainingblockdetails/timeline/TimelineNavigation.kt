@@ -26,7 +26,7 @@ internal fun NavGraphBuilder.timelineScreen(
             navController.getBackStackEntry<TrainingBlockDetailsGraph>()
                 .toRoute<TrainingBlockDetailsGraph>()
         }
-        val viewModel = viewModel { TimelineViewModel.get(trainingBlockId) }
+        val viewModel = viewModel { TimelineViewModel.create(trainingBlockId) }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         TimelineScreen(

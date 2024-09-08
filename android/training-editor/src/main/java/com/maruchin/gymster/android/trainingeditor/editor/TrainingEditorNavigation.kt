@@ -23,7 +23,7 @@ internal fun NavGraphBuilder.trainingEditorScreen(
         val (trainingBlockId, trainingId) = remember(navController) {
             navController.getBackStackEntry<TrainingEditorGraph>().toRoute<TrainingEditorGraph>()
         }
-        val viewModel = viewModel { TrainingEditorViewModel.get(trainingBlockId, trainingId) }
+        val viewModel = viewModel { TrainingEditorViewModel.create(trainingBlockId, trainingId) }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         TrainingEditorScreen(

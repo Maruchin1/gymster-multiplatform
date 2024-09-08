@@ -12,5 +12,5 @@ kotlin {
 }
 
 android {
-    namespace = "com.maruchin.gymster.feature.planeditor"
+    namespace = "com.maruchin.gymster.feature.plans"
 }

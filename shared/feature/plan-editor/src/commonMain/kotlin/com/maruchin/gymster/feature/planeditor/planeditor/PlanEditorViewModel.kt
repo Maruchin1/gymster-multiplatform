@@ -2,7 +2,6 @@ package com.maruchin.gymster.feature.planeditor.planeditor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.repository.PlansRepository
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
@@ -87,9 +87,8 @@ class PlanEditorViewModel internal constructor(
         )
     }
 
-    companion object {
+    companion object : KoinComponent {
 
-        fun get(planId: String): PlanEditorViewModel =
-            SharedLibraryKoin.get { parametersOf(planId) }
+        fun create(planId: String): PlanEditorViewModel = get { parametersOf(planId) }
     }
 }

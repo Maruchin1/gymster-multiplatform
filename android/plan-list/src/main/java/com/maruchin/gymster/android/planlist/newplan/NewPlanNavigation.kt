@@ -11,7 +11,7 @@ internal data object NewPlanRoute
 
 internal fun NavGraphBuilder.newPlanDialog(onDismiss: () -> Unit) {
     dialog<NewPlanRoute> {
-        val viewModel = viewModel { NewPlanViewModel.get() }
+        val viewModel = viewModel { NewPlanViewModel.create() }
 
         NewPlanDialog(
             onDismiss = onDismiss,

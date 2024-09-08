@@ -26,7 +26,7 @@ class MultiplatformConventionPlugin : Plugin<Project> {
                 commonMain.dependencies {
                     api(libs.findLibrary("kotlinx-datetime").get())
                     api(libs.findLibrary("kotlinx-coroutines").get())
-                    implementation(libs.findLibrary("koin-core").get())
+                    api(libs.findLibrary("koin-core").get())
                 }
                 commonTest.dependencies {
                     implementation(libs.findLibrary("kotlin-test").get())

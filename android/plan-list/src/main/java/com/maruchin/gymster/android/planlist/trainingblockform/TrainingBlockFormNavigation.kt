@@ -13,7 +13,7 @@ internal data class TrainingBlockFormRoute(val planId: String)
 internal fun NavGraphBuilder.trainingBlockFormDialog(onDismiss: () -> Unit) {
     dialog<TrainingBlockFormRoute> { entry ->
         val (planId) = entry.toRoute<TrainingBlockFormRoute>()
-        val viewModel = viewModel { TrainingBlockFormViewModel.get(planId) }
+        val viewModel = viewModel { TrainingBlockFormViewModel.create(planId) }
 
         TrainingBlockFormDialog(
             onDismiss = onDismiss,

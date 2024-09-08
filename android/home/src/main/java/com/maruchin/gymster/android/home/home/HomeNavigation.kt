@@ -16,7 +16,7 @@ internal fun NavGraphBuilder.homeScreen(
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit
 ) {
     composable<HomeRoute> {
-        val viewModel = viewModel { HomeViewModel.get() }
+        val viewModel = viewModel { HomeViewModel.create() }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         HomeScreen(

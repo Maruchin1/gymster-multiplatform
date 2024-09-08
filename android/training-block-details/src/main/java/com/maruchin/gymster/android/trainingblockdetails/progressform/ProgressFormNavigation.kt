@@ -16,7 +16,7 @@ internal fun NavGraphBuilder.progressFormScreen(onBack: () -> Unit) {
     composable<ProgressFormRoute> { entry ->
         val (trainingBlockId, setProgressId) = entry.toRoute<ProgressFormRoute>()
         val viewModel = viewModel {
-            ProgressFormViewModel.get(trainingBlockId, setProgressId)
+            ProgressFormViewModel.create(trainingBlockId, setProgressId)
         }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 

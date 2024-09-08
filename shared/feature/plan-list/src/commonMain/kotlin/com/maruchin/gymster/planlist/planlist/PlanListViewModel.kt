@@ -2,7 +2,6 @@ package com.maruchin.gymster.planlist.planlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 class PlanListViewModel internal constructor(private val plansRepository: PlansRepository) :
@@ -44,8 +44,8 @@ class PlanListViewModel internal constructor(private val plansRepository: PlansR
         }
     }
 
-    companion object {
+    companion object : KoinComponent {
 
-        fun get(): PlanListViewModel = SharedLibraryKoin.get()
+        fun create(): PlanListViewModel = get()
     }
 }

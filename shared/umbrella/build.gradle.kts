@@ -28,7 +28,6 @@ kotlin {
             api(projects.shared.feature.trainingEditor)
             implementation(projects.shared.data.plans)
             implementation(projects.shared.data.trainings)
-            implementation(projects.shared.core.di)
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.clock)
             implementation(projects.shared.core.coroutines)

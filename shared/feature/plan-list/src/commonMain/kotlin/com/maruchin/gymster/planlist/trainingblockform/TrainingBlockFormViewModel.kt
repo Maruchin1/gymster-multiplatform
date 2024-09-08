@@ -2,12 +2,12 @@ package com.maruchin.gymster.planlist.trainingblockform
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maruchin.gymster.core.di.SharedLibraryKoin
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import com.maruchin.gymster.data.trainings.repository.TrainingsRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
@@ -22,9 +22,8 @@ class TrainingBlockFormViewModel internal constructor(
         trainingsRepository.createTrainingBlock(plan, startDate, 8)
     }
 
-    companion object {
+    companion object : KoinComponent {
 
-        fun get(planId: String): TrainingBlockFormViewModel =
-            SharedLibraryKoin.get { parametersOf(planId) }
+        fun create(planId: String): TrainingBlockFormViewModel = get { parametersOf(planId) }
     }
 }

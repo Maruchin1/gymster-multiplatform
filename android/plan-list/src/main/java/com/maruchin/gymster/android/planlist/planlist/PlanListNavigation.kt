@@ -18,7 +18,7 @@ internal fun NavGraphBuilder.planListScreen(
     onEditPlan: (String) -> Unit
 ) {
     composable<PlanListRoute> {
-        val viewModel = viewModel { PlanListViewModel.get() }
+        val viewModel = viewModel { PlanListViewModel.create() }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         PlanListScreen(

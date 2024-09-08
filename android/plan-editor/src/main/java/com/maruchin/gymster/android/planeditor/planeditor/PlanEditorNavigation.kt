@@ -20,7 +20,7 @@ internal fun NavGraphBuilder.planEditorScreen(navController: NavController, onBa
         val (planId) = remember(navController, entry) {
             navController.getBackStackEntry<PlanEditorGraph>().toRoute<PlanEditorGraph>()
         }
-        val viewModel = viewModel { PlanEditorViewModel.get(planId) }
+        val viewModel = viewModel { PlanEditorViewModel.create(planId) }
         val state by viewModel.uiState.collectAsStateWithLifecycle()
 
         PlanEditorScreen(

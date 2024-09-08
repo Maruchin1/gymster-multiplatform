@@ -27,7 +27,6 @@ include(":android:ui")
 
 include(":shared:umbrella")
 
-include(":shared:core:di")
 include(":shared:core:database")
 include(":shared:core:clock")
 include(":shared:core:coroutines")
@@ -42,3 +41,4 @@ include(":shared:feature:plan-list")
 include(":shared:feature:plan-editor")
 include(":shared:feature:training-block-details")
 include(":shared:feature:training-editor")
+include(":shared:feature:plans")
