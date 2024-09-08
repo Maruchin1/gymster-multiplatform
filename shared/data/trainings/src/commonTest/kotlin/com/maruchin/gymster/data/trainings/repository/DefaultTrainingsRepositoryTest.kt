@@ -55,7 +55,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         repository.observeAllTrainingBlocks().test {
             awaitItem().shouldBeEmpty()
 
-            repository.createTrainingBlock(plan, startDate)
+            repository.createTrainingBlock(plan, startDate, 8)
 
             awaitItem() shouldHaveSize 1
         }
@@ -65,7 +65,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     fun `delete training block`() = runTest {
         val plan = samplePlans.first()
         val startDate = LocalDate(2024, 8, 12)
-        val trainingBlock = repository.createTrainingBlock(plan, startDate)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
 
         repository.observeAllTrainingBlocks().test {
             awaitItem() shouldHaveSize 1
@@ -80,7 +80,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     fun `update progress`() = runTest {
         val plan = samplePlans.first()
         val startDate = LocalDate(2024, 8, 12)
-        val trainingBlock = repository.createTrainingBlock(plan, startDate)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
         val week = trainingBlock.weeks.first()
         val training = week.trainings.first()
         val exercise = training.exercises.first()
@@ -114,7 +114,7 @@ class DefaultTrainingsRepositoryTest : KoinTest {
     fun `set active training block`() = runTest {
         val plan = samplePlans.first()
         val startDate = LocalDate(2024, 8, 12)
-        val trainingBlock = repository.createTrainingBlock(plan, startDate)
+        val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
 
         repository.observeTrainingBlock(trainingBlock.id).test {
             awaitItem()!!.isActive.shouldBeFalse()

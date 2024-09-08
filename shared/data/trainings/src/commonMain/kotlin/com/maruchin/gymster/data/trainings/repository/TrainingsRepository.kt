@@ -12,7 +12,11 @@ interface TrainingsRepository {
 
     fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?>
 
-    suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock
+    suspend fun createTrainingBlock(
+        plan: Plan,
+        startDate: LocalDate,
+        weeksDuration: Int
+    ): TrainingBlock
 
     suspend fun deleteTrainingBlock(trainingBlockId: String)
 

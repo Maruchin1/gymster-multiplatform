@@ -3,6 +3,8 @@ package com.maruchin.gymster.feature.planeditor.planeditor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.core.di.SharedLibraryKoin
+import com.maruchin.gymster.data.plans.model.Reps
+import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,22 +37,52 @@ class PlanEditorViewModel internal constructor(
         plansRepository.deletePlan(planId = planId)
     }
 
-    fun deleteTraining(dayId: String) = viewModelScope.launch {
-        plansRepository.deleteTraining(planId = planId, trainingId = dayId)
+    fun addTraining(name: String) = viewModelScope.launch {
+        plansRepository.addTraining(planId = planId, name = name)
     }
 
-    fun deleteExercise(dayId: String, exerciseId: String) = viewModelScope.launch {
-        plansRepository.deleteExercise(
+    fun updateTraining(trainingId: String, newName: String) = viewModelScope.launch {
+        plansRepository.changeTrainingName(
             planId = planId,
-            trainingId = dayId,
-            exerciseId = exerciseId
+            trainingId = trainingId,
+            newName = newName
         )
     }
 
-    fun reorderExercises(dayId: String, exercisesIds: List<String>) = viewModelScope.launch {
+    fun deleteTraining(trainingId: String) = viewModelScope.launch {
+        plansRepository.deleteTraining(planId = planId, trainingId = trainingId)
+    }
+
+    fun addExercise(trainingId: String, name: String, sets: Sets, reps: Reps) =
+        viewModelScope.launch {
+            plansRepository.addExercise(
+                planId = planId,
+                trainingId = trainingId,
+                name = name,
+                sets = sets,
+                reps = reps
+            )
+        }
+
+    fun updateExercise(exerciseId: String, name: String, sets: Sets, reps: Reps) =
+        viewModelScope.launch {
+            plansRepository.updateExercise(
+                planId = planId,
+                exerciseId = exerciseId,
+                newName = name,
+                newSets = sets,
+                newReps = reps
+            )
+        }
+
+    fun deleteExercise(exerciseId: String) = viewModelScope.launch {
+        plansRepository.deleteExercise(planId = planId, exerciseId = exerciseId)
+    }
+
+    fun reorderExercises(trainingId: String, exercisesIds: List<String>) = viewModelScope.launch {
         plansRepository.reorderExercises(
             planId = planId,
-            trainingId = dayId,
+            trainingId = trainingId,
             exercisesIds = exercisesIds
         )
     }

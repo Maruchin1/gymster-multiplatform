@@ -19,7 +19,7 @@ class TrainingBlockFormViewModel internal constructor(
 
     fun createTrainingBlock(startDate: LocalDate) = viewModelScope.launch {
         val plan = plansRepository.observePlan(planId).first() ?: return@launch
-        trainingsRepository.createTrainingBlock(plan, startDate)
+        trainingsRepository.createTrainingBlock(plan, startDate, 8)
     }
 
     companion object {

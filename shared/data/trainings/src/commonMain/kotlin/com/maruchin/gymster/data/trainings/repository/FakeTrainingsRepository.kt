@@ -28,8 +28,12 @@ class FakeTrainingsRepository : TrainingsRepository {
             it[trainingBlockId]?.copy(isActive = trainingBlockId == activeTrainingBlockId.value)
         }
 
-    override suspend fun createTrainingBlock(plan: Plan, startDate: LocalDate): TrainingBlock {
-        val newTrainingBlock = TrainingBlock.from(plan, startDate)
+    override suspend fun createTrainingBlock(
+        plan: Plan,
+        startDate: LocalDate,
+        weeksDuration: Int
+    ): TrainingBlock {
+        val newTrainingBlock = TrainingBlock.from(plan, startDate, weeksDuration)
         collection.value += newTrainingBlock.id to newTrainingBlock
         return newTrainingBlock
     }

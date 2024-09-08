@@ -8,6 +8,10 @@ fun <T> Collection<T>.updated(predicate: (T) -> Boolean, function: (T) -> T) = m
     if (predicate(item)) function(item) else item
 }
 
+fun <T> Collection<T>.removed(index: Int) = filterIndexed { i, _ -> i != index }
+
+fun <T> Collection<T>.removed(predicate: (T) -> Boolean) = filterNot(predicate)
+
 fun <T> Collection<T>.swap(fromIndex: Int, toIndex: Int): List<T> {
     val mutableList = toMutableList()
     mutableList.add(toIndex, mutableList.removeAt(fromIndex))

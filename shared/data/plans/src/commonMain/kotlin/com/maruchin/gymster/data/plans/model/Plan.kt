@@ -1,10 +1,15 @@
 package com.maruchin.gymster.data.plans.model
 
-data class Plan(val id: String, val name: String, val weeks: List<PlannedWeek>) {
+import com.maruchin.gymster.core.utils.updated
 
-    fun getTraining(trainingId: String) =
-        weeks.flatMap { it.trainings }.first { it.id == trainingId }
+data class Plan(val id: String, val name: String, val trainings: List<PlannedTraining>) {
 
     fun getExercise(exerciseId: String) =
-        weeks.flatMap { it.trainings }.flatMap { it.exercises }.first { it.id == exerciseId }
+        trainings.flatMap { it.exercises }.first { it.id == exerciseId }
+
+    fun changeExerciseOrder(fromId: String, toId: String) = copy(
+        trainings = trainings.updated({ it.hasExercise(fromId) }) { training ->
+            training.changeExercisesOrder(fromId, toId)
+        }
+    )
 }

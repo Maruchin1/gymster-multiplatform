@@ -6,7 +6,6 @@ import com.maruchin.gymster.data.plans.mapper.toDomainModel
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
-import com.maruchin.gymster.data.plans.model.PlannedWeek
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import io.realm.kotlin.types.RealmUUID
@@ -31,23 +30,14 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
     }
 
     override suspend fun changePlanName(planId: String, newName: String) {
-        localDataSource.changePlanName(planId = RealmUUID.from(planId), newName = newName)
+        localDataSource.updatePlan(planId = RealmUUID.from(planId), newName = newName)
     }
 
     override suspend fun deletePlan(planId: String) {
         localDataSource.deletePlan(planId = RealmUUID.from(planId))
     }
 
-    override suspend fun addWeek(planId: String): PlannedWeek {
-        val plannedTrainingsDbModel = localDataSource.addWeek(RealmUUID.from(planId))
-        return plannedTrainingsDbModel.toDomainModel()
-    }
-
-    override suspend fun addTraining(
-        planId: String,
-        weekIndex: Int,
-        name: String
-    ): PlannedTraining {
+    override suspend fun addTraining(planId: String, name: String): PlannedTraining {
         val plannedTrainingDbModel = localDataSource.addTraining(
             planId = RealmUUID.from(planId),
             name = name
@@ -56,7 +46,7 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
     }
 
     override suspend fun changeTrainingName(planId: String, trainingId: String, newName: String) {
-        localDataSource.changeDayName(
+        localDataSource.updateTraining(
             planId = RealmUUID.from(planId),
             dayId = RealmUUID.from(trainingId),
             name = newName
@@ -64,7 +54,7 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
     }
 
     override suspend fun deleteTraining(planId: String, trainingId: String) {
-        localDataSource.deleteDay(
+        localDataSource.deleteTraining(
             planId = RealmUUID.from(planId),
             dayId = RealmUUID.from(trainingId)
         )
@@ -89,15 +79,13 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
 
     override suspend fun updateExercise(
         planId: String,
-        trainingId: String,
         exerciseId: String,
         newName: String,
         newSets: Sets,
         newReps: Reps
     ) {
-        localDataSource.changeExerciseName(
+        localDataSource.updateExercise(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId),
             exerciseId = RealmUUID.from(exerciseId),
             newName = newName,
             newSets = newSets,
@@ -105,10 +93,9 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         )
     }
 
-    override suspend fun deleteExercise(planId: String, trainingId: String, exerciseId: String) {
+    override suspend fun deleteExercise(planId: String, exerciseId: String) {
         localDataSource.deleteExercise(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId),
             exerciseId = RealmUUID.from(exerciseId)
         )
     }

@@ -13,5 +13,5 @@ val dataTrainingsModule = module {
 
     factory { TrainingsLocalDataSource(get()) }
 
-    factory { DefaultTrainingsRepository(get(), get(), get()) } bind TrainingsRepository::class
+    factory { DefaultTrainingsRepository(get(), get()) } bind TrainingsRepository::class
 }

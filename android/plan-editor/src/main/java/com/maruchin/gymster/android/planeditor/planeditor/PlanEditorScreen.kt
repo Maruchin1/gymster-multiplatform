@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -15,46 +16,57 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.maruchin.gymster.android.planeditor.exerciseform.ExerciseFormModal
 import com.maruchin.gymster.android.planeditor.planform.PlanFormModal
+import com.maruchin.gymster.android.planeditor.trainingform.TrainingFormModal
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.plans.model.PlannedWeek
+import com.maruchin.gymster.data.plans.model.PlannedExercise
+import com.maruchin.gymster.data.plans.model.PlannedTraining
+import com.maruchin.gymster.data.plans.model.Reps
+import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.planeditor.planeditor.PlanEditorUiState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.ReorderableLazyListState
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,27 +74,30 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 internal fun PlanEditorScreen(
     state: PlanEditorUiState,
     onBack: () -> Unit,
-    onChangePlanName: (newName: String) -> Unit,
+    onUpdatePlan: (newName: String) -> Unit,
+    onAddTraining: (name: String) -> Unit,
+    onUpdateTraining: (trainingId: String, name: String) -> Unit,
     onDeletePlan: () -> Unit,
-    onAddTraining: () -> Unit,
-    onEditTraining: (trainingId: String) -> Unit,
     onDeleteTraining: (trainingId: String) -> Unit,
-    onAddExercise: (trainingId: String) -> Unit,
-    onEditExercise: (trainingId: String, exerciseId: String) -> Unit,
-    onDeleteExercise: (trainingId: String, exerciseId: String) -> Unit,
+    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onDeleteExercise: (exerciseId: String) -> Unit,
     onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val loadedState = state as? PlanEditorUiState.Loaded
-    var isEditingName by remember { mutableStateOf(false) }
+
+    var isEditingPlan by remember { mutableStateOf(false) }
+    var isAddingTraining by remember { mutableStateOf(false) }
+    var editedTraining by remember { mutableStateOf<PlannedTraining?>(null) }
 
     Scaffold(
         topBar = {
             TopBar(
                 plan = loadedState?.plan,
-                topAppBarScrollBehavior = topAppBarScrollBehavior,
+                scrollBehavior = topAppBarScrollBehavior,
                 onBack = onBack,
-                onChangePlanName = { isEditingName = true },
+                onEditPlan = { isEditingPlan = true },
                 onDeletePlan = onDeletePlan
             )
         }
@@ -98,11 +113,11 @@ internal fun PlanEditorScreen(
                 is PlanEditorUiState.Loaded -> LoadedContent(
                     plan = targetState.plan,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onAddTraining = onAddTraining,
-                    onEditTraining = onEditTraining,
+                    onAddTraining = { isAddingTraining = true },
+                    onUpdateTraining = onUpdateTraining,
                     onDeleteTraining = onDeleteTraining,
                     onAddExercise = onAddExercise,
-                    onEditExercise = onEditExercise,
+                    onUpdateExercise = onUpdateExercise,
                     onDeleteExercise = onDeleteExercise,
                     onReorderExercises = onReorderExercises
                 )
@@ -110,13 +125,57 @@ internal fun PlanEditorScreen(
         }
     }
 
-    if (isEditingName) {
+    if (isEditingPlan) {
         PlanFormModal(
             plan = loadedState?.plan,
-            onDismiss = { isEditingName = false },
-            onSave = onChangePlanName
+            onDismiss = { isEditingPlan = false },
+            onSave = onUpdatePlan
         )
     }
+    if (isAddingTraining) {
+        TrainingFormModal(
+            training = null,
+            onDismiss = { isAddingTraining = false },
+            onSave = onAddTraining
+        )
+    }
+    if (editedTraining != null) {
+        TrainingFormModal(
+            training = editedTraining,
+            onDismiss = { editedTraining = null },
+            onSave = { onUpdateTraining(editedTraining!!.id, it) }
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun TopBar(
+    plan: Plan?,
+    scrollBehavior: TopAppBarScrollBehavior,
+    onBack: () -> Unit,
+    onEditPlan: () -> Unit,
+    onDeletePlan: () -> Unit
+) {
+    LargeTopAppBar(
+        title = {
+            Text(plan?.name.orEmpty())
+        },
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
+            }
+        },
+        actions = {
+            IconButton(onClick = onEditPlan) {
+                Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
+            }
+            IconButton(onClick = onDeletePlan) {
+                Icon(imageVector = Icons.Outlined.Delete, contentDescription = null)
+            }
+        },
+        scrollBehavior = scrollBehavior
+    )
 }
 
 @Composable
@@ -136,78 +195,21 @@ private fun LoadedContent(
     plan: Plan,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
     onAddTraining: () -> Unit,
-    onEditTraining: (trainingId: String) -> Unit,
+    onUpdateTraining: (trainingId: String, name: String) -> Unit,
     onDeleteTraining: (trainingId: String) -> Unit,
-    onAddExercise: (trainingId: String) -> Unit,
-    onEditExercise: (trainingId: String, exerciseId: String) -> Unit,
-    onDeleteExercise: (trainingId: String, exerciseId: String) -> Unit,
+    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onDeleteExercise: (exerciseId: String) -> Unit,
     onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
 ) {
-    val pagerState = rememberPagerState { plan.weeks.size }
-    val scope = rememberCoroutineScope()
+    var mutablePlan by remember(plan) { mutableStateOf(plan) }
 
-    Column {
-        WeeksTabs(
-            weeks = plan.weeks,
-            pagerState = pagerState,
-            scope = scope
-        )
-        HorizontalPager(state = pagerState) { page ->
-            WeekPage(
-                week = plan.weeks[page],
-                topAppBarScrollBehavior = topAppBarScrollBehavior,
-                onAddTraining = onAddTraining,
-                onEditTraining = onEditTraining,
-                onDeleteTraining = onDeleteTraining,
-                onAddExercise = onAddExercise,
-                onEditExercise = onEditExercise,
-                onDeleteExercise = onDeleteExercise,
-                onReorderExercises = onReorderExercises
-            )
-        }
-    }
-}
-
-@Composable
-private fun WeeksTabs(weeks: List<PlannedWeek>, pagerState: PagerState, scope: CoroutineScope) {
-    ScrollableTabRow(
-        selectedTabIndex = pagerState.currentPage,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        weeks.forEachIndexed { index, _ ->
-            Tab(
-                selected = index == pagerState.currentPage,
-                onClick = {
-                    scope.launch { pagerState.animateScrollToPage(index) }
-                },
-                text = {
-                    Text(text = "Week ${index + 1}")
-                }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-private fun WeekPage(
-    week: PlannedWeek,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onAddTraining: () -> Unit,
-    onEditTraining: (trainingId: String) -> Unit,
-    onDeleteTraining: (trainingId: String) -> Unit,
-    onAddExercise: (trainingId: String) -> Unit,
-    onEditExercise: (trainingId: String, exerciseId: String) -> Unit,
-    onDeleteExercise: (trainingId: String, exerciseId: String) -> Unit,
-    onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
-) {
-    var mutableWeek by remember(week) { mutableStateOf(week) }
     val lazyListState = rememberLazyListState()
     val reorderableLazyListState = rememberReorderableLazyListState(
         lazyListState = lazyListState,
         scrollThresholdPadding = WindowInsets.systemBars.asPaddingValues()
     ) { from, to ->
-        mutableWeek = mutableWeek.changeExerciseOrder(
+        mutablePlan = mutablePlan.changeExerciseOrder(
             fromId = from.key as String,
             toId = to.key as String
         )
@@ -220,43 +222,111 @@ private fun WeekPage(
             .fillMaxSize()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
-        mutableWeek.trainings.forEachIndexed { trainingIndex, training ->
-            stickyHeader {
-                TrainingHeader(
-                    training = training,
-                    onEdit = { onEditTraining(training.id) },
-                    onDelete = { onDeleteTraining(training.id) }
-                )
-            }
-            items(training.exercises, key = { it.id }) { exercise ->
-                val currentTraining by rememberUpdatedState(training)
-                PlannedExerciseItem(
-                    exercise = exercise,
-                    reorderableLazyListState = reorderableLazyListState,
-                    onEdit = {
-                        onEditExercise(training.id, exercise.id)
-                    },
-                    onDelete = {
-                        onDeleteExercise(training.id, exercise.id)
-                    },
-                    onDragStopped = {
-                        val exercisesIds = currentTraining.exercises.map { it.id }
-                        onReorderExercises(training.id, exercisesIds)
-                    }
-                )
-            }
-            item {
-                AddExerciseButton(onClick = { onAddExercise(training.id) })
-            }
-            if (trainingIndex != week.trainings.lastIndex) {
-                item {
-                    HorizontalDivider()
-                }
-            }
+        mutablePlan.trainings.forEach { training ->
+            trainingSection(
+                training = training,
+                onUpdateTraining = { name ->
+                    onUpdateTraining(training.id, name)
+                },
+                onDeleteTraining = { onDeleteTraining(training.id) },
+                reorderableLazyListState = reorderableLazyListState,
+                onUpdateExercise = onUpdateExercise,
+                onDeleteExercise = onDeleteExercise,
+                onReorderExercises = onReorderExercises,
+                onAddExercise = onAddExercise
+            )
         }
         item {
             AddTrainingButton(onClick = onAddTraining)
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.trainingSection(
+    training: PlannedTraining,
+    reorderableLazyListState: ReorderableLazyListState,
+    onUpdateTraining: (name: String) -> Unit,
+    onDeleteTraining: () -> Unit,
+    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
+    onDeleteExercise: (exerciseId: String) -> Unit,
+    onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
+) {
+    stickyHeader {
+        var isEditingTraining by rememberSaveable { mutableStateOf(false) }
+
+        TrainingHeader(
+            training = training,
+            onEditTraining = { isEditingTraining = true },
+            onDeleteTraining = onDeleteTraining
+        )
+
+        if (isEditingTraining) {
+            TrainingFormModal(
+                training = training,
+                onDismiss = { isEditingTraining = false },
+                onSave = onUpdateTraining
+            )
+        }
+    }
+    items(training.exercises, key = { it.id }) { exercise ->
+        ExerciseItem(
+            exercise = exercise,
+            reorderableLazyListState = reorderableLazyListState,
+            onUpdateExercise = { name, sets, reps ->
+                onUpdateExercise(exercise.id, name, sets, reps)
+            },
+            onDeleteExercise = { onDeleteExercise(exercise.id) },
+            onDragStop = {
+                val exercisesIds = training.exercises.map { it.id }
+                onReorderExercises(training.id, exercisesIds)
+            }
+        )
+    }
+    item {
+        var isAddingExercise by rememberSaveable { mutableStateOf(false) }
+
+        AddExerciseButton(onClick = { isAddingExercise = true })
+
+        if (isAddingExercise) {
+            ExerciseFormModal(
+                exercise = null,
+                onSave = { name, sets, reps ->
+                    onAddExercise(training.id, name, sets, reps)
+                    isAddingExercise = false
+                },
+                onDismiss = { isAddingExercise = false }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LazyItemScope.TrainingHeader(
+    training: PlannedTraining,
+    onEditTraining: () -> Unit,
+    onDeleteTraining: () -> Unit
+) {
+    Column {
+        HorizontalDivider()
+        TopAppBar(
+            title = {
+                Text(text = training.name)
+            },
+            actions = {
+                IconButton(onClick = onEditTraining) {
+                    Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
+                }
+                IconButton(onClick = onDeleteTraining) {
+                    Icon(imageVector = Icons.Outlined.Delete, contentDescription = null)
+                }
+            },
+            windowInsets = WindowInsets(top = 0),
+            modifier = Modifier.animateItem()
+        )
+        HorizontalDivider()
     }
 }
 
@@ -276,6 +346,92 @@ private fun LazyItemScope.AddTrainingButton(onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
         Text(text = "Add training")
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LazyItemScope.ExerciseItem(
+    exercise: PlannedExercise,
+    reorderableLazyListState: ReorderableLazyListState,
+    onUpdateExercise: (name: String, sets: Sets, reps: Reps) -> Unit,
+    onDeleteExercise: () -> Unit,
+    onDragStop: () -> Unit
+) {
+    var isEditingExercise by rememberSaveable { mutableStateOf(false) }
+
+    ReorderableItem(state = reorderableLazyListState, key = exercise.id) {
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateItem()
+                .padding(horizontal = 16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 12.dp, start = 12.dp, end = 8.dp, bottom = 2.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = exercise.name,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Sets: ${exercise.sets}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Reps: ${exercise.reps}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        AssistChip(
+                            onClick = { isEditingExercise = true },
+                            label = {
+                                Text(text = "Edit")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Edit,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+                                )
+                            }
+                        )
+                        AssistChip(
+                            onClick = onDeleteExercise,
+                            label = {
+                                Text(text = "Delete")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+
+                                )
+                            }
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier.draggableHandle(onDragStopped = onDragStop)
+                ) {
+                    Icon(imageVector = Icons.Default.DragHandle, contentDescription = null)
+                }
+            }
+        }
+    }
+
+    if (isEditingExercise) {
+        ExerciseFormModal(
+            exercise = exercise,
+            onSave = onUpdateExercise,
+            onDismiss = { isEditingExercise = false }
+        )
     }
 }
 
@@ -305,14 +461,14 @@ private fun PlanEditorScreen_LoadedPreview() {
         PlanEditorScreen(
             state = PlanEditorUiState.Loaded(plan = samplePlans.first()),
             onBack = {},
-            onChangePlanName = {},
+            onUpdatePlan = {},
+            onAddTraining = { },
+            onUpdateTraining = { _, _ -> },
             onDeletePlan = {},
-            onAddTraining = {},
-            onEditTraining = {},
             onDeleteTraining = {},
-            onAddExercise = {},
-            onEditExercise = { _, _ -> },
-            onDeleteExercise = { _, _ -> },
+            onAddExercise = { _, _, _, _ -> },
+            onUpdateExercise = { _, _, _, _ -> },
+            onDeleteExercise = { _ -> },
             onReorderExercises = { _, _ -> }
         )
     }

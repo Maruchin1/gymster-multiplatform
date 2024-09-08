@@ -46,11 +46,11 @@ data class TrainingBlock(
 
     companion object {
 
-        internal fun from(plan: Plan, startDate: LocalDate) = TrainingBlock(
+        internal fun from(plan: Plan, startDate: LocalDate, weeksDuration: Int) = TrainingBlock(
             id = "",
             planName = plan.name,
             startDate = startDate,
-            weeks = plan.weeks.map { TrainingWeek.from(it) },
+            weeks = List(weeksDuration) { TrainingWeek.from(plan) },
             isActive = false
         )
     }

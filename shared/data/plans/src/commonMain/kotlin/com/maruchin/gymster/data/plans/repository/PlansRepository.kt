@@ -3,7 +3,6 @@ package com.maruchin.gymster.data.plans.repository
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
-import com.maruchin.gymster.data.plans.model.PlannedWeek
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +19,7 @@ interface PlansRepository {
 
     suspend fun deletePlan(planId: String)
 
-    suspend fun addWeek(planId: String): PlannedWeek
-
-    suspend fun addTraining(planId: String, weekIndex: Int, name: String): PlannedTraining
+    suspend fun addTraining(planId: String, name: String): PlannedTraining
 
     suspend fun changeTrainingName(planId: String, trainingId: String, newName: String)
 
@@ -38,14 +35,13 @@ interface PlansRepository {
 
     suspend fun updateExercise(
         planId: String,
-        trainingId: String,
         exerciseId: String,
         newName: String,
         newSets: Sets,
         newReps: Reps
     )
 
-    suspend fun deleteExercise(planId: String, trainingId: String, exerciseId: String)
+    suspend fun deleteExercise(planId: String, exerciseId: String)
 
     suspend fun reorderExercises(planId: String, trainingId: String, exercisesIds: List<String>)
 }
