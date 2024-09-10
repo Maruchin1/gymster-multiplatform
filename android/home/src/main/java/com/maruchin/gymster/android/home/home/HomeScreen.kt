@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ListAlt
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
 
 @Composable
-internal fun HomeScreen(onOpenPlans: () -> Unit) {
+internal fun HomeScreen(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
     Scaffold(
         topBar = {
             TopBar()
@@ -58,7 +59,30 @@ internal fun HomeScreen(onOpenPlans: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Training plans",
+                            text = "Plans",
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+            item {
+                Card(onClick = onOpenTrainings) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.FitnessCenter,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Trainings",
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
@@ -89,6 +113,6 @@ private fun TopBar() {
 @Composable
 private fun HomeScreen_LoadedPreview() {
     AppTheme {
-        HomeScreen(onOpenPlans = {})
+        HomeScreen(onOpenPlans = {}, onOpenTrainings = {})
     }
 }

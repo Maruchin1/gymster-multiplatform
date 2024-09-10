@@ -7,10 +7,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object HomeRoute
 
-internal fun NavGraphBuilder.homeScreen(onOpenPlans: () -> Unit) {
+internal fun NavGraphBuilder.homeScreen(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
     composable<HomeRoute> {
         HomeScreen(
-            onOpenPlans = onOpenPlans
+            onOpenPlans = onOpenPlans,
+            onOpenTrainings = onOpenTrainings
         )
     }
 }

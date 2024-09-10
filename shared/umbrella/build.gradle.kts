@@ -22,6 +22,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.shared.feature.home)
             api(projects.shared.feature.plans)
+            api(projects.shared.feature.trainings)
             api(projects.shared.feature.trainingBlockDetails)
             api(projects.shared.feature.trainingEditor)
             implementation(projects.shared.data.plans)

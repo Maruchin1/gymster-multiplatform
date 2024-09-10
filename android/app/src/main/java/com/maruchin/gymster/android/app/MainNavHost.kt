@@ -24,7 +24,8 @@ internal fun MainNavHost() {
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         homeGraph(
-            onOpenPlans = { navController.navigate(PlansRoute) }
+            onOpenPlans = { navController.navigate(PlansRoute) },
+            onOpenTrainings = {}
         )
         plansGraph(navController)
         trainingBlockDetailsGraph(
