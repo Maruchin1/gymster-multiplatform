@@ -7,10 +7,9 @@ import com.maruchin.gymster.core.datastore.di.coreSettingsModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
 import com.maruchin.gymster.feature.home.di.featureHomeModule
-import com.maruchin.gymster.feature.planeditor.di.featurePlanEditorModule
+import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import com.maruchin.gymster.feature.trainingblockdetails.di.featureTrainingBlockDetailsModule
 import com.maruchin.gymster.feature.trainingeditor.di.featureTrainingEditorModule
-import com.maruchin.gymster.planlist.di.featurePlanListModule
 import org.koin.core.context.startKoin
 
 private val coreModules =
@@ -20,8 +19,7 @@ private val dataModules = listOf(dataPlansModule, dataTrainingsModule)
 
 private val featureModules = listOf(
     featureHomeModule,
-    featurePlanListModule,
-    featurePlanEditorModule,
+    featurePlansModule,
     featureTrainingBlockDetailsModule,
     featureTrainingEditorModule
 )

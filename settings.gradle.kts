@@ -19,8 +19,7 @@ rootProject.name = "gymster-multiplatform"
 
 include(":android:app")
 include(":android:home")
-include(":android:plan-list")
-include(":android:plan-editor")
+include(":android:plans")
 include(":android:training-block-details")
 include(":android:training-editor")
 include(":android:ui")
@@ -37,8 +36,6 @@ include(":shared:data:plans")
 include(":shared:data:trainings")
 
 include(":shared:feature:home")
-include(":shared:feature:plan-list")
-include(":shared:feature:plan-editor")
 include(":shared:feature:training-block-details")
 include(":shared:feature:training-editor")
 include(":shared:feature:plans")
