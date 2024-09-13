@@ -12,6 +12,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object PlansRoute
 
+// TODO move all routes here and flatten packages
+
 fun NavGraphBuilder.plansGraph(navController: NavController) {
     navigation<PlansRoute>(startDestination = PlanListRoute) {
         planListScreen(

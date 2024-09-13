@@ -46,6 +46,8 @@ data class TrainingBlock(
 
     companion object {
 
+        val possibleWeeksDurations = arrayOf(4, 8, 12, 16, 20, 24)
+
         internal fun from(plan: Plan, startDate: LocalDate, weeksDuration: Int) = TrainingBlock(
             id = "",
             planName = plan.name,

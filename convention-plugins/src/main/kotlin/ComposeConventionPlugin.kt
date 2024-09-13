@@ -21,6 +21,7 @@ class ComposeConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("androidx-activity-compose").get())
                 add("implementation", libs.findLibrary("androidx-navigation-compose").get())
                 add("implementation", libs.findLibrary("kotlinx-serialization").get())
+                add("implementation", libs.findLibrary("kotlinx-datetime").get())
                 add("debugImplementation", libs.findLibrary("compose-ui-tooling").get())
             }
         }

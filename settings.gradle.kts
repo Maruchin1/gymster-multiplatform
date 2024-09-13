@@ -20,6 +20,7 @@ rootProject.name = "gymster-multiplatform"
 include(":android:app")
 include(":android:home")
 include(":android:plans")
+include(":android:trainings")
 include(":android:training-block-details")
 include(":android:training-editor")
 include(":android:ui")
