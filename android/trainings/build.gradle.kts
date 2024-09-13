@@ -9,5 +9,6 @@ android {
 
 dependencies {
     implementation(projects.shared.feature.trainings)
+    implementation(projects.shared.core.utils)
     implementation(projects.android.ui)
 }

@@ -10,6 +10,9 @@ data class TrainingWeek(val trainings: List<Training>) {
     val notCompleteTrainings: List<Training>
         get() = trainings.filterNot { it.isComplete }
 
+    val notCompleteTrainingsIds: Set<String>
+        get() = notCompleteTrainings.map { it.id }.toSet()
+
     companion object {
 
         internal fun from(plan: Plan) = TrainingWeek(
