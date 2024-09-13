@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -55,6 +57,7 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 internal fun StartTrainingBlockScreen(
     onBack: () -> Unit,
+    onEditPlans: () -> Unit,
     viewModel: StartTrainingBlockViewModel = viewModel { StartTrainingBlockViewModel.create() }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,6 +70,7 @@ internal fun StartTrainingBlockScreen(
     StartTrainingBlockScreen(
         state = state,
         onBack = onBack,
+        onEditPlans = onEditPlans,
         onSelectPlan = viewModel::selectPlan,
         onResetPlan = viewModel::resetPlan,
         onSelectStartDate = viewModel::selectStarDate,
@@ -82,6 +86,7 @@ internal fun StartTrainingBlockScreen(
 private fun StartTrainingBlockScreen(
     state: StartTrainingBlockUiState,
     onBack: () -> Unit,
+    onEditPlans: () -> Unit,
     onSelectPlan: (Plan) -> Unit,
     onResetPlan: () -> Unit,
     onSelectStartDate: (LocalDate) -> Unit,
@@ -101,6 +106,7 @@ private fun StartTrainingBlockScreen(
             state = state,
             modifier = Modifier.padding(contentPadding),
             topAppBarScrollBehavior = topAppBarScrollBehavior,
+            onEditPlans = onEditPlans,
             onSelectPlan = onSelectPlan,
             onResetPlan = onResetPlan,
             onSelectStartDate = onSelectStartDate,
@@ -136,6 +142,7 @@ private fun TopBar(onBack: () -> Unit, scrollBehavior: TopAppBarScrollBehavior) 
 private fun LoadedContent(
     state: StartTrainingBlockUiState,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
+    onEditPlans: () -> Unit,
     onSelectPlan: (Plan) -> Unit,
     onResetPlan: () -> Unit,
     onSelectStartDate: (LocalDate) -> Unit,
@@ -153,7 +160,14 @@ private fun LoadedContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            SelectorHeader(text = "Select plan")
+            SelectorHeader(
+                text = "Select plan",
+                action = {
+                    TextButton(onClick = onEditPlans) {
+                        Text("Edit plans")
+                    }
+                }
+            )
         }
         item {
             AnimatedContent(state.selectedPlan, label = "PlanSelector") { selectedPlan ->
@@ -209,19 +223,23 @@ private fun LoadedContent(
 }
 
 @Composable
-private fun SelectorHeader(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(top = 16.dp)
-    )
+private fun SelectorHeader(text: String, action: @Composable (() -> Unit)? = null) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 16.dp)) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.weight(1f)
+        )
+        if (action != null) {
+            action()
+        }
+    }
 }
 
 @Composable
 private fun PlanSelector(state: StartTrainingBlockUiState, onSelectPlan: (Plan) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         state.plans.forEach { plan ->
-            // TODO some deeplink to view plan details
             PlanItem(plan = plan, onClick = { onSelectPlan(plan) })
         }
     }
@@ -247,13 +265,14 @@ private fun PlanItem(plan: Plan, onClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 private fun StartDateSelector(onSelectDate: (LocalDate) -> Unit) {
     val state = rememberDatePickerState()
+    val currentOnSelectDate by rememberUpdatedState(onSelectDate)
 
     LaunchedEffect(state.selectedDateMillis) {
         state.selectedDateMillis?.let { millis ->
             val instant = Instant.fromEpochMilliseconds(millis)
             val timeZone = TimeZone.currentSystemDefault()
             val dateTime = instant.toLocalDateTime(timeZone)
-            onSelectDate(dateTime.date)
+            currentOnSelectDate(dateTime.date)
         }
     }
 
@@ -325,6 +344,7 @@ private fun StartTrainingBlockScreen_LoadedPreview() {
                 isCreated = false
             ),
             onBack = {},
+            onEditPlans = {},
             onSelectPlan = {},
             onResetPlan = {},
             onSelectStartDate = {},
@@ -349,6 +369,7 @@ private fun StartTrainingBlockScreen_PlanSelectedPreview() {
                 isCreated = false
             ),
             onBack = {},
+            onEditPlans = {},
             onSelectPlan = {},
             onResetPlan = {},
             onSelectStartDate = {},
@@ -373,6 +394,7 @@ private fun StartTrainingBlockScreen_StartDateSelectedPreview() {
                 isCreated = false
             ),
             onBack = {},
+            onEditPlans = {},
             onSelectPlan = {},
             onResetPlan = {},
             onSelectStartDate = {},
@@ -397,6 +419,7 @@ private fun StartTrainingBlockScreen_WeeksDurationSelectedPreview() {
                 isCreated = false
             ),
             onBack = {},
+            onEditPlans = {},
             onSelectPlan = {},
             onResetPlan = {},
             onSelectStartDate = {},

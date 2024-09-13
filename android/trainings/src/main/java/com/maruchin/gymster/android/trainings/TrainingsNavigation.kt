@@ -17,7 +17,7 @@ private data object TrainingBlockListRoute
 @Serializable
 private data object StartTrainingBlockRoute
 
-fun NavGraphBuilder.trainingsGraph(navController: NavController) {
+fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: () -> Unit) {
     navigation<TrainingsRoute>(startDestination = TrainingBlockListRoute) {
         composable<TrainingBlockListRoute> {
             TrainingBlockListScreen(
@@ -28,7 +28,8 @@ fun NavGraphBuilder.trainingsGraph(navController: NavController) {
         }
         composable<StartTrainingBlockRoute> {
             StartTrainingBlockScreen(
-                onBack = { navController.navigateUp() }
+                onBack = { navController.navigateUp() },
+                onEditPlans = onEditPlans
             )
         }
     }

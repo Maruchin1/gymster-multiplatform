@@ -30,7 +30,10 @@ internal fun MainNavHost() {
             onOpenTrainings = { navController.navigate(TrainingsRoute) }
         )
         plansGraph(navController)
-        trainingsGraph(navController)
+        trainingsGraph(
+            navController = navController,
+            onEditPlans = { navController.navigate(PlansRoute) }
+        )
         trainingBlockDetailsGraph(
             navController = navController,
             onOpenTraining = { trainingBlockId, trainingId ->
