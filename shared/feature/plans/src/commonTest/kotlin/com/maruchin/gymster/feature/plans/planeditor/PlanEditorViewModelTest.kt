@@ -9,7 +9,6 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.nulls.shouldBeNull
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -76,11 +75,15 @@ class PlanEditorViewModelTest : KoinTest {
         val plan = samplePlans.random()
         val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
 
-        trainingPlansRepository.observePlan(planId = plan.id).test {
-            awaitItem().shouldNotBeNull()
+        viewModel.uiState.test {
+            awaitItem() shouldBe PlanEditorUiState.Loading
+            awaitItem() shouldBe PlanEditorUiState.Loaded(plan)
 
             viewModel.deletePlan()
 
+            awaitItem() shouldBe PlanEditorUiState.Deleted
+        }
+        trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem().shouldBeNull()
         }
     }

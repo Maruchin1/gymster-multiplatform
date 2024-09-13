@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.plans.exerciseform
+package com.maruchin.gymster.android.plans
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.plans.planeditor
+package com.maruchin.gymster.android.plans
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,9 +44,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,9 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.maruchin.gymster.android.plans.exerciseform.ExerciseFormModal
-import com.maruchin.gymster.android.plans.planform.PlanFormModal
-import com.maruchin.gymster.android.plans.trainingform.TrainingFormModal
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
@@ -65,13 +65,46 @@ import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.plans.planeditor.PlanEditorUiState
+import com.maruchin.gymster.feature.plans.planeditor.PlanEditorViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableLazyListState
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PlanEditorScreen(
+    planId: String,
+    onBack: () -> Unit,
+    viewModel: PlanEditorViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        PlanEditorViewModel.create(
+            planId
+        )
+    }
+) {
+    val currentOnBack by rememberUpdatedState(onBack)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state) {
+        if (state is PlanEditorUiState.Deleted) currentOnBack()
+    }
+
+    PlanEditorScreen(
+        state = state,
+        onBack = onBack,
+        onUpdatePlan = viewModel::changePlanName,
+        onDeletePlan = viewModel::deletePlan,
+        onAddTraining = viewModel::addTraining,
+        onUpdateTraining = viewModel::updateTraining,
+        onDeleteTraining = viewModel::deleteTraining,
+        onAddExercise = viewModel::addExercise,
+        onUpdateExercise = viewModel::updateExercise,
+        onDeleteExercise = viewModel::deleteExercise,
+        onReorderExercises = viewModel::reorderExercises
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlanEditorScreen(
     state: PlanEditorUiState,
     onBack: () -> Unit,
     onUpdatePlan: (newName: String) -> Unit,
@@ -110,6 +143,7 @@ internal fun PlanEditorScreen(
         ) { targetState ->
             when (targetState) {
                 PlanEditorUiState.Loading -> LoadingContent()
+                PlanEditorUiState.Deleted -> Unit
                 is PlanEditorUiState.Loaded -> LoadedContent(
                     plan = targetState.plan,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,

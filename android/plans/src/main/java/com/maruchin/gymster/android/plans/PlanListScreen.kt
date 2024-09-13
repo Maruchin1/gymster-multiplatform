@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.plans.planlist
+package com.maruchin.gymster.android.plans
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -39,16 +39,35 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.maruchin.gymster.android.plans.planform.PlanFormModal
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.feature.plans.planlist.PlanListUiState
+import com.maruchin.gymster.feature.plans.planlist.PlanListViewModel
+
+@Composable
+internal fun PlanListScreen(
+    onBack: () -> Unit,
+    onOpenPlan: (planId: String) -> Unit,
+    viewModel: PlanListViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+        PlanListViewModel.create()
+    }
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    PlanListScreen(
+        state = state,
+        onBack = onBack,
+        onSeedPlans = viewModel::seedPlans,
+        onOpenPlan = onOpenPlan,
+        onCreatePlan = viewModel::createPlan
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PlanListScreen(
+private fun PlanListScreen(
     state: PlanListUiState,
     onBack: () -> Unit,
     onSeedPlans: () -> Unit,
@@ -73,7 +92,7 @@ internal fun PlanListScreen(
                 .padding(contentPadding)
         ) { targetState ->
             when (targetState) {
-                PlanListUiState.Loading -> LoadingContent()
+                PlanListUiState.Loading -> com.maruchin.gymster.android.ui.LoadingContent()
                 is PlanListUiState.Loaded -> LoadedContent(
                     plans = targetState.plans,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,

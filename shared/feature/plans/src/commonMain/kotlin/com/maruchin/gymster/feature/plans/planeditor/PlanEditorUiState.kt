@@ -7,4 +7,6 @@ sealed interface PlanEditorUiState {
     data object Loading : PlanEditorUiState
 
     data class Loaded(val plan: Plan) : PlanEditorUiState
+
+    data object Deleted : PlanEditorUiState
 }

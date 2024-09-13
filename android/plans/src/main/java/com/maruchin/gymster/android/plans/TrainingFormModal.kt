@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.plans.planform
+package com.maruchin.gymster.android.plans
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -27,23 +27,27 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.samplePlans
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PlanFormModal(plan: Plan?, onDismiss: () -> Unit, onSave: (name: String) -> Unit) {
+internal fun TrainingFormModal(
+    training: PlannedTraining?,
+    onDismiss: () -> Unit,
+    onSave: (newName: String) -> Unit
+) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        PlanFormContent(
-            plan = plan,
-            onSave = {
+        TrainingFormContent(
+            training = training,
+            onSave = { newName ->
                 scope.launch {
-                    onSave(it)
+                    onSave(newName)
                     sheetState.hide()
                     onDismiss()
                 }
@@ -54,19 +58,19 @@ internal fun PlanFormModal(plan: Plan?, onDismiss: () -> Unit, onSave: (name: St
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun PlanFormContent(plan: Plan?, onSave: (name: String) -> Unit) {
-    val planNameFocus = remember { FocusRequester() }
-    var planName by remember(plan) { mutableStateOf(plan?.name.orEmpty()) }
+private fun TrainingFormContent(training: PlannedTraining?, onSave: (newName: String) -> Unit) {
+    val trainingNameFocus = remember { FocusRequester() }
+    var trainingName by remember(training) { mutableStateOf(training?.name.orEmpty()) }
 
     LaunchedEffect(Unit) {
         delay(300)
-        planNameFocus.requestFocus()
+        trainingNameFocus.requestFocus()
     }
 
     Column(modifier = Modifier.background(BottomSheetDefaults.ContainerColor)) {
         TopAppBar(
             title = {
-                Text("Plan")
+                Text(text = "Training")
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = BottomSheetDefaults.ContainerColor
@@ -74,32 +78,34 @@ internal fun PlanFormContent(plan: Plan?, onSave: (name: String) -> Unit) {
             windowInsets = WindowInsets(0)
         )
         OutlinedTextField(
-            value = planName,
-            onValueChange = { planName = it },
+            value = trainingName,
+            onValueChange = { trainingName = it },
             label = {
-                Text("Plan name")
+                Text(text = "Training name")
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(planNameFocus)
+                .focusRequester(trainingNameFocus)
                 .padding(horizontal = 16.dp, vertical = 24.dp)
         )
         Button(
-            onClick = { onSave(planName) },
-            enabled = planName.isNotBlank(),
+            onClick = { onSave(trainingName) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text("Save")
+            Text(text = "Save")
         }
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun PlanFormModalPreview() {
+private fun TrainingFormModalPreview() {
     AppTheme {
-        PlanFormContent(plan = samplePlans.first(), onSave = {})
+        TrainingFormContent(
+            training = samplePlans.first().trainings.first(),
+            onSave = {}
+        )
     }
 }
