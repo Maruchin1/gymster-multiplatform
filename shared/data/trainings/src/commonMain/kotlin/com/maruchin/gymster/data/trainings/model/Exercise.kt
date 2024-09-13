@@ -10,6 +10,7 @@ data class Exercise(
     val sets: Sets,
     val reps: Reps,
     val setProgress: List<SetProgress>
+    // TODO Add score (less, neutral, more)
 ) {
 
     init {
