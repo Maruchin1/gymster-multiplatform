@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.repository
 
+import com.maruchin.gymster.core.utils.updated
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,17 +42,17 @@ class FakeTrainingsRepository : TrainingsRepository {
         collection.value -= trainingBlockId
     }
 
-    override suspend fun updateProgress(
+    override suspend fun updateSetResultWeight(
         trainingBlockId: String,
-        setProgressId: String,
-        newProgress: Progress
+        setResultId: String,
+        weight: Double
     ) {
         val trainingBlock = collection.value[trainingBlockId]!!
         val matchingTrainingWeek = trainingBlock.weeks.first { week ->
             week.trainings.any { training ->
                 training.exercises.any { exercise ->
-                    exercise.setProgress.any { setProgress ->
-                        setProgress.id == setProgressId
+                    exercise.results.any { setResult ->
+                        setResult.id == setResultId
                     }
                 }
             }
@@ -60,51 +60,90 @@ class FakeTrainingsRepository : TrainingsRepository {
         val matchingWeekIndex = trainingBlock.weeks.indexOf(matchingTrainingWeek)
         val matchingTraining = matchingTrainingWeek.trainings.first { training ->
             training.exercises.any { exercise ->
-                exercise.setProgress.any { setProgress ->
-                    setProgress.id == setProgressId
+                exercise.results.any { setResult ->
+                    setResult.id == setResultId
                 }
             }
         }
         val matchingExercise = matchingTraining.exercises.first { exercise ->
-            exercise.setProgress.any { setProgress ->
-                setProgress.id == setProgressId
+            exercise.results.any { setResult ->
+                setResult.id == setResultId
             }
         }
-
         collection.value += trainingBlockId to trainingBlock.copy(
-            weeks = trainingBlock.weeks.mapIndexed { index, week ->
-                if (index == matchingWeekIndex) {
-                    week.copy(
-                        trainings = week.trainings.map { training ->
-                            if (training.id == matchingTraining.id) {
-                                training.copy(
-                                    exercises = training.exercises.map { exercise ->
-                                        if (exercise.id == matchingExercise.id) {
-                                            exercise.copy(
-                                                setProgress = exercise.setProgress
-                                                    .map { setProgress ->
-                                                        if (setProgress.id == setProgressId) {
-                                                            setProgress.copy(
-                                                                progress = newProgress
-                                                            )
-                                                        } else {
-                                                            setProgress
-                                                        }
-                                                    }
-                                            )
-                                        } else {
-                                            exercise
-                                        }
+            weeks = trainingBlock.weeks.updated(matchingWeekIndex) { week ->
+                week.copy(
+                    trainings = week.trainings.updated(
+                        predicate = { it.id == matchingTraining.id }
+                    ) { training ->
+                        training.copy(
+                            exercises = training.exercises.updated(
+                                predicate = { it.id == matchingExercise.id }
+                            ) { exercise ->
+                                exercise.copy(
+                                    results = exercise.results.updated(
+                                        predicate = { it.id == setResultId }
+                                    ) { setResult ->
+                                        setResult.copy(weight = weight)
                                     }
                                 )
-                            } else {
-                                training
                             }
-                        }
-                    )
-                } else {
-                    week
+                        )
+                    }
+                )
+            }
+        )
+    }
+
+    override suspend fun updateSetResultReps(
+        trainingBlockId: String,
+        setResultId: String,
+        reps: Int
+    ) {
+        val trainingBlock = collection.value[trainingBlockId]!!
+        val matchingTrainingWeek = trainingBlock.weeks.first { week ->
+            week.trainings.any { training ->
+                training.exercises.any { exercise ->
+                    exercise.results.any { setResult ->
+                        setResult.id == setResultId
+                    }
                 }
+            }
+        }
+        val matchingWeekIndex = trainingBlock.weeks.indexOf(matchingTrainingWeek)
+        val matchingTraining = matchingTrainingWeek.trainings.first { training ->
+            training.exercises.any { exercise ->
+                exercise.results.any { setResult ->
+                    setResult.id == setResultId
+                }
+            }
+        }
+        val matchingExercise = matchingTraining.exercises.first { exercise ->
+            exercise.results.any { setResult ->
+                setResult.id == setResultId
+            }
+        }
+        collection.value += trainingBlockId to trainingBlock.copy(
+            weeks = trainingBlock.weeks.updated(matchingWeekIndex) { week ->
+                week.copy(
+                    trainings = week.trainings.updated(
+                        predicate = { it.id == matchingTraining.id }
+                    ) { training ->
+                        training.copy(
+                            exercises = training.exercises.updated(
+                                predicate = { it.id == matchingExercise.id }
+                            ) { exercise ->
+                                exercise.copy(
+                                    results = exercise.results.updated(
+                                        predicate = { it.id == setResultId }
+                                    ) { setResult ->
+                                        setResult.copy(reps = reps)
+                                    }
+                                )
+                            }
+                        )
+                    }
+                )
             }
         )
     }

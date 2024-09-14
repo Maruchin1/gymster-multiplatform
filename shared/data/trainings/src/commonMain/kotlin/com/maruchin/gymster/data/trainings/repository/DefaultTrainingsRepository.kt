@@ -5,7 +5,6 @@ import com.maruchin.gymster.data.trainings.datasource.ActiveTrainingLocalDataSou
 import com.maruchin.gymster.data.trainings.datasource.TrainingsLocalDataSource
 import com.maruchin.gymster.data.trainings.mapper.toDbModel
 import com.maruchin.gymster.data.trainings.mapper.toDomainModel
-import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.flow.Flow
@@ -48,15 +47,27 @@ internal class DefaultTrainingsRepository(
         trainingsLocalDataSource.deleteTrainingBlock(RealmUUID.from(trainingBlockId))
     }
 
-    override suspend fun updateProgress(
+    override suspend fun updateSetResultWeight(
         trainingBlockId: String,
-        setProgressId: String,
-        newProgress: Progress
+        setResultId: String,
+        weight: Double
     ) {
-        trainingsLocalDataSource.updateProgress(
+        trainingsLocalDataSource.updateSetResultWeight(
             trainingBlockId = RealmUUID.from(trainingBlockId),
-            setProgressId = RealmUUID.from(setProgressId),
-            newProgress = newProgress
+            setResultId = RealmUUID.from(setResultId),
+            weight = weight
+        )
+    }
+
+    override suspend fun updateSetResultReps(
+        trainingBlockId: String,
+        setResultId: String,
+        reps: Int
+    ) {
+        trainingsLocalDataSource.updateSetResultReps(
+            trainingBlockId = RealmUUID.from(trainingBlockId),
+            setResultId = RealmUUID.from(setResultId),
+            reps = reps
         )
     }
 

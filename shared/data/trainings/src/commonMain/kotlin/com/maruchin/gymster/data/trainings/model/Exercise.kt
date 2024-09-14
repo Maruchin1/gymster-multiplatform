@@ -9,18 +9,18 @@ data class Exercise(
     val name: String,
     val sets: Sets,
     val reps: Reps,
-    val setProgress: List<SetProgress>
+    val results: List<SetResult>
     // TODO Add score (less, neutral, more)
 ) {
 
     init {
-        require(setProgress.size == sets.total) {
+        require(results.size == sets.total) {
             "Progress list size must be equal to total sets"
         }
     }
 
     val isComplete: Boolean
-        get() = setProgress.all { it.isComplete }
+        get() = results.all { it.isComplete }
 
     companion object {
 
@@ -29,10 +29,10 @@ data class Exercise(
             name = plannedExercise.name,
             sets = plannedExercise.sets,
             reps = plannedExercise.reps,
-            setProgress = List(plannedExercise.sets.regular) {
-                SetProgress(id = "", type = SetProgress.Type.REGULAR, progress = null)
+            results = List(plannedExercise.sets.regular) {
+                SetResult.emptyRegular()
             } + List(plannedExercise.sets.drop) {
-                SetProgress(id = "", type = SetProgress.Type.DROP, progress = null)
+                SetResult.emptyDrop()
             }
         )
     }
