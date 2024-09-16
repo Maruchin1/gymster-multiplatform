@@ -11,9 +11,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 
-class PlanListViewModel internal constructor(private val plansRepository: PlansRepository) :
-    ViewModel() {
+class PlanListViewModel :
+    ViewModel(),
+    KoinComponent {
+
+    private val plansRepository: PlansRepository by inject()
 
     val uiState: StateFlow<PlanListUiState> = plansRepository.observeAllPlans()
         .map { PlanListUiState.Loaded(it) }
@@ -46,10 +50,5 @@ class PlanListViewModel internal constructor(private val plansRepository: PlansR
                 }
             }
         }
-    }
-
-    companion object : KoinComponent {
-
-        fun create(): PlanListViewModel = get()
     }
 }

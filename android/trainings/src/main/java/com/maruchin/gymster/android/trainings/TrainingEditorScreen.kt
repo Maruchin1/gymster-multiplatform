@@ -80,7 +80,7 @@ internal fun TrainingEditorScreen(
     exerciseId: String,
     onBack: () -> Unit,
     viewModel: TrainingEditorViewModel = viewModel {
-        TrainingEditorViewModel.create(trainingBlockId, trainingId, exerciseId)
+        TrainingEditorViewModel(trainingBlockId, trainingId, exerciseId)
     }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

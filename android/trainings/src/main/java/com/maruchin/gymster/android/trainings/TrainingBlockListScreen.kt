@@ -49,7 +49,7 @@ internal fun TrainingBlockListScreen(
     onBack: () -> Unit,
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
     onStartTrainingBlock: () -> Unit,
-    viewModel: TrainingBlockListViewModel = viewModel { TrainingBlockListViewModel.create() }
+    viewModel: TrainingBlockListViewModel = viewModel { TrainingBlockListViewModel() }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

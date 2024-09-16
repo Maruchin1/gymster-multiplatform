@@ -13,12 +13,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 
-class StartTrainingBlockViewModel internal constructor(
-    private val plansRepository: PlansRepository,
-    private val trainingsRepository: TrainingsRepository
-) : ViewModel() {
+class StartTrainingBlockViewModel :
+    ViewModel(),
+    KoinComponent {
+
+    private val plansRepository: PlansRepository by inject()
+    private val trainingsRepository: TrainingsRepository by inject()
 
     private val isCreated = MutableStateFlow(false)
     private val selectedPlan = MutableStateFlow<Plan?>(null)
@@ -68,10 +70,5 @@ class StartTrainingBlockViewModel internal constructor(
         val weeksDuration = checkNotNull(selectedWeeksDuration.value)
         trainingsRepository.createTrainingBlock(plan, startDate, weeksDuration)
         isCreated.value = true
-    }
-
-    companion object : KoinComponent {
-
-        fun create(): StartTrainingBlockViewModel = get()
     }
 }

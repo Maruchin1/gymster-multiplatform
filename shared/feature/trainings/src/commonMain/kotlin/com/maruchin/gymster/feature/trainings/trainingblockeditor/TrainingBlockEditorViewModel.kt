@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
-class TrainingBlockEditorViewModel internal constructor(
-    private val trainingBlockId: String,
-    private val trainingsRepository: TrainingsRepository
-) : ViewModel() {
+class TrainingBlockEditorViewModel(private val trainingBlockId: String) :
+    ViewModel(),
+    KoinComponent {
+
+    private val trainingsRepository: TrainingsRepository by inject()
 
     val uiState: StateFlow<TrainingBlockEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
@@ -26,11 +26,4 @@ class TrainingBlockEditorViewModel internal constructor(
             started = SharingStarted.Lazily,
             initialValue = TrainingBlockEditorUiState.Loading
         )
-
-    companion object : KoinComponent {
-
-        fun create(trainingBlockId: String): TrainingBlockEditorViewModel = get {
-            parametersOf(trainingBlockId)
-        }
-    }
 }

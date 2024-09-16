@@ -13,12 +13,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
-class PlanEditorViewModel internal constructor(
-    private val planId: String,
-    private val plansRepository: PlansRepository
-) : ViewModel() {
+class PlanEditorViewModel(private val planId: String) :
+    ViewModel(),
+    KoinComponent {
+
+    private val plansRepository: PlansRepository by inject()
 
     private val _uiState = MutableStateFlow<PlanEditorUiState>(PlanEditorUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -91,10 +92,5 @@ class PlanEditorViewModel internal constructor(
             .filterNotNull()
             .map { PlanEditorUiState.Loaded(it) }
             .collectLatest { _uiState.value = it }
-    }
-
-    companion object : KoinComponent {
-
-        fun create(planId: String): PlanEditorViewModel = get { parametersOf(planId) }
     }
 }

@@ -7,7 +7,6 @@ import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import com.maruchin.gymster.data.trainings.di.dataTrainingsTestModule
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
-import com.maruchin.gymster.feature.trainings.di.featureTrainingsModule
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -30,12 +29,12 @@ class TrainingBlockListViewModelTest : KoinTest {
 
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val plansRepository: FakePlansRepository by inject()
-    private val viewModel: TrainingBlockListViewModel by inject()
+    private val viewModel by lazy { TrainingBlockListViewModel() }
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
-        startKoin { modules(featureTrainingsModule, dataTrainingsTestModule, dataPlansTestModule) }
+        startKoin { modules(dataTrainingsTestModule, dataPlansTestModule) }
         plansRepository.setPlans(samplePlans)
     }
 

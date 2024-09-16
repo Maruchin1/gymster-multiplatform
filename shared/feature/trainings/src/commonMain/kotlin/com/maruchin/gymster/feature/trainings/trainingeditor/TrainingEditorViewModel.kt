@@ -11,14 +11,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
+import org.koin.core.component.inject
 
-class TrainingEditorViewModel internal constructor(
+class TrainingEditorViewModel(
     private val trainingBlockId: String,
     private val trainingId: String,
-    private val exerciseId: String,
-    private val trainingsRepository: TrainingsRepository
-) : ViewModel() {
+    private val exerciseId: String
+) : ViewModel(),
+    KoinComponent {
+
+    private val trainingsRepository: TrainingsRepository by inject()
 
     val uiState: StateFlow<TrainingEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
@@ -36,14 +38,5 @@ class TrainingEditorViewModel internal constructor(
 
     fun updateReps(setResultId: String, reps: Int?) = viewModelScope.launch {
         trainingsRepository.updateSetResultReps(trainingBlockId, setResultId, reps)
-    }
-
-    companion object : KoinComponent {
-
-        fun create(
-            trainingBlockId: String,
-            trainingId: String,
-            exerciseId: String
-        ): TrainingEditorViewModel = get { parametersOf(trainingBlockId, trainingId, exerciseId) }
     }
 }

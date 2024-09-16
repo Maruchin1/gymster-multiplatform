@@ -57,6 +57,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
@@ -74,11 +75,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 internal fun PlanEditorScreen(
     planId: String,
     onBack: () -> Unit,
-    viewModel: PlanEditorViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
-        PlanEditorViewModel.create(
-            planId
-        )
-    }
+    viewModel: PlanEditorViewModel = viewModel { PlanEditorViewModel(planId) }
 ) {
     val currentOnBack by rememberUpdatedState(onBack)
     val state by viewModel.uiState.collectAsStateWithLifecycle()

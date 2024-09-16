@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
-import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
@@ -21,9 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.parameter.parametersOf
 import org.koin.test.KoinTest
-import org.koin.test.get
 import org.koin.test.inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,7 +30,7 @@ class PlanEditorViewModelTest : KoinTest {
 
     @BeforeTest
     fun setUp() {
-        startKoin { modules(featurePlansModule, dataPlansTestModule) }
+        startKoin { modules(dataPlansTestModule) }
         Dispatchers.setMain(StandardTestDispatcher())
     }
 
@@ -47,7 +44,7 @@ class PlanEditorViewModelTest : KoinTest {
     fun `emit loaded state when plan is available`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.random()
-        val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
+        val viewModel = PlanEditorViewModel(plan.id)
 
         viewModel.uiState.test {
             awaitItem() shouldBe PlanEditorUiState.Loading
@@ -60,7 +57,7 @@ class PlanEditorViewModelTest : KoinTest {
     fun `do not emit new state when plan is not available`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val planId = "xyz"
-        val viewModel: PlanEditorViewModel = get { parametersOf(planId) }
+        val viewModel = PlanEditorViewModel(planId)
 
         viewModel.uiState.test {
             awaitItem() shouldBe PlanEditorUiState.Loading
@@ -73,7 +70,7 @@ class PlanEditorViewModelTest : KoinTest {
     fun `delete plan`() = runTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.random()
-        val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
+        val viewModel = PlanEditorViewModel(plan.id)
 
         viewModel.uiState.test {
             awaitItem() shouldBe PlanEditorUiState.Loading
@@ -93,7 +90,7 @@ class PlanEditorViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.random()
-        val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
+        val viewModel = PlanEditorViewModel(plan.id)
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings shouldContain training
@@ -110,7 +107,7 @@ class PlanEditorViewModelTest : KoinTest {
         val plan = samplePlans.first()
         val training = plan.trainings.first()
         val exercise = training.exercises.random()
-        val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
+        val viewModel = PlanEditorViewModel(plan.id)
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings.first().exercises shouldContain exercise
@@ -128,7 +125,7 @@ class PlanEditorViewModelTest : KoinTest {
         val training = plan.trainings.first()
         val originalExercises = training.exercises
         val reorderedExercises = training.exercises.shuffled()
-        val viewModel: PlanEditorViewModel = get { parametersOf(plan.id) }
+        val viewModel = PlanEditorViewModel(plan.id)
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings.first().exercises shouldContainInOrder originalExercises

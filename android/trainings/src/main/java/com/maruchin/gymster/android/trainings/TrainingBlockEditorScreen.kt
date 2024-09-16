@@ -74,7 +74,7 @@ internal fun TrainingBlockEditorScreen(
     onBack: () -> Unit,
     onOpenTraining: (trainingId: String, exerciseId: String) -> Unit,
     viewModel: TrainingBlockEditorViewModel = viewModel {
-        TrainingBlockEditorViewModel.create(trainingBlockId)
+        TrainingBlockEditorViewModel(trainingBlockId)
     }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()

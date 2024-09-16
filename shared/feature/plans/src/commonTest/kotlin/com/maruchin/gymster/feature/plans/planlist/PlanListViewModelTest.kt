@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
-import com.maruchin.gymster.feature.plans.di.featurePlansModule
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
@@ -26,12 +25,12 @@ import org.koin.test.inject
 class PlanListViewModelTest : KoinTest {
 
     private val plansRepository: FakePlansRepository by inject()
-    private val viewModel: PlanListViewModel by inject()
+    private val viewModel by lazy { PlanListViewModel() }
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
-        startKoin { modules(featurePlansModule, dataPlansTestModule) }
+        startKoin { modules(dataPlansTestModule) }
     }
 
     @AfterTest

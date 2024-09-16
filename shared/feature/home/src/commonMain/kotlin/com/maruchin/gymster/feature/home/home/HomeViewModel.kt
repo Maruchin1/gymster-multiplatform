@@ -8,9 +8,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 
-class HomeViewModel internal constructor(trainingsRepository: TrainingsRepository) : ViewModel() {
+class HomeViewModel :
+    ViewModel(),
+    KoinComponent {
+
+    private val trainingsRepository: TrainingsRepository by inject()
 
     val uiState: StateFlow<HomeUiState> = trainingsRepository.observeAllTrainingBlocks()
         .map { HomeUiState.from(it) }
@@ -19,9 +23,4 @@ class HomeViewModel internal constructor(trainingsRepository: TrainingsRepositor
             started = SharingStarted.Lazily,
             initialValue = HomeUiState.Loading
         )
-
-    companion object : KoinComponent {
-
-        fun create(): HomeViewModel = get()
-    }
 }

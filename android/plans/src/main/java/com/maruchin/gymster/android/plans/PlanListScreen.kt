@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.samplePlans
@@ -50,9 +51,7 @@ import com.maruchin.gymster.feature.plans.planlist.PlanListViewModel
 internal fun PlanListScreen(
     onBack: () -> Unit,
     onOpenPlan: (planId: String) -> Unit,
-    viewModel: PlanListViewModel = androidx.lifecycle.viewmodel.compose.viewModel {
-        PlanListViewModel.create()
-    }
+    viewModel: PlanListViewModel = viewModel { PlanListViewModel() }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

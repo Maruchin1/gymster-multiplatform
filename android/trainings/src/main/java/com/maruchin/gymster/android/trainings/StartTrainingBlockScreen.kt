@@ -58,7 +58,7 @@ import kotlinx.datetime.toLocalDateTime
 internal fun StartTrainingBlockScreen(
     onBack: () -> Unit,
     onEditPlans: () -> Unit,
-    viewModel: StartTrainingBlockViewModel = viewModel { StartTrainingBlockViewModel.create() }
+    viewModel: StartTrainingBlockViewModel = viewModel { StartTrainingBlockViewModel() }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val currentOnBack by rememberUpdatedState(onBack)

@@ -12,12 +12,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 
-class TrainingBlockListViewModel internal constructor(
-    private val trainingsRepository: TrainingsRepository,
-    private val plansRepository: PlansRepository
-) : ViewModel() {
+class TrainingBlockListViewModel :
+    ViewModel(),
+    KoinComponent {
+
+    private val trainingsRepository: TrainingsRepository by inject()
+    private val plansRepository: PlansRepository by inject()
 
     val uiState: StateFlow<TrainingBlockListUiState> =
         trainingsRepository.observeAllTrainingBlocks()
@@ -34,9 +36,4 @@ class TrainingBlockListViewModel internal constructor(
             checkNotNull(plan)
             trainingsRepository.createTrainingBlock(plan, startDate, weekDuration)
         }
-
-    companion object : KoinComponent {
-
-        fun create(): TrainingBlockListViewModel = get()
-    }
 }
