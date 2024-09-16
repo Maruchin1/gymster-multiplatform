@@ -1,6 +1,5 @@
 package com.maruchin.gymster.android.trainings
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -58,11 +57,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.SetResult
+import com.maruchin.gymster.data.trainings.model.Training
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorUiState
 import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorViewModel
@@ -102,35 +101,53 @@ private fun TrainingEditorScreen(
 ) {
     Scaffold(
         topBar = {
-            TopBar(loadedState = state as? TrainingEditorUiState.Loaded, onBack = onBack)
+            TopBar(training = state.training, onBack = onBack)
         }
     ) { contentPadding ->
-        AnimatedContent(
-            targetState = state,
-            contentKey = { it::class },
-            label = "TrainingEditorContent",
+        val loadedTraining = state.training ?: return@Scaffold
+        val firstPage = 0
+        val lastPage = loadedTraining.exercises.lastIndex
+        val pagerState = rememberPagerState(
+            initialPage = loadedTraining.getExerciseIndex(state.initialExerciseId),
+            pageCount = { loadedTraining.exercises.size }
+        )
+        val scope = rememberCoroutineScope()
+
+        Column(
             modifier = Modifier
-                .fillMaxSize()
+                .imePadding()
                 .padding(contentPadding)
         ) {
-            when (it) {
-                TrainingEditorUiState.Loading -> LoadingContent()
-                is TrainingEditorUiState.Loaded -> LoadedContent(
-                    state = it,
+            ExercisesTabRow(pagerState = pagerState, training = loadedTraining, scope = scope)
+            HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
+                ExercisePage(
+                    exercise = loadedTraining.exercises[page],
                     onUpdateWeight = onUpdateWeight,
                     onUpdateReps = onUpdateReps
                 )
             }
+            ExerciseActionsRow(
+                hasPreviousExercise = pagerState.currentPage > firstPage,
+                hasNextExercise = pagerState.currentPage < lastPage,
+                onOpenPreviousExercise = {
+                    val previousPage = pagerState.currentPage - 1
+                    scope.launch { pagerState.animateScrollToPage(previousPage) }
+                },
+                onOpenNextExercise = {
+                    val nextPage = pagerState.currentPage + 1
+                    scope.launch { pagerState.animateScrollToPage(nextPage) }
+                }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(loadedState: TrainingEditorUiState.Loaded?, onBack: () -> Unit) {
+private fun TopBar(training: Training?, onBack: () -> Unit) {
     TopAppBar(
         title = {
-            Text(text = loadedState?.training?.name.orEmpty())
+            Text(text = training?.name.orEmpty())
         },
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -144,51 +161,9 @@ private fun TopBar(loadedState: TrainingEditorUiState.Loaded?, onBack: () -> Uni
 }
 
 @Composable
-private fun LoadedContent(
-    state: TrainingEditorUiState.Loaded,
-    onUpdateWeight: (setResultId: String, weight: Double?) -> Unit,
-    onUpdateReps: (setResultId: String, reps: Int?) -> Unit
-) {
-    val firstPage = 0
-    val lastPage = state.training.exercises.lastIndex
-    val pagerState = rememberPagerState(
-        initialPage = state.training.getExerciseIndex(state.initialExerciseId),
-        pageCount = { state.training.exercises.size }
-    )
-    val scope = rememberCoroutineScope()
-
-    Column(modifier = Modifier.imePadding()) {
-        ExercisesTabRow(pagerState = pagerState, state = state, scope = scope)
-        HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
-            ExercisePage(
-                exercise = state.training.exercises[page],
-                onUpdateWeight = onUpdateWeight,
-                onUpdateReps = onUpdateReps
-            )
-        }
-        ExerciseActionsRow(
-            hasPreviousExercise = pagerState.currentPage > firstPage,
-            hasNextExercise = pagerState.currentPage < lastPage,
-            onOpenPreviousExercise = {
-                val previousPage = pagerState.currentPage - 1
-                scope.launch { pagerState.animateScrollToPage(previousPage) }
-            },
-            onOpenNextExercise = {
-                val nextPage = pagerState.currentPage + 1
-                scope.launch { pagerState.animateScrollToPage(nextPage) }
-            }
-        )
-    }
-}
-
-@Composable
-private fun ExercisesTabRow(
-    pagerState: PagerState,
-    state: TrainingEditorUiState.Loaded,
-    scope: CoroutineScope
-) {
+private fun ExercisesTabRow(pagerState: PagerState, training: Training, scope: CoroutineScope) {
     TabRow(selectedTabIndex = pagerState.currentPage) {
-        state.training.exercises.forEachIndexed { index, exercise ->
+        training.exercises.forEachIndexed { index, exercise ->
             Tab(
                 selected = index == pagerState.currentPage,
                 onClick = {
@@ -383,7 +358,7 @@ private fun ExerciseActionsRow(
 private fun TrainingEditorScreen_LoadedPreview() {
     AppTheme {
         TrainingEditorScreen(
-            state = TrainingEditorUiState.Loaded(
+            state = TrainingEditorUiState(
                 training = sampleTrainingBlocks.first().weeks.first().trainings.first(),
                 initialExerciseId = sampleTrainingBlocks.first().weeks.first().trainings.first()
                     .exercises.first().id

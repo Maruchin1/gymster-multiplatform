@@ -23,11 +23,11 @@ class TrainingBlockListViewModel :
 
     val uiState: StateFlow<TrainingBlockListUiState> =
         trainingsRepository.observeAllTrainingBlocks()
-            .map { TrainingBlockListUiState.Loaded(it) }
+            .map { TrainingBlockListUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Lazily,
-                initialValue = TrainingBlockListUiState.Loading
+                initialValue = TrainingBlockListUiState()
             )
 
     fun createTrainingBlock(planId: String, startDate: LocalDate, weekDuration: Int) =

@@ -1,6 +1,5 @@
 package com.maruchin.gymster.android.trainings
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -57,10 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.core.utils.toggle
 import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.Training
+import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.data.trainings.model.TrainingWeek
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingblockeditor.TrainingBlockEditorUiState
@@ -98,24 +97,29 @@ private fun TrainingBlockEditorScreen(
     Scaffold(
         topBar = {
             TopBar(
-                loadedState = state as? TrainingBlockEditorUiState.Loaded,
+                trainingBlock = state.trainingBlock,
                 topAppBarScrollBehavior = topAppBarScrollBehavior,
                 onBack = onBack
             )
         }
     ) { contentPadding ->
-        AnimatedContent(
-            targetState = state,
-            contentKey = { it::class },
-            label = "TimelineScreenAnimatedContent",
+        val loadedTrainingBlock = state.trainingBlock ?: return@Scaffold
+        val weeks = loadedTrainingBlock.weeks
+        val pagerState = rememberPagerState(
+            initialPage = loadedTrainingBlock.currentWeekIndex,
+            pageCount = { weeks.size }
+        )
+        val scope = rememberCoroutineScope()
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
         ) {
-            when (it) {
-                TrainingBlockEditorUiState.Loading -> LoadingContent()
-                is TrainingBlockEditorUiState.Loaded -> LoadedContent(
-                    state = it,
+            WeeksTabs(weeks = weeks, pagerState = pagerState, scope = scope)
+            HorizontalPager(state = pagerState) { page ->
+                WeekPage(
+                    week = weeks[page],
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
                     onOpenTraining = onOpenTraining
                 )
@@ -127,13 +131,13 @@ private fun TrainingBlockEditorScreen(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TopBar(
-    loadedState: TrainingBlockEditorUiState.Loaded?,
+    trainingBlock: TrainingBlock?,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
     onBack: () -> Unit
 ) {
     TopAppBar(
         title = {
-            Text(text = loadedState?.trainingBlock?.planName.orEmpty())
+            Text(text = trainingBlock?.planName.orEmpty())
         },
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -145,32 +149,6 @@ private fun TopBar(
         },
         scrollBehavior = topAppBarScrollBehavior
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoadedContent(
-    state: TrainingBlockEditorUiState.Loaded,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
-) {
-    val weeks = state.trainingBlock.weeks
-    val pagerState = rememberPagerState(
-        initialPage = state.trainingBlock.currentWeekIndex,
-        pageCount = { weeks.size }
-    )
-    val scope = rememberCoroutineScope()
-
-    Column {
-        WeeksTabs(weeks = weeks, pagerState = pagerState, scope = scope)
-        HorizontalPager(state = pagerState) { page ->
-            WeekPage(
-                week = weeks[page],
-                topAppBarScrollBehavior = topAppBarScrollBehavior,
-                onOpenTraining = onOpenTraining
-            )
-        }
-    }
 }
 
 @Composable
@@ -344,7 +322,7 @@ private fun LazyItemScope.ExerciseItem(exercise: Exercise, onClick: () -> Unit) 
 private fun TrainingBlockEditorScreen_LoadedPreview() {
     AppTheme {
         TrainingBlockEditorScreen(
-            state = TrainingBlockEditorUiState.Loaded(trainingBlock = sampleTrainingBlocks.first()),
+            state = TrainingBlockEditorUiState(trainingBlock = sampleTrainingBlocks.first()),
             onBack = { },
             onOpenTraining = { _, _ -> }
         )

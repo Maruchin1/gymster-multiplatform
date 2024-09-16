@@ -43,9 +43,9 @@ class TrainingBlockEditorViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockEditorUiState.Loading
+            awaitItem() shouldBe TrainingBlockEditorUiState()
 
-            awaitItem() shouldBe TrainingBlockEditorUiState.Loaded(trainingBlock)
+            awaitItem() shouldBe TrainingBlockEditorUiState(trainingBlock)
         }
     }
 
@@ -54,7 +54,7 @@ class TrainingBlockEditorViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockEditorUiState.Loading
+            awaitItem() shouldBe TrainingBlockEditorUiState()
 
             expectNoEvents()
         }

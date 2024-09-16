@@ -11,7 +11,6 @@ import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertIs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -49,8 +48,8 @@ class TrainingBlockListViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockListUiState.Loading
-            awaitItem() shouldBe TrainingBlockListUiState.Loaded(sampleTrainingBlocks)
+            awaitItem() shouldBe TrainingBlockListUiState()
+            awaitItem() shouldBe TrainingBlockListUiState(sampleTrainingBlocks)
         }
     }
 
@@ -59,8 +58,7 @@ class TrainingBlockListViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockListUiState.Loading
-            awaitItem() shouldBe TrainingBlockListUiState.Loaded(emptyList())
+            awaitItem() shouldBe TrainingBlockListUiState()
         }
     }
 
@@ -72,8 +70,7 @@ class TrainingBlockListViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockListUiState.Loading
-            awaitItem() shouldBe TrainingBlockListUiState.Loaded(emptyList())
+            awaitItem() shouldBe TrainingBlockListUiState()
 
             viewModel.createTrainingBlock(
                 planId = plan.id,
@@ -82,7 +79,6 @@ class TrainingBlockListViewModelTest : KoinTest {
             )
 
             awaitItem().let { state ->
-                assertIs<TrainingBlockListUiState.Loaded>(state)
                 state.trainingBlocks.first().let { trainingBlock ->
                     trainingBlock.planName shouldBe plan.name
                     trainingBlock.startDate shouldBe startDate

@@ -29,7 +29,7 @@ class TrainingEditorViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = TrainingEditorUiState.Loading
+            initialValue = TrainingEditorUiState()
         )
 
     fun updateWeight(setResultId: String, weight: Double?) = viewModelScope.launch {

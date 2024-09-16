@@ -9,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertIs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -50,9 +49,9 @@ class TrainingEditorViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingEditorUiState.Loading
+            awaitItem() shouldBe TrainingEditorUiState()
 
-            awaitItem() shouldBe TrainingEditorUiState.Loaded(training, exercise.id)
+            awaitItem() shouldBe TrainingEditorUiState(training, exercise.id)
         }
     }
 
@@ -61,7 +60,7 @@ class TrainingEditorViewModelTest : KoinTest {
         trainingsRepository.setTrainingBlocks(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe TrainingEditorUiState.Loading
+            awaitItem() shouldBe TrainingEditorUiState()
 
             expectNoEvents()
         }
@@ -76,15 +75,13 @@ class TrainingEditorViewModelTest : KoinTest {
         viewModel.uiState.test {
             skipItems(1)
             awaitItem().let {
-                assertIs<TrainingEditorUiState.Loaded>(it)
-                it.training.exercises[3].results.first().weight.shouldBeNull()
+                it.training!!.exercises[3].results.first().weight.shouldBeNull()
             }
 
             viewModel.updateWeight(setResult.id, updatedWeight)
 
             awaitItem().let {
-                assertIs<TrainingEditorUiState.Loaded>(it)
-                it.training.exercises[3].results.first().weight shouldBe updatedWeight
+                it.training!!.exercises[3].results.first().weight shouldBe updatedWeight
             }
         }
     }
@@ -98,15 +95,13 @@ class TrainingEditorViewModelTest : KoinTest {
         viewModel.uiState.test {
             skipItems(1)
             awaitItem().let {
-                assertIs<TrainingEditorUiState.Loaded>(it)
-                it.training.exercises[3].results.first().reps.shouldBeNull()
+                it.training!!.exercises[3].results.first().reps.shouldBeNull()
             }
 
             viewModel.updateReps(setResult.id, updatedReps)
 
             awaitItem().let {
-                assertIs<TrainingEditorUiState.Loaded>(it)
-                it.training.exercises[3].results.first().reps shouldBe updatedReps
+                it.training!!.exercises[3].results.first().reps shouldBe updatedReps
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.maruchin.gymster.android.trainings
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.android.ui.LoadingContent
 import com.maruchin.gymster.android.ui.formatMedium
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
@@ -85,18 +83,17 @@ private fun TrainingBlockListScreen(
             FloatingActionButton(isScrolled = isScrolled, onClick = onStartTrainingBlock)
         }
     ) { contentPadding ->
-        AnimatedContent(
-            targetState = state,
-            label = "TrainingBlockListContent",
-            contentKey = { it::class },
-            modifier = Modifier.padding(contentPadding)
-        ) { targetState ->
-            when (targetState) {
-                TrainingBlockListUiState.Loading -> LoadingContent()
-                is TrainingBlockListUiState.Loaded -> LoadedContent(
-                    state = targetState,
-                    topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onOpenTrainingBlock = onOpenTrainingBlock
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                .padding(contentPadding)
+        ) {
+            items(state.trainingBlocks) { trainingBlock ->
+                TrainingBlockItem(
+                    trainingBlock = trainingBlock,
+                    onClick = { onOpenTrainingBlock(trainingBlock.id) }
                 )
             }
         }
@@ -139,27 +136,6 @@ private fun FloatingActionButton(isScrolled: Boolean, onClick: () -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoadedContent(
-    state: TrainingBlockListUiState.Loaded,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onOpenTrainingBlock: (trainingBlockId: String) -> Unit
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-    ) {
-        items(state.trainingBlocks) { trainingBlock ->
-            TrainingBlockItem(
-                trainingBlock = trainingBlock,
-                onClick = { onOpenTrainingBlock(trainingBlock.id) }
-            )
-        }
-    }
-}
-
 @Composable
 private fun TrainingBlockItem(trainingBlock: TrainingBlock, onClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(), onClick = onClick) {
@@ -182,7 +158,7 @@ private fun TrainingBlockItem(trainingBlock: TrainingBlock, onClick: () -> Unit)
 private fun TrainingBlockListScreen_LoadedPreview() {
     AppTheme {
         TrainingBlockListScreen(
-            state = TrainingBlockListUiState.Loaded(
+            state = TrainingBlockListUiState(
                 trainingBlocks = sampleTrainingBlocks
             ),
             onBack = {},

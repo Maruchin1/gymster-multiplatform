@@ -20,10 +20,10 @@ class TrainingBlockEditorViewModel(private val trainingBlockId: String) :
     val uiState: StateFlow<TrainingBlockEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
         .filterNotNull()
-        .map { TrainingBlockEditorUiState.Loaded(it) }
+        .map { TrainingBlockEditorUiState(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = TrainingBlockEditorUiState.Loading
+            initialValue = TrainingBlockEditorUiState()
         )
 }
