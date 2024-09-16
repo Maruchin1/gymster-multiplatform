@@ -20,11 +20,11 @@ class PlanListViewModel :
     private val plansRepository: PlansRepository by inject()
 
     val uiState: StateFlow<PlanListUiState> = plansRepository.observeAllPlans()
-        .map { PlanListUiState.Loaded(it) }
+        .map { PlanListUiState(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = PlanListUiState.Loading
+            initialValue = PlanListUiState()
         )
 
     fun createPlan(name: String) = viewModelScope.launch {

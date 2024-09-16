@@ -1,6 +1,5 @@
 package com.maruchin.gymster.android.plans
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +28,6 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -81,7 +79,7 @@ internal fun PlanEditorScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
-        if (state is PlanEditorUiState.Deleted) currentOnBack()
+        if (state.isDeleted) currentOnBack()
     }
 
     PlanEditorScreen(
@@ -115,8 +113,6 @@ private fun PlanEditorScreen(
     onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val loadedState = state as? PlanEditorUiState.Loaded
-
     var isEditingPlan by remember { mutableStateOf(false) }
     var isAddingTraining by remember { mutableStateOf(false) }
     var editedTraining by remember { mutableStateOf<PlannedTraining?>(null) }
@@ -124,7 +120,7 @@ private fun PlanEditorScreen(
     Scaffold(
         topBar = {
             TopBar(
-                plan = loadedState?.plan,
+                plan = state.plan,
                 scrollBehavior = topAppBarScrollBehavior,
                 onBack = onBack,
                 onEditPlan = { isEditingPlan = true },
@@ -132,33 +128,51 @@ private fun PlanEditorScreen(
             )
         }
     ) { contentPadding ->
-        AnimatedContent(
-            targetState = state,
-            contentKey = { it::class },
-            label = "PlanEditorScreenAnimatedContent",
-            modifier = Modifier.padding(contentPadding)
-        ) { targetState ->
-            when (targetState) {
-                PlanEditorUiState.Loading -> LoadingContent()
-                PlanEditorUiState.Deleted -> Unit
-                is PlanEditorUiState.Loaded -> LoadedContent(
-                    plan = targetState.plan,
-                    topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onAddTraining = { isAddingTraining = true },
-                    onUpdateTraining = onUpdateTraining,
-                    onDeleteTraining = onDeleteTraining,
-                    onAddExercise = onAddExercise,
+        val loadedPlan = state.plan ?: return@Scaffold
+        var mutablePlan by remember(loadedPlan) { mutableStateOf(loadedPlan) }
+
+        val lazyListState = rememberLazyListState()
+        val reorderableLazyListState = rememberReorderableLazyListState(
+            lazyListState = lazyListState,
+            scrollThresholdPadding = WindowInsets.systemBars.asPaddingValues()
+        ) { from, to ->
+            mutablePlan = mutablePlan.changeExerciseOrder(
+                fromId = from.key as String,
+                toId = to.key as String
+            )
+        }
+
+        LazyColumn(
+            state = lazyListState,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                .padding(contentPadding)
+        ) {
+            mutablePlan.trainings.forEach { training ->
+                trainingSection(
+                    training = training,
+                    onUpdateTraining = { name ->
+                        onUpdateTraining(training.id, name)
+                    },
+                    onDeleteTraining = { onDeleteTraining(training.id) },
+                    reorderableLazyListState = reorderableLazyListState,
                     onUpdateExercise = onUpdateExercise,
                     onDeleteExercise = onDeleteExercise,
-                    onReorderExercises = onReorderExercises
+                    onReorderExercises = onReorderExercises,
+                    onAddExercise = onAddExercise
                 )
+            }
+            item {
+                AddTrainingButton(onClick = { isAddingTraining = true })
             }
         }
     }
 
     if (isEditingPlan) {
         PlanFormModal(
-            plan = loadedState?.plan,
+            plan = state.plan,
             onDismiss = { isEditingPlan = false },
             onSave = onUpdatePlan
         )
@@ -207,70 +221,6 @@ private fun TopBar(
         },
         scrollBehavior = scrollBehavior
     )
-}
-
-@Composable
-private fun LoadingContent() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoadedContent(
-    plan: Plan,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onAddTraining: () -> Unit,
-    onUpdateTraining: (trainingId: String, name: String) -> Unit,
-    onDeleteTraining: (trainingId: String) -> Unit,
-    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onDeleteExercise: (exerciseId: String) -> Unit,
-    onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
-) {
-    var mutablePlan by remember(plan) { mutableStateOf(plan) }
-
-    val lazyListState = rememberLazyListState()
-    val reorderableLazyListState = rememberReorderableLazyListState(
-        lazyListState = lazyListState,
-        scrollThresholdPadding = WindowInsets.systemBars.asPaddingValues()
-    ) { from, to ->
-        mutablePlan = mutablePlan.changeExerciseOrder(
-            fromId = from.key as String,
-            toId = to.key as String
-        )
-    }
-
-    LazyColumn(
-        state = lazyListState,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-    ) {
-        mutablePlan.trainings.forEach { training ->
-            trainingSection(
-                training = training,
-                onUpdateTraining = { name ->
-                    onUpdateTraining(training.id, name)
-                },
-                onDeleteTraining = { onDeleteTraining(training.id) },
-                reorderableLazyListState = reorderableLazyListState,
-                onUpdateExercise = onUpdateExercise,
-                onDeleteExercise = onDeleteExercise,
-                onReorderExercises = onReorderExercises,
-                onAddExercise = onAddExercise
-            )
-        }
-        item {
-            AddTrainingButton(onClick = onAddTraining)
-        }
-    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -490,7 +440,7 @@ private fun LazyItemScope.AddExerciseButton(onClick: () -> Unit) {
 private fun PlanEditorScreen_LoadedPreview() {
     AppTheme {
         PlanEditorScreen(
-            state = PlanEditorUiState.Loaded(plan = samplePlans.first()),
+            state = PlanEditorUiState(plan = samplePlans.first()),
             onBack = {},
             onUpdatePlan = {},
             onAddTraining = { },

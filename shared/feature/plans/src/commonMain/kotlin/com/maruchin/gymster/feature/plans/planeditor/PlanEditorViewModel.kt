@@ -6,10 +6,10 @@ import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -21,12 +21,17 @@ class PlanEditorViewModel(private val planId: String) :
 
     private val plansRepository: PlansRepository by inject()
 
-    private val _uiState = MutableStateFlow<PlanEditorUiState>(PlanEditorUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val isDeleted = MutableStateFlow(false)
 
-    init {
-        collectPlan()
-    }
+    val uiState: StateFlow<PlanEditorUiState> = combine(
+        plansRepository.observePlan(planId),
+        isDeleted,
+        ::PlanEditorUiState
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = PlanEditorUiState()
+    )
 
     fun changePlanName(newName: String) = viewModelScope.launch {
         plansRepository.changePlanName(planId = planId, newName = newName)
@@ -34,7 +39,7 @@ class PlanEditorViewModel(private val planId: String) :
 
     fun deletePlan() = viewModelScope.launch {
         plansRepository.deletePlan(planId = planId)
-        _uiState.value = PlanEditorUiState.Deleted
+        isDeleted.value = true
     }
 
     fun addTraining(name: String) = viewModelScope.launch {
@@ -85,12 +90,5 @@ class PlanEditorViewModel(private val planId: String) :
             trainingId = trainingId,
             exercisesIds = exercisesIds
         )
-    }
-
-    private fun collectPlan() = viewModelScope.launch {
-        plansRepository.observePlan(planId)
-            .filterNotNull()
-            .map { PlanEditorUiState.Loaded(it) }
-            .collectLatest { _uiState.value = it }
     }
 }

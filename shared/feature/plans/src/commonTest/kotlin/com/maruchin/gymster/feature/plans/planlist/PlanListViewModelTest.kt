@@ -9,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertIs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -44,8 +43,8 @@ class PlanListViewModelTest : KoinTest {
         plansRepository.setPlans(samplePlans)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanListUiState.Loading
-            awaitItem() shouldBe PlanListUiState.Loaded(samplePlans)
+            awaitItem() shouldBe PlanListUiState()
+            awaitItem() shouldBe PlanListUiState(samplePlans)
         }
     }
 
@@ -54,8 +53,7 @@ class PlanListViewModelTest : KoinTest {
         plansRepository.setPlans(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanListUiState.Loading
-            awaitItem() shouldBe PlanListUiState.Loaded(emptyList())
+            awaitItem() shouldBe PlanListUiState()
         }
     }
 
@@ -64,13 +62,11 @@ class PlanListViewModelTest : KoinTest {
         plansRepository.setPlans(emptyList())
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanListUiState.Loading
-            awaitItem() shouldBe PlanListUiState.Loaded(emptyList())
+            awaitItem() shouldBe PlanListUiState()
 
             viewModel.createPlan(name = "Push Pull")
 
             awaitItem().let {
-                assertIs<PlanListUiState.Loaded>(it)
                 it.plans shouldHaveSize 1
                 it.plans.first().name shouldBe "Push Pull"
             }

@@ -47,9 +47,9 @@ class PlanEditorViewModelTest : KoinTest {
         val viewModel = PlanEditorViewModel(plan.id)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanEditorUiState.Loading
+            awaitItem() shouldBe PlanEditorUiState()
 
-            awaitItem() shouldBe PlanEditorUiState.Loaded(plan)
+            awaitItem() shouldBe PlanEditorUiState(plan)
         }
     }
 
@@ -60,7 +60,7 @@ class PlanEditorViewModelTest : KoinTest {
         val viewModel = PlanEditorViewModel(planId)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanEditorUiState.Loading
+            awaitItem() shouldBe PlanEditorUiState()
 
             expectNoEvents()
         }
@@ -73,12 +73,12 @@ class PlanEditorViewModelTest : KoinTest {
         val viewModel = PlanEditorViewModel(plan.id)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe PlanEditorUiState.Loading
-            awaitItem() shouldBe PlanEditorUiState.Loaded(plan)
+            awaitItem() shouldBe PlanEditorUiState()
+            awaitItem() shouldBe PlanEditorUiState(plan)
 
             viewModel.deletePlan()
 
-            awaitItem() shouldBe PlanEditorUiState.Deleted
+            awaitItem() shouldBe PlanEditorUiState(isDeleted = true)
         }
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem().shouldBeNull()

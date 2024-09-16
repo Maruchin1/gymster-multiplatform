@@ -1,6 +1,5 @@
 package com.maruchin.gymster.android.plans
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,12 +17,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -75,29 +74,29 @@ private fun PlanListScreen(
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    Scaffold(topBar = {
-        TopBar(
-            scrollBehavior = topAppBarScrollBehavior,
-            onBack = onBack,
-            onSeedPlans = onSeedPlans
-        )
-    }) { contentPadding ->
-        AnimatedContent(
-            targetState = state,
-            contentKey = { it::class },
-            label = "PlanListScreenAnimatedContent",
+    Scaffold(
+        topBar = {
+            TopBar(
+                scrollBehavior = topAppBarScrollBehavior,
+                onBack = onBack,
+                onSeedPlans = onSeedPlans
+            )
+        }
+    ) { contentPadding ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-        ) { targetState ->
-            when (targetState) {
-                PlanListUiState.Loading -> com.maruchin.gymster.android.ui.LoadingContent()
-                is PlanListUiState.Loaded -> LoadedContent(
-                    plans = targetState.plans,
-                    topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onOpenPlan = onOpenPlan,
-                    onCreatePlan = onCreatePlan
-                )
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                .padding(contentPadding),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(state.plans, key = { it.id }) { plan ->
+                PlanItem(plan = plan, onClick = { onOpenPlan(plan.id) })
+            }
+            item {
+                CreatePlanItem(onCreatePlan = onCreatePlan)
             }
         }
     }
@@ -128,33 +127,9 @@ private fun TopBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoadedContent(
-    plans: List<Plan>,
-    topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onOpenPlan: (planId: String) -> Unit,
-    onCreatePlan: (name: String) -> Unit
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(plans, key = { it.id }) { plan ->
-            PlanItem(plan = plan, onClick = { onOpenPlan(plan.id) })
-        }
-        item {
-            CreatePlanItem(onCreatePlan = onCreatePlan)
-        }
-    }
-}
-
 @Composable
 private fun LazyGridItemScope.PlanItem(plan: Plan, onClick: () -> Unit) {
-    ElevatedCard(
+    Card(
         modifier = Modifier
             .aspectRatio(1f)
             .animateItem(),
@@ -178,7 +153,7 @@ private fun LazyGridItemScope.PlanItem(plan: Plan, onClick: () -> Unit) {
 private fun LazyGridItemScope.CreatePlanItem(onCreatePlan: (name: String) -> Unit) {
     var isAddingPlan by rememberSaveable { mutableStateOf(false) }
 
-    Card(
+    OutlinedCard(
         onClick = { isAddingPlan = true },
         modifier = Modifier
             .aspectRatio(1f)
@@ -207,24 +182,10 @@ private fun LazyGridItemScope.CreatePlanItem(onCreatePlan: (name: String) -> Uni
 
 @PreviewLightDark
 @Composable
-private fun PlanListScreen_LoadedPreview() {
+private fun PlanListScreenPreview() {
     AppTheme {
         PlanListScreen(
-            state = PlanListUiState.Loaded(plans = samplePlans),
-            onBack = {},
-            onSeedPlans = {},
-            onOpenPlan = {},
-            onCreatePlan = {}
-        )
-    }
-}
-
-@PreviewLightDark
-@Composable
-private fun PlanListScreen_LoadingPreview() {
-    AppTheme {
-        PlanListScreen(
-            state = PlanListUiState.Loading,
+            state = PlanListUiState(plans = samplePlans),
             onBack = {},
             onSeedPlans = {},
             onOpenPlan = {},
