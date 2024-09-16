@@ -19,6 +19,13 @@ private data object StartTrainingBlockRoute
 @Serializable
 private data class TrainingBlockEditorRoute(val trainingBlockId: String)
 
+@Serializable
+private data class TrainingEditorRoute(
+    val trainingBlockId: String,
+    val trainingId: String,
+    val exerciseId: String
+)
+
 fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: () -> Unit) {
     navigation<TrainingsRoute>(startDestination = TrainingBlockListRoute) {
         composable<TrainingBlockListRoute> {
@@ -35,12 +42,24 @@ fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: ()
             )
         }
         composable<TrainingBlockEditorRoute> {
-            val route = it.toRoute<TrainingBlockEditorRoute>()
+            val (trainingBlockId) = it.toRoute<TrainingBlockEditorRoute>()
             TrainingBlockEditorScreen(
-                trainingBlockId = route.trainingBlockId,
+                trainingBlockId = trainingBlockId,
                 onBack = { navController.navigateUp() },
-                onEditProgress = { }, // TODO Move progress editor to this module
-                onOpenTraining = { } // TODO Move training editor to this module
+                onOpenTraining = { trainingId, exerciseId ->
+                    navController.navigate(
+                        TrainingEditorRoute(trainingBlockId, trainingId, exerciseId)
+                    )
+                }
+            )
+        }
+        composable<TrainingEditorRoute> {
+            val (trainingBlockId, trainingId, exerciseId) = it.toRoute<TrainingEditorRoute>()
+            TrainingEditorScreen(
+                trainingBlockId = trainingBlockId,
+                trainingId = trainingId,
+                exerciseId = exerciseId,
+                onBack = { navController.navigateUp() }
             )
         }
     }

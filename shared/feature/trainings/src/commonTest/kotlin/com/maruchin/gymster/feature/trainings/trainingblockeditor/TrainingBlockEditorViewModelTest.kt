@@ -2,7 +2,6 @@ package com.maruchin.gymster.feature.trainings.trainingblockeditor
 
 import app.cash.turbine.test
 import com.maruchin.gymster.data.trainings.di.dataTrainingsTestModule
-import com.maruchin.gymster.data.trainings.model.Progress
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
 import com.maruchin.gymster.feature.trainings.di.featureTrainingsModule
@@ -60,24 +59,6 @@ class TrainingBlockEditorViewModelTest : KoinTest {
             awaitItem() shouldBe TrainingBlockEditorUiState.Loading
 
             expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `update progress`() = runTest {
-        trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
-        val week = trainingBlock.weeks.first()
-        val training = week.trainings.first()
-        val exercise = training.exercises.first()
-        val setProgress = exercise.setProgress.first()
-        val updatedProgress = Progress(weight = 100.0, reps = 10)
-
-        trainingsRepository.observeTrainingBlock(trainingBlock.id).test {
-            awaitItem()!!.getSetProgress(setProgress.id).progress shouldBe setProgress.progress
-
-            viewModel.updateProgress(setProgress.id, updatedProgress)
-
-            awaitItem()!!.getSetProgress(setProgress.id).progress shouldBe updatedProgress
         }
     }
 }

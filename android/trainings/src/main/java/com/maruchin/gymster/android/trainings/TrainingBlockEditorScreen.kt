@@ -28,8 +28,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -73,8 +72,7 @@ import kotlinx.coroutines.launch
 internal fun TrainingBlockEditorScreen(
     trainingBlockId: String,
     onBack: () -> Unit,
-    onEditProgress: (setProgressId: String) -> Unit,
-    onOpenTraining: (trainingId: String) -> Unit,
+    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit,
     viewModel: TrainingBlockEditorViewModel = viewModel {
         TrainingBlockEditorViewModel.create(trainingBlockId)
     }
@@ -84,7 +82,6 @@ internal fun TrainingBlockEditorScreen(
     TrainingBlockEditorScreen(
         state = state,
         onBack = onBack,
-        onEditProgress = onEditProgress,
         onOpenTraining = onOpenTraining
     )
 }
@@ -94,8 +91,7 @@ internal fun TrainingBlockEditorScreen(
 private fun TrainingBlockEditorScreen(
     state: TrainingBlockEditorUiState,
     onBack: () -> Unit,
-    onEditProgress: (setProgressId: String) -> Unit,
-    onOpenTraining: (trainingId: String) -> Unit
+    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -121,7 +117,6 @@ private fun TrainingBlockEditorScreen(
                 is TrainingBlockEditorUiState.Loaded -> LoadedContent(
                     state = it,
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onEditProgress = onEditProgress,
                     onOpenTraining = onOpenTraining
                 )
             }
@@ -154,11 +149,10 @@ private fun TopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoadedContent(
+private fun LoadedContent(
     state: TrainingBlockEditorUiState.Loaded,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onEditProgress: (setProgressId: String) -> Unit,
-    onOpenTraining: (trainingId: String) -> Unit
+    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
 ) {
     val weeks = state.trainingBlock.weeks
     val pagerState = rememberPagerState(
@@ -173,7 +167,6 @@ fun LoadedContent(
             WeekPage(
                 week = weeks[page],
                 topAppBarScrollBehavior = topAppBarScrollBehavior,
-                onEditProgress = onEditProgress,
                 onOpenTraining = onOpenTraining
             )
         }
@@ -202,8 +195,7 @@ private fun WeeksTabs(weeks: List<TrainingWeek>, pagerState: PagerState, scope: 
 private fun WeekPage(
     week: TrainingWeek,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onOpenTraining: (trainingId: String) -> Unit,
-    onEditProgress: (setProgressId: String) -> Unit
+    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
 ) {
     var expandedTrainingIds by rememberSaveable(week) {
         mutableStateOf(week.notCompleteTrainingsIds)
@@ -219,17 +211,16 @@ private fun WeekPage(
                 TrainingHeader(
                     training = training,
                     isExpanded = training.id in expandedTrainingIds,
-                    onToggleExpanded = {
+                    onExpandedToggle = {
                         expandedTrainingIds = expandedTrainingIds.toggle(training.id)
-                    },
-                    onOpenTraining = { onOpenTraining(training.id) }
+                    }
                 )
             }
             if (training.id in expandedTrainingIds) {
                 items(training.exercises, key = { "exercise" + it.id }) { exercise ->
                     ExerciseItem(
                         exercise = exercise,
-                        onEditProgress = onEditProgress
+                        onClick = { onOpenTraining(training.id, exercise.id) }
                     )
                 }
                 if (index != week.trainings.lastIndex) {
@@ -246,20 +237,17 @@ private fun WeekPage(
 private fun LazyItemScope.TrainingHeader(
     training: Training,
     isExpanded: Boolean,
-    onToggleExpanded: () -> Unit,
-    onOpenTraining: () -> Unit
+    onExpandedToggle: () -> Unit
 ) {
     val arrowRotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
         label = "TrainingHeaderArrowRotation"
     )
 
-    Surface(modifier = Modifier.animateItem()) {
-        Column(modifier = Modifier.clickable { onOpenTraining() }) {
+    Surface(modifier = Modifier.animateItem(), onClick = onExpandedToggle) {
+        Column {
             Row(
-                modifier = Modifier
-                    .padding(vertical = 12.dp)
-                    .padding(start = 12.dp, end = 8.dp),
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -275,13 +263,11 @@ private fun LazyItemScope.TrainingHeader(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = onToggleExpanded) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropUp,
-                        contentDescription = null,
-                        modifier = Modifier.rotate(arrowRotation)
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.ArrowDropUp,
+                    contentDescription = null,
+                    modifier = Modifier.rotate(arrowRotation)
+                )
             }
             HorizontalDivider()
         }
@@ -290,22 +276,13 @@ private fun LazyItemScope.TrainingHeader(
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun LazyItemScope.ExerciseItem(
-    exercise: Exercise,
-    onEditProgress: (setProgressId: String) -> Unit
-) {
-    ElevatedCard(
+private fun LazyItemScope.ExerciseItem(exercise: Exercise, onClick: () -> Unit) {
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .animateItem(),
-        colors = if (exercise.isComplete) {
-            CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            )
-        } else {
-            CardDefaults.elevatedCardColors()
-        }
+            .animateItem()
+            .clickable { onClick() }
     ) {
         Spacer(modifier = Modifier.height(12.dp))
         Row(
@@ -321,7 +298,11 @@ private fun LazyItemScope.ExerciseItem(
                     )
                     if (exercise.isComplete) {
                         Spacer(modifier = Modifier.width(8.dp))
-                        Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -343,11 +324,13 @@ private fun LazyItemScope.ExerciseItem(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         ) {
-            exercise.setProgress.forEach { progress ->
+            exercise.results.forEach { setResult ->
                 AssistChip(
-                    onClick = { onEditProgress(progress.id) },
+                    onClick = { },
                     label = {
-                        Text(text = progress.progress?.toString() ?: "----")
+                        val formattedWeight = setResult.weight?.let { "$it kg" } ?: "--"
+                        val formattedReps = setResult.reps?.let { "$it" } ?: "--"
+                        Text(text = "$formattedWeight x $formattedReps")
                     }
                 )
             }
@@ -363,8 +346,7 @@ private fun TrainingBlockEditorScreen_LoadedPreview() {
         TrainingBlockEditorScreen(
             state = TrainingBlockEditorUiState.Loaded(trainingBlock = sampleTrainingBlocks.first()),
             onBack = { },
-            onEditProgress = { },
-            onOpenTraining = {}
+            onOpenTraining = { _, _ -> }
         )
     }
 }

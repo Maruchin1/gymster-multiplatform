@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.FitnessCenter
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -42,6 +42,7 @@ import com.maruchin.gymster.feature.trainings.trainingblocklist.TrainingBlockLis
 import com.maruchin.gymster.feature.trainings.trainingblocklist.TrainingBlockListViewModel
 
 // TODO Hide FAB and show proper info when there is no training plans
+// TODO Show empty content when there is no training blocks
 
 @Composable
 internal fun TrainingBlockListScreen(
@@ -161,7 +162,7 @@ private fun LoadedContent(
 
 @Composable
 private fun TrainingBlockItem(trainingBlock: TrainingBlock, onClick: () -> Unit) {
-    ElevatedCard(modifier = Modifier.fillMaxWidth(), onClick = onClick) {
+    Card(modifier = Modifier.fillMaxWidth(), onClick = onClick) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

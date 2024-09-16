@@ -7,5 +7,5 @@ internal val databaseSchema = setOf(
     TrainingBlockDbModel::class,
     TrainingDbModel::class,
     ExerciseDbModel::class,
-    SetProgressDbModel::class
+    SetResultDbModel::class
 )

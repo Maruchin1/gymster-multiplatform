@@ -42,8 +42,6 @@ dependencies {
     implementation(projects.android.home)
     implementation(projects.android.plans)
     implementation(projects.android.trainings)
-    implementation(projects.android.trainingBlockDetails)
-    implementation(projects.android.trainingEditor)
     implementation(projects.android.ui)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)

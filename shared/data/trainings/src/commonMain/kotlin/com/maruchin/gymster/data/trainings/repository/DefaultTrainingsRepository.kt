@@ -50,7 +50,7 @@ internal class DefaultTrainingsRepository(
     override suspend fun updateSetResultWeight(
         trainingBlockId: String,
         setResultId: String,
-        weight: Double
+        weight: Double?
     ) {
         trainingsLocalDataSource.updateSetResultWeight(
             trainingBlockId = RealmUUID.from(trainingBlockId),
@@ -62,7 +62,7 @@ internal class DefaultTrainingsRepository(
     override suspend fun updateSetResultReps(
         trainingBlockId: String,
         setResultId: String,
-        reps: Int
+        reps: Int?
     ) {
         trainingsLocalDataSource.updateSetResultReps(
             trainingBlockId = RealmUUID.from(trainingBlockId),

@@ -45,7 +45,7 @@ class FakeTrainingsRepository : TrainingsRepository {
     override suspend fun updateSetResultWeight(
         trainingBlockId: String,
         setResultId: String,
-        weight: Double
+        weight: Double?
     ) {
         val trainingBlock = collection.value[trainingBlockId]!!
         val matchingTrainingWeek = trainingBlock.weeks.first { week ->
@@ -98,7 +98,7 @@ class FakeTrainingsRepository : TrainingsRepository {
     override suspend fun updateSetResultReps(
         trainingBlockId: String,
         setResultId: String,
-        reps: Int
+        reps: Int?
     ) {
         val trainingBlock = collection.value[trainingBlockId]!!
         val matchingTrainingWeek = trainingBlock.weeks.first { week ->

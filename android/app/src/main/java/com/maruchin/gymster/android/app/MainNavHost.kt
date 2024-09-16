@@ -10,9 +10,6 @@ import com.maruchin.gymster.android.home.HomeGraph
 import com.maruchin.gymster.android.home.homeGraph
 import com.maruchin.gymster.android.plans.PlansRoute
 import com.maruchin.gymster.android.plans.plansGraph
-import com.maruchin.gymster.android.trainingblockdetails.trainingBlockDetailsGraph
-import com.maruchin.gymster.android.trainingeditor.TrainingEditorGraph
-import com.maruchin.gymster.android.trainingeditor.trainingEditorGraph
 import com.maruchin.gymster.android.trainings.TrainingsRoute
 import com.maruchin.gymster.android.trainings.trainingsGraph
 
@@ -34,12 +31,5 @@ internal fun MainNavHost() {
             navController = navController,
             onEditPlans = { navController.navigate(PlansRoute) }
         )
-        trainingBlockDetailsGraph(
-            navController = navController,
-            onOpenTraining = { trainingBlockId, trainingId ->
-                navController.navigate(TrainingEditorGraph(trainingBlockId, trainingId))
-            }
-        )
-        trainingEditorGraph(navController)
     }
 }

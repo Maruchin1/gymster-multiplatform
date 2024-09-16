@@ -12,5 +12,5 @@ class ExerciseDbModel : EmbeddedRealmObject {
     var dropSets: Int = 0
     var minReps: Int = 0
     var maxReps: Int = 0
-    var progress: RealmList<SetProgressDbModel> = realmListOf()
+    var results: RealmList<SetResultDbModel> = realmListOf()
 }

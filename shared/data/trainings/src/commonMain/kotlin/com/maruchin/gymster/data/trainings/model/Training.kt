@@ -7,8 +7,7 @@ data class Training(val id: String, val name: String, val exercises: List<Exerci
     val isComplete: Boolean
         get() = exercises.all { it.isComplete }
 
-    val firstNotCompleteExerciseIndex: Int
-        get() = exercises.indexOfFirst { !it.isComplete }
+    fun getExerciseIndex(exerciseId: String): Int = exercises.indexOfFirst { it.id == exerciseId }
 
     companion object {
 

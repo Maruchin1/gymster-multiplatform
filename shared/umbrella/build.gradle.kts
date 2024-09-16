@@ -13,8 +13,7 @@ kotlin {
             isStatic = true
             export(projects.shared.feature.home)
             export(projects.shared.feature.plans)
-            export(projects.shared.feature.trainingBlockDetails)
-            export(projects.shared.feature.trainingEditor)
+            export(projects.shared.feature.trainings)
         }
     }
 
@@ -23,8 +22,6 @@ kotlin {
             api(projects.shared.feature.home)
             api(projects.shared.feature.plans)
             api(projects.shared.feature.trainings)
-            api(projects.shared.feature.trainingBlockDetails)
-            api(projects.shared.feature.trainingEditor)
             implementation(projects.shared.data.plans)
             implementation(projects.shared.data.trainings)
             implementation(projects.shared.core.database)

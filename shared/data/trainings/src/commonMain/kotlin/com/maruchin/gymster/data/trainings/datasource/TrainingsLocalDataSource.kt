@@ -35,7 +35,7 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
     suspend fun updateSetResultWeight(
         trainingBlockId: RealmUUID,
         setResultId: RealmUUID,
-        weight: Double
+        weight: Double?
     ) {
         realm.write {
             val trainingBlock =
@@ -48,7 +48,11 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
         }
     }
 
-    suspend fun updateSetResultReps(trainingBlockId: RealmUUID, setResultId: RealmUUID, reps: Int) {
+    suspend fun updateSetResultReps(
+        trainingBlockId: RealmUUID,
+        setResultId: RealmUUID,
+        reps: Int?
+    ) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
