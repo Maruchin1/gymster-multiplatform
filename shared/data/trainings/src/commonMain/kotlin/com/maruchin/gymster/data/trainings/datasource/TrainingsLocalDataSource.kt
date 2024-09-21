@@ -1,6 +1,7 @@
 package com.maruchin.gymster.data.trainings.datasource
 
 import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
+import com.maruchin.gymster.data.trainings.model.Evaluation
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmUUID
@@ -61,6 +62,21 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
                 .flatMap { it.results }
                 .first { it.id == setResultId }
             setResult.reps = reps
+        }
+    }
+
+    suspend fun updateExerciseEvaluation(
+        trainingBlockId: RealmUUID,
+        exerciseId: RealmUUID,
+        evaluation: Evaluation
+    ) {
+        realm.write {
+            val trainingBlock =
+                query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
+            val exercise = trainingBlock.trainings
+                .flatMap { it.exercises }
+                .first { it.id == exerciseId }
+            exercise.evaluation = evaluation.name
         }
     }
 }

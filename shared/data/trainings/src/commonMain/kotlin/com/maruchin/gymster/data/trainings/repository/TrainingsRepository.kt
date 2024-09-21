@@ -1,6 +1,7 @@
 package com.maruchin.gymster.data.trainings.repository
 
 import com.maruchin.gymster.data.plans.model.Plan
+import com.maruchin.gymster.data.trainings.model.Evaluation
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
@@ -22,6 +23,12 @@ interface TrainingsRepository {
     suspend fun updateSetResultWeight(trainingBlockId: String, setResultId: String, weight: Double?)
 
     suspend fun updateSetResultReps(trainingBlockId: String, setResultId: String, reps: Int?)
+
+    suspend fun updateExerciseEvaluation(
+        trainingBlockId: String,
+        exerciseId: String,
+        evaluation: Evaluation
+    )
 
     suspend fun setActiveTrainingBlock(trainingBlockId: String)
 }

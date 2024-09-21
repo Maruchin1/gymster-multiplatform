@@ -5,6 +5,7 @@ import com.maruchin.gymster.data.trainings.datasource.ActiveTrainingLocalDataSou
 import com.maruchin.gymster.data.trainings.datasource.TrainingsLocalDataSource
 import com.maruchin.gymster.data.trainings.mapper.toDbModel
 import com.maruchin.gymster.data.trainings.mapper.toDomainModel
+import com.maruchin.gymster.data.trainings.model.Evaluation
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +69,18 @@ internal class DefaultTrainingsRepository(
             trainingBlockId = RealmUUID.from(trainingBlockId),
             setResultId = RealmUUID.from(setResultId),
             reps = reps
+        )
+    }
+
+    override suspend fun updateExerciseEvaluation(
+        trainingBlockId: String,
+        exerciseId: String,
+        evaluation: Evaluation
+    ) {
+        trainingsLocalDataSource.updateExerciseEvaluation(
+            trainingBlockId = RealmUUID.from(trainingBlockId),
+            exerciseId = RealmUUID.from(exerciseId),
+            evaluation = evaluation
         )
     }
 
