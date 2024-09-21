@@ -9,8 +9,8 @@ data class Exercise(
     val name: String,
     val sets: Sets,
     val reps: Reps,
-    val results: List<SetResult>
-    // TODO Add score (less, neutral, more)
+    val results: List<SetResult>,
+    val evaluation: Evaluation
 ) {
 
     init {
@@ -33,7 +33,8 @@ data class Exercise(
                 SetResult.emptyRegular()
             } + List(plannedExercise.sets.drop) {
                 SetResult.emptyDrop()
-            }
+            },
+            evaluation = Evaluation.NONE
         )
     }
 }

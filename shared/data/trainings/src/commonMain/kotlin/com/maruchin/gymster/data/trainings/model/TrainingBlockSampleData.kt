@@ -41,7 +41,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = 70.0,
                                         reps = 4
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.POSITIVE
                             ),
                             Exercise(
                                 id = "2",
@@ -67,7 +68,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = 5.0,
                                         reps = 12
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.POSITIVE
                             ),
                             Exercise(
                                 id = "3",
@@ -93,7 +95,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = 15.0,
                                         reps = 10
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "4",
@@ -125,7 +128,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "5",
@@ -151,7 +155,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     ),
@@ -164,7 +169,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wiosłowanie sztangą",
                                 sets = Sets(regular = 3),
                                 reps = Reps(6..8),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "17",
                                         type = SetResult.Type.REGULAR,
@@ -183,14 +188,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "7",
                                 name = "Ściąganie drążka wyciągu górnego chwytem V",
                                 sets = Sets(regular = 3),
                                 reps = Reps(8..10),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "20",
                                         type = SetResult.Type.REGULAR,
@@ -209,14 +215,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "8",
                                 name = "Wisoławanie hantlami w oparciu o ławkę",
                                 sets = Sets(regular = 2),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "23",
                                         type = SetResult.Type.REGULAR,
@@ -229,14 +236,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "9",
                                 name = "Odwrotne rozpiętki hantlami w oparciu o ławkę",
                                 sets = Sets(regular = 1, drop = 2),
                                 reps = Reps(10..20),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "25",
                                         type = SetResult.Type.REGULAR,
@@ -255,14 +263,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "10",
                                 name = "Uginanie hantli na modlitewniku",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "28",
                                         type = SetResult.Type.REGULAR,
@@ -281,7 +290,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     ),
@@ -294,7 +304,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Przysiad ze sztangą z tyłu",
                                 sets = Sets(regular = 3),
                                 reps = Reps(4..6),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "31",
                                         type = SetResult.Type.REGULAR,
@@ -313,14 +323,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "12",
                                 name = "Wypychanie nóg na suwnicy",
                                 sets = Sets(regular = 3),
                                 reps = Reps(8..10),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "34",
                                         type = SetResult.Type.REGULAR,
@@ -339,14 +350,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "13",
                                 name = "Uginanie nóg leżąc na maszynie",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "37",
                                         type = SetResult.Type.REGULAR,
@@ -365,14 +377,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "14",
                                 name = "Wyprosty tułowia na ławce rzymskiej",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "40",
                                         type = SetResult.Type.REGULAR,
@@ -391,14 +404,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "15",
                                 name = "Wspięcia na palce na suwnicy",
                                 sets = Sets(regular = 1, drop = 2),
                                 reps = Reps(10..20),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "43",
                                         type = SetResult.Type.REGULAR,
@@ -417,7 +431,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     )
@@ -454,7 +469,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}2",
@@ -480,7 +496,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}3",
@@ -506,7 +523,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}4",
@@ -538,7 +556,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}5",
@@ -564,7 +583,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     ),
@@ -577,7 +597,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Wiosłowanie sztangą",
                                 sets = Sets(regular = 3),
                                 reps = Reps(6..8),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}62",
                                         type = SetResult.Type.REGULAR,
@@ -596,14 +616,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}7",
                                 name = "Ściąganie drążka wyciągu górnego chwytem V",
                                 sets = Sets(regular = 3),
                                 reps = Reps(8..10),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}65",
                                         type = SetResult.Type.REGULAR,
@@ -622,14 +643,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}8",
                                 name = "Wisoławanie hantlami w oparciu o ławkę",
                                 sets = Sets(regular = 2),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}68",
                                         type = SetResult.Type.REGULAR,
@@ -642,14 +664,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}9",
                                 name = "Odwrotne rozpiętki hantlami w oparciu o ławkę",
                                 sets = Sets(regular = 1, drop = 2),
                                 reps = Reps(10..20),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}70",
                                         type = SetResult.Type.REGULAR,
@@ -668,14 +691,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}10",
                                 name = "Uginanie hantli na modlitewniku",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}73",
                                         type = SetResult.Type.REGULAR,
@@ -694,7 +718,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     ),
@@ -707,7 +732,7 @@ val sampleTrainingBlocks = listOf(
                                 name = "Przysiad ze sztangą z tyłu",
                                 sets = Sets(regular = 3),
                                 reps = Reps(4..6),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}76",
                                         type = SetResult.Type.REGULAR,
@@ -726,14 +751,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}12",
                                 name = "Wypychanie nóg na suwnicy",
                                 sets = Sets(regular = 3),
                                 reps = Reps(8..10),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}79",
                                         type = SetResult.Type.REGULAR,
@@ -752,14 +778,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}13",
                                 name = "Uginanie nóg leżąc na maszynie",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}82",
                                         type = SetResult.Type.REGULAR,
@@ -778,14 +805,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}14",
                                 name = "Wyprosty tułowia na ławce rzymskiej",
                                 sets = Sets(regular = 2, drop = 1),
                                 reps = Reps(10..12),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}85",
                                         type = SetResult.Type.REGULAR,
@@ -804,14 +832,15 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             ),
                             Exercise(
                                 id = "${weekNumber}15",
                                 name = "Wspięcia na palce na suwnicy",
                                 sets = Sets(regular = 1, drop = 2),
                                 reps = Reps(10..20),
-                                listOf(
+                                results = listOf(
                                     SetResult(
                                         id = "${weekNumber}88",
                                         type = SetResult.Type.REGULAR,
@@ -830,7 +859,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                )
+                                ),
+                                evaluation = Evaluation.NONE
                             )
                         )
                     )

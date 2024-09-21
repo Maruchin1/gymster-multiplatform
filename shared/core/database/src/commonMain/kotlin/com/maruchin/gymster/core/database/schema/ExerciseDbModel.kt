@@ -13,4 +13,5 @@ class ExerciseDbModel : EmbeddedRealmObject {
     var minReps: Int = 0
     var maxReps: Int = 0
     var results: RealmList<SetResultDbModel> = realmListOf()
+    var evaluation: String = ""
 }
