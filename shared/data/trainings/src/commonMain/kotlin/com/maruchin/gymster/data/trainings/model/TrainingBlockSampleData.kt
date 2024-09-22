@@ -41,8 +41,7 @@ val sampleTrainingBlocks = listOf(
                                         weight = 70.0,
                                         reps = 4
                                     )
-                                ),
-                                evaluation = Evaluation.POSITIVE
+                                )
                             ),
                             Exercise(
                                 id = "2",
@@ -68,8 +67,7 @@ val sampleTrainingBlocks = listOf(
                                         weight = 5.0,
                                         reps = 12
                                     )
-                                ),
-                                evaluation = Evaluation.POSITIVE
+                                )
                             ),
                             Exercise(
                                 id = "3",
@@ -95,8 +93,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = 15.0,
                                         reps = 10
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "4",
@@ -128,8 +126,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "5",
@@ -155,8 +153,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     ),
@@ -188,8 +186,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "7",
@@ -215,8 +213,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "8",
@@ -236,8 +234,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "9",
@@ -263,8 +261,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "10",
@@ -290,8 +288,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     ),
@@ -323,8 +321,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "12",
@@ -350,8 +348,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "13",
@@ -377,8 +375,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "14",
@@ -404,8 +402,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "15",
@@ -431,8 +429,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     )
@@ -469,8 +467,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}2",
@@ -496,8 +494,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}3",
@@ -523,8 +521,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}4",
@@ -556,8 +554,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}5",
@@ -583,8 +581,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     ),
@@ -616,8 +614,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}7",
@@ -643,8 +641,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}8",
@@ -664,8 +662,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}9",
@@ -691,8 +689,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}10",
@@ -718,8 +716,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     ),
@@ -751,8 +749,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}12",
@@ -778,8 +776,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}13",
@@ -805,8 +803,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}14",
@@ -832,8 +830,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             ),
                             Exercise(
                                 id = "${weekNumber}15",
@@ -859,8 +857,8 @@ val sampleTrainingBlocks = listOf(
                                         weight = null,
                                         reps = null
                                     )
-                                ),
-                                evaluation = Evaluation.NONE
+                                )
+
                             )
                         )
                     )

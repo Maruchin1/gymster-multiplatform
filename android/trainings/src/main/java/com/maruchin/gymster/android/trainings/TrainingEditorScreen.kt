@@ -1,6 +1,9 @@
 package com.maruchin.gymster.android.trainings
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -29,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +54,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -59,6 +65,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
+import com.maruchin.gymster.data.trainings.model.Evaluation
 import com.maruchin.gymster.data.trainings.model.Exercise
 import com.maruchin.gymster.data.trainings.model.SetResult
 import com.maruchin.gymster.data.trainings.model.Training
@@ -120,8 +127,9 @@ private fun TrainingEditorScreen(
         ) {
             ExercisesTabRow(pagerState = pagerState, training = loadedTraining, scope = scope)
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
+                val exercise = loadedTraining.exercises[page]
                 ExercisePage(
-                    exercise = loadedTraining.exercises[page],
+                    exercise = exercise,
                     onUpdateWeight = onUpdateWeight,
                     onUpdateReps = onUpdateReps
                 )
@@ -198,7 +206,8 @@ private fun ExercisePage(
         ExerciseItem(
             name = exercise.name,
             sets = exercise.sets,
-            reps = exercise.reps
+            reps = exercise.reps,
+            evaluation = exercise.evaluation
         )
         exercise.results.forEach { setResult ->
             SetResultItem(
@@ -212,20 +221,62 @@ private fun ExercisePage(
 }
 
 @Composable
-private fun ExerciseItem(name: String, sets: Sets, reps: Reps) {
+private fun ExerciseItem(name: String, sets: Sets, reps: Reps, evaluation: Evaluation) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(12.dp)
+        Column {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Text(text = name, style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = "Sets: $sets",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Reps: $reps",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            AnimatedContent(targetState = evaluation) { targetState ->
+                if (targetState != Evaluation.NONE) {
+                    EvaluationBanner(
+                        text = when (targetState) {
+                            Evaluation.LESS -> "👎 Take less"
+                            Evaluation.GOOD -> "👌 Good weight"
+                            Evaluation.MORE -> "💪 Take more"
+                            else -> ""
+                        },
+                        color = when (targetState) {
+                            Evaluation.LESS -> MaterialTheme.colorScheme.errorContainer
+                            Evaluation.MORE -> MaterialTheme.colorScheme.primaryContainer
+                            else -> Color.Unspecified
+                        },
+                        showDivider = targetState == Evaluation.GOOD
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EvaluationBanner(text: String, color: Color, showDivider: Boolean) {
+    Column {
+        if (showDivider) {
+            HorizontalDivider()
+        }
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(color)
+                .fillMaxWidth()
+                .padding(8.dp)
         ) {
-            Text(text = name, style = MaterialTheme.typography.titleLarge)
             Text(
-                text = "Sets: $sets",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Reps: $reps",
-                style = MaterialTheme.typography.bodyLarge
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }

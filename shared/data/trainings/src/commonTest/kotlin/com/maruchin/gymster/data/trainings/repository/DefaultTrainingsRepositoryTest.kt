@@ -6,7 +6,6 @@ import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.core.datastore.di.coreSettingsTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
-import com.maruchin.gymster.data.trainings.model.Evaluation
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -141,37 +140,6 @@ class DefaultTrainingsRepositoryTest : KoinTest {
                 .exercises.first()
                 .results.first()
                 .reps shouldBe newReps
-        }
-    }
-
-    @Test
-    fun `update exercise evaluation`() = runTest {
-        val plan = samplePlans.first()
-        val startDate = LocalDate(2024, 8, 12)
-        val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
-        val week = trainingBlock.weeks.first()
-        val training = week.trainings.first()
-        val exercise = training.exercises.first()
-        val newEvaluation = Evaluation.NEGATIVE
-
-        repository.observeTrainingBlock(trainingBlock.id).test {
-            awaitItem()!!
-                .weeks.first()
-                .trainings.first()
-                .exercises.first()
-                .evaluation shouldBe Evaluation.NONE
-
-            repository.updateExerciseEvaluation(
-                trainingBlockId = trainingBlock.id,
-                exerciseId = exercise.id,
-                evaluation = newEvaluation
-            )
-
-            awaitItem()!!
-                .weeks.first()
-                .trainings.first()
-                .exercises.first()
-                .evaluation shouldBe newEvaluation
         }
     }
 

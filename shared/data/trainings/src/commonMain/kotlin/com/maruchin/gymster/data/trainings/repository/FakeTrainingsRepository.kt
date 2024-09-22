@@ -2,7 +2,6 @@ package com.maruchin.gymster.data.trainings.repository
 
 import com.maruchin.gymster.core.utils.updated
 import com.maruchin.gymster.data.plans.model.Plan
-import com.maruchin.gymster.data.trainings.model.Evaluation
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -141,47 +140,6 @@ class FakeTrainingsRepository : TrainingsRepository {
                                         setResult.copy(reps = reps)
                                     }
                                 )
-                            }
-                        )
-                    }
-                )
-            }
-        )
-    }
-
-    override suspend fun updateExerciseEvaluation(
-        trainingBlockId: String,
-        exerciseId: String,
-        evaluation: Evaluation
-    ) {
-        val trainingBlock = collection.value[trainingBlockId]!!
-        val matchingTrainingWeek = trainingBlock.weeks.first { week ->
-            week.trainings.any { training ->
-                training.exercises.any { exercise ->
-                    exercise.id == exerciseId
-                }
-            }
-        }
-        val matchingWeekIndex = trainingBlock.weeks.indexOf(matchingTrainingWeek)
-        val matchingTraining = matchingTrainingWeek.trainings.first { training ->
-            training.exercises.any { exercise ->
-                exercise.id == exerciseId
-            }
-        }
-        val matchingExercise = matchingTraining.exercises.first { exercise ->
-            exercise.id == exerciseId
-        }
-        collection.value += trainingBlockId to trainingBlock.copy(
-            weeks = trainingBlock.weeks.updated(matchingWeekIndex) { week ->
-                week.copy(
-                    trainings = week.trainings.updated(
-                        predicate = { it.id == matchingTraining.id }
-                    ) { training ->
-                        training.copy(
-                            exercises = training.exercises.updated(
-                                predicate = { it.id == matchingExercise.id }
-                            ) { exercise ->
-                                exercise.copy(evaluation = evaluation)
                             }
                         )
                     }

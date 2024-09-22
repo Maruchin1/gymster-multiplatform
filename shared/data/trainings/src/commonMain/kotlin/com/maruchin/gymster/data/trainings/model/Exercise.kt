@@ -9,8 +9,7 @@ data class Exercise(
     val name: String,
     val sets: Sets,
     val reps: Reps,
-    val results: List<SetResult>,
-    val evaluation: Evaluation
+    val results: List<SetResult>
 ) {
 
     init {
@@ -21,6 +20,14 @@ data class Exercise(
 
     val isComplete: Boolean
         get() = results.all { it.isComplete }
+
+    val evaluation: Evaluation
+        get() = when {
+            !isComplete -> Evaluation.NONE
+            results.any { it.isTooMuch(reps) } -> Evaluation.LESS
+            results.any { it.isTooLittle(reps) } -> Evaluation.MORE
+            else -> Evaluation.GOOD
+        }
 
     companion object {
 
@@ -33,8 +40,7 @@ data class Exercise(
                 SetResult.emptyRegular()
             } + List(plannedExercise.sets.drop) {
                 SetResult.emptyDrop()
-            },
-            evaluation = Evaluation.NONE
+            }
         )
     }
 }
