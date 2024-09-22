@@ -80,10 +80,6 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val plan = samplePlans.first()
         val startDate = LocalDate(2024, 8, 12)
         val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
-        val week = trainingBlock.weeks.first()
-        val training = week.trainings.first()
-        val exercise = training.exercises.first()
-        val setResult = exercise.results.first()
         val newWeight = 70.0
 
         repository.observeTrainingBlock(trainingBlock.id).test {
@@ -96,7 +92,10 @@ class DefaultTrainingsRepositoryTest : KoinTest {
 
             repository.updateSetResultWeight(
                 trainingBlockId = trainingBlock.id,
-                setResultId = setResult.id,
+                weekIndex = 0,
+                trainingIndex = 0,
+                exerciseIndex = 0,
+                setIndex = 0,
                 weight = newWeight
             )
 
@@ -114,10 +113,6 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val plan = samplePlans.first()
         val startDate = LocalDate(2024, 8, 12)
         val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
-        val week = trainingBlock.weeks.first()
-        val training = week.trainings.first()
-        val exercise = training.exercises.first()
-        val setResult = exercise.results.first()
         val newReps = 5
 
         repository.observeTrainingBlock(trainingBlock.id).test {
@@ -130,7 +125,10 @@ class DefaultTrainingsRepositoryTest : KoinTest {
 
             repository.updateSetResultReps(
                 trainingBlockId = trainingBlock.id,
-                setResultId = setResult.id,
+                weekIndex = 0,
+                trainingIndex = 0,
+                exerciseIndex = 0,
+                setIndex = 0,
                 reps = newReps
             )
 

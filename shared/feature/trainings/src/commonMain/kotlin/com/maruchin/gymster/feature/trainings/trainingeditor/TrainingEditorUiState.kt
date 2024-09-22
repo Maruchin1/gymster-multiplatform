@@ -15,11 +15,11 @@ data class TrainingEditorUiState(
             trainingBlock: TrainingBlock,
             weekIndex: Int,
             trainingIndex: Int,
-            exerciseIndex: Int
+            initialExerciseIndex: Int
         ) = TrainingEditorUiState(
             training = trainingBlock.getTraining(weekIndex, trainingIndex),
             previousTraining = trainingBlock.getPreviousTraining(weekIndex, trainingIndex),
-            initialExerciseIndex = exerciseIndex
+            initialExerciseIndex = initialExerciseIndex
         )
     }
 }

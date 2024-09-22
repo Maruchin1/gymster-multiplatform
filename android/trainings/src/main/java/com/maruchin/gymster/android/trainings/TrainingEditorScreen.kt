@@ -104,8 +104,8 @@ internal fun TrainingEditorScreen(
 private fun TrainingEditorScreen(
     state: TrainingEditorUiState,
     onBack: () -> Unit,
-    onUpdateWeight: (setResultId: String, weight: Double?) -> Unit,
-    onUpdateReps: (setResultId: String, reps: Int?) -> Unit
+    onUpdateWeight: (exerciseIndex: Int, setIndex: Int, weight: Double?) -> Unit,
+    onUpdateReps: (exerciseIndex: Int, setIndex: Int, reps: Int?) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -127,12 +127,16 @@ private fun TrainingEditorScreen(
                 .padding(contentPadding)
         ) {
             ExercisesTabRow(pagerState = pagerState, training = loadedTraining, scope = scope)
-            HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
-                val exercise = loadedTraining.exercises[page]
+            HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { exerciseIndex ->
+                val exercise = loadedTraining.exercises[exerciseIndex]
                 ExercisePage(
                     exercise = exercise,
-                    onUpdateWeight = onUpdateWeight,
-                    onUpdateReps = onUpdateReps
+                    onUpdateWeight = { setIndex, weight ->
+                        onUpdateWeight(exerciseIndex, setIndex, weight)
+                    },
+                    onUpdateReps = { setIndex, reps ->
+                        onUpdateReps(exerciseIndex, setIndex, reps)
+                    }
                 )
             }
             ExerciseActionsRow(
@@ -194,8 +198,8 @@ private fun ExercisesTabRow(pagerState: PagerState, training: Training, scope: C
 @Composable
 private fun ExercisePage(
     exercise: Exercise,
-    onUpdateWeight: (setResultId: String, weight: Double?) -> Unit,
-    onUpdateReps: (setResultId: String, reps: Int?) -> Unit
+    onUpdateWeight: (setIndex: Int, weight: Double?) -> Unit,
+    onUpdateReps: (setIndex: Int, reps: Int?) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -210,12 +214,12 @@ private fun ExercisePage(
             reps = exercise.reps,
             evaluation = exercise.evaluation
         )
-        exercise.results.forEach { setResult ->
+        exercise.results.forEachIndexed { setResultIndex, setResult ->
             SetResultItem(
                 setResult = setResult,
                 isLast = setResult == exercise.results.last(),
-                onUpdateWeight = { onUpdateWeight(setResult.id, it) },
-                onUpdateReps = { onUpdateReps(setResult.id, it) }
+                onUpdateWeight = { onUpdateWeight(setResultIndex, it) },
+                onUpdateReps = { onUpdateReps(setResultIndex, it) }
             )
         }
     }
@@ -415,8 +419,8 @@ private fun TrainingEditorScreen_LoadedPreview() {
                 initialExerciseIndex = 0
             ),
             onBack = {},
-            onUpdateWeight = { _, _ -> },
-            onUpdateReps = { _, _ -> }
+            onUpdateWeight = { _, _, _ -> },
+            onUpdateReps = { _, _, _ -> }
         )
     }
 }

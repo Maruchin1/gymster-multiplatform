@@ -19,9 +19,23 @@ interface TrainingsRepository {
 
     suspend fun deleteTrainingBlock(trainingBlockId: String)
 
-    suspend fun updateSetResultWeight(trainingBlockId: String, setResultId: String, weight: Double?)
+    suspend fun updateSetResultWeight(
+        trainingBlockId: String,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
+        weight: Double?
+    )
 
-    suspend fun updateSetResultReps(trainingBlockId: String, setResultId: String, reps: Int?)
+    suspend fun updateSetResultReps(
+        trainingBlockId: String,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
+        reps: Int?
+    )
 
     suspend fun setActiveTrainingBlock(trainingBlockId: String)
 }

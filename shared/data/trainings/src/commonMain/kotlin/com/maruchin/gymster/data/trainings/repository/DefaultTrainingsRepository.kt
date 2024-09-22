@@ -49,24 +49,36 @@ internal class DefaultTrainingsRepository(
 
     override suspend fun updateSetResultWeight(
         trainingBlockId: String,
-        setResultId: String,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
         weight: Double?
     ) {
         trainingsLocalDataSource.updateSetResultWeight(
             trainingBlockId = RealmUUID.from(trainingBlockId),
-            setResultId = RealmUUID.from(setResultId),
+            weekIndex = weekIndex,
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex,
+            setIndex = setIndex,
             weight = weight
         )
     }
 
     override suspend fun updateSetResultReps(
         trainingBlockId: String,
-        setResultId: String,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
         reps: Int?
     ) {
         trainingsLocalDataSource.updateSetResultReps(
             trainingBlockId = RealmUUID.from(trainingBlockId),
-            setResultId = RealmUUID.from(setResultId),
+            weekIndex = weekIndex,
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex,
+            setIndex = setIndex,
             reps = reps
         )
     }

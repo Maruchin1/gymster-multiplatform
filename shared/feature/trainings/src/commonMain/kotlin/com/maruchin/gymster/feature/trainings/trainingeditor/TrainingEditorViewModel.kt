@@ -16,7 +16,7 @@ class TrainingEditorViewModel(
     private val trainingBlockId: String,
     private val weekIndex: Int,
     private val trainingIndex: Int,
-    private val exerciseIndex: Int
+    private val initialExerciseIndex: Int
 ) : ViewModel(),
     KoinComponent {
 
@@ -25,18 +25,32 @@ class TrainingEditorViewModel(
     val uiState: StateFlow<TrainingEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
         .filterNotNull()
-        .map { TrainingEditorUiState.from(it, weekIndex, trainingIndex, exerciseIndex) }
+        .map { TrainingEditorUiState.from(it, weekIndex, trainingIndex, initialExerciseIndex) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = TrainingEditorUiState()
         )
 
-    fun updateWeight(setResultId: String, weight: Double?) = viewModelScope.launch {
-        trainingsRepository.updateSetResultWeight(trainingBlockId, setResultId, weight)
+    fun updateWeight(exerciseIndex: Int, setIndex: Int, weight: Double?) = viewModelScope.launch {
+        trainingsRepository.updateSetResultWeight(
+            trainingBlockId = trainingBlockId,
+            weekIndex = weekIndex,
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex,
+            setIndex = setIndex,
+            weight = weight
+        )
     }
 
-    fun updateReps(setResultId: String, reps: Int?) = viewModelScope.launch {
-        trainingsRepository.updateSetResultReps(trainingBlockId, setResultId, reps)
+    fun updateReps(exerciseIndex: Int, setIndex: Int, reps: Int?) = viewModelScope.launch {
+        trainingsRepository.updateSetResultReps(
+            trainingBlockId = trainingBlockId,
+            weekIndex = weekIndex,
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex,
+            setIndex = setIndex,
+            reps = reps
+        )
     }
 }

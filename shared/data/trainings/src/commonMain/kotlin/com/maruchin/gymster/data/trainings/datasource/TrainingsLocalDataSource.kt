@@ -34,32 +34,38 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
 
     suspend fun updateSetResultWeight(
         trainingBlockId: RealmUUID,
-        setResultId: RealmUUID,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
         weight: Double?
     ) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
             val setResult = trainingBlock.trainings
-                .flatMap { it.exercises }
-                .flatMap { it.results }
-                .first { it.id == setResultId }
+                .filter { it.week == weekIndex }[trainingIndex]
+                .exercises[exerciseIndex]
+                .results[setIndex]
             setResult.weight = weight
         }
     }
 
     suspend fun updateSetResultReps(
         trainingBlockId: RealmUUID,
-        setResultId: RealmUUID,
+        weekIndex: Int,
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        setIndex: Int,
         reps: Int?
     ) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
             val setResult = trainingBlock.trainings
-                .flatMap { it.exercises }
-                .flatMap { it.results }
-                .first { it.id == setResultId }
+                .filter { it.week == weekIndex }[trainingIndex]
+                .exercises[exerciseIndex]
+                .results[setIndex]
             setResult.reps = reps
         }
     }

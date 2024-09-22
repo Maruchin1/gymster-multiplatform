@@ -24,12 +24,14 @@ import org.koin.test.inject
 class TrainingEditorViewModelTest : KoinTest {
 
     private val trainingBlock = sampleTrainingBlocks.first()
-    private val week = trainingBlock.weeks.first()
-    private val training = week.trainings.first()
-    private val exercise = training.exercises.first()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel by lazy {
-        TrainingEditorViewModel(trainingBlock.id, training.id, exercise.id)
+        TrainingEditorViewModel(
+            trainingBlock.id,
+            weekIndex = 0,
+            trainingIndex = 0,
+            initialExerciseIndex = 0
+        )
     }
 
     @BeforeTest
@@ -51,7 +53,11 @@ class TrainingEditorViewModelTest : KoinTest {
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingEditorUiState()
 
-            awaitItem() shouldBe TrainingEditorUiState(training, exercise.id)
+            awaitItem() shouldBe TrainingEditorUiState(
+                training = trainingBlock.weeks.first().trainings.first(),
+                previousTraining = null,
+                initialExerciseIndex = 0
+            )
         }
     }
 
@@ -69,7 +75,6 @@ class TrainingEditorViewModelTest : KoinTest {
     @Test
     fun `update weight`() = runTest {
         trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
-        val setResult = trainingBlock.weeks.first().trainings.first().exercises[3].results.first()
         val updatedWeight = 7.5
 
         viewModel.uiState.test {
@@ -78,7 +83,7 @@ class TrainingEditorViewModelTest : KoinTest {
                 it.training!!.exercises[3].results.first().weight.shouldBeNull()
             }
 
-            viewModel.updateWeight(setResult.id, updatedWeight)
+            viewModel.updateWeight(exerciseIndex = 3, setIndex = 0, updatedWeight)
 
             awaitItem().let {
                 it.training!!.exercises[3].results.first().weight shouldBe updatedWeight
@@ -89,7 +94,6 @@ class TrainingEditorViewModelTest : KoinTest {
     @Test
     fun `update reps`() = runTest {
         trainingsRepository.setTrainingBlocks(sampleTrainingBlocks)
-        val setResult = trainingBlock.weeks.first().trainings.first().exercises[3].results.first()
         val updatedReps = 15
 
         viewModel.uiState.test {
@@ -98,7 +102,7 @@ class TrainingEditorViewModelTest : KoinTest {
                 it.training!!.exercises[3].results.first().reps.shouldBeNull()
             }
 
-            viewModel.updateReps(setResult.id, updatedReps)
+            viewModel.updateReps(exerciseIndex = 3, setIndex = 0, updatedReps)
 
             awaitItem().let {
                 it.training!!.exercises[3].results.first().reps shouldBe updatedReps
