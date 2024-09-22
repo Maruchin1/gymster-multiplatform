@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 internal fun TrainingBlockEditorScreen(
     trainingBlockId: String,
     onBack: () -> Unit,
-    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit,
+    onOpenTraining: (weekIndex: Int, trainingIndex: Int, exerciseIndex: Int) -> Unit,
     viewModel: TrainingBlockEditorViewModel = viewModel {
         TrainingBlockEditorViewModel(trainingBlockId)
     }
@@ -90,7 +90,7 @@ internal fun TrainingBlockEditorScreen(
 private fun TrainingBlockEditorScreen(
     state: TrainingBlockEditorUiState,
     onBack: () -> Unit,
-    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
+    onOpenTraining: (weekIndex: Int, trainingIndex: Int, exerciseIndex: Int) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -117,11 +117,13 @@ private fun TrainingBlockEditorScreen(
                 .padding(contentPadding)
         ) {
             WeeksTabs(weeks = weeks, pagerState = pagerState, scope = scope)
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(state = pagerState) { weekIndex ->
                 WeekPage(
-                    week = weeks[page],
+                    week = weeks[weekIndex],
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
-                    onOpenTraining = onOpenTraining
+                    onOpenTraining = { trainingIndex, exerciseIndex ->
+                        onOpenTraining(weekIndex, trainingIndex, exerciseIndex)
+                    }
                 )
             }
         }
@@ -173,7 +175,7 @@ private fun WeeksTabs(weeks: List<TrainingWeek>, pagerState: PagerState, scope: 
 private fun WeekPage(
     week: TrainingWeek,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
-    onOpenTraining: (trainingId: String, exerciseId: String) -> Unit
+    onOpenTraining: (trainingIndex: Int, exerciseIndex: Int) -> Unit
 ) {
     var expandedTrainingIds by rememberSaveable(week) {
         mutableStateOf(week.notCompleteTrainingsIds)
@@ -184,7 +186,7 @@ private fun WeekPage(
         modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(bottom = 12.dp)
     ) {
-        week.trainings.forEachIndexed { index, training ->
+        week.trainings.forEachIndexed { trainingIndex, training ->
             stickyHeader(key = "training" + training.id) {
                 TrainingHeader(
                     training = training,
@@ -195,13 +197,16 @@ private fun WeekPage(
                 )
             }
             if (training.id in expandedTrainingIds) {
-                items(training.exercises, key = { "exercise" + it.id }) { exercise ->
+                itemsIndexed(
+                    training.exercises,
+                    key = { _, exercise -> "exercise" + exercise.id }
+                ) { exerciseIndex, exercise ->
                     ExerciseItem(
                         exercise = exercise,
-                        onClick = { onOpenTraining(training.id, exercise.id) }
+                        onClick = { onOpenTraining(trainingIndex, exerciseIndex) }
                     )
                 }
-                if (index != week.trainings.lastIndex) {
+                if (trainingIndex != week.trainings.lastIndex) {
                     item {
                         HorizontalDivider()
                     }
@@ -324,7 +329,7 @@ private fun TrainingBlockEditorScreen_LoadedPreview() {
         TrainingBlockEditorScreen(
             state = TrainingBlockEditorUiState(trainingBlock = sampleTrainingBlocks.first()),
             onBack = { },
-            onOpenTraining = { _, _ -> }
+            onOpenTraining = { _, _, _ -> }
         )
     }
 }

@@ -82,11 +82,12 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun TrainingEditorScreen(
     trainingBlockId: String,
-    trainingId: String,
-    exerciseId: String,
+    weekIndex: Int,
+    trainingIndex: Int,
+    exerciseIndex: Int,
     onBack: () -> Unit,
     viewModel: TrainingEditorViewModel = viewModel {
-        TrainingEditorViewModel(trainingBlockId, trainingId, exerciseId)
+        TrainingEditorViewModel(trainingBlockId, weekIndex, trainingIndex, exerciseIndex)
     }
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -115,7 +116,7 @@ private fun TrainingEditorScreen(
         val firstPage = 0
         val lastPage = loadedTraining.exercises.lastIndex
         val pagerState = rememberPagerState(
-            initialPage = loadedTraining.getExerciseIndex(state.initialExerciseId),
+            initialPage = state.initialExerciseIndex,
             pageCount = { loadedTraining.exercises.size }
         )
         val scope = rememberCoroutineScope()
@@ -411,8 +412,7 @@ private fun TrainingEditorScreen_LoadedPreview() {
         TrainingEditorScreen(
             state = TrainingEditorUiState(
                 training = sampleTrainingBlocks.first().weeks.first().trainings.first(),
-                initialExerciseId = sampleTrainingBlocks.first().weeks.first().trainings.first()
-                    .exercises.first().id
+                initialExerciseIndex = 0
             ),
             onBack = {},
             onUpdateWeight = { _, _ -> },

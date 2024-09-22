@@ -14,8 +14,9 @@ import org.koin.core.component.inject
 
 class TrainingEditorViewModel(
     private val trainingBlockId: String,
-    private val trainingId: String,
-    private val exerciseId: String
+    private val weekIndex: Int,
+    private val trainingIndex: Int,
+    private val exerciseIndex: Int
 ) : ViewModel(),
     KoinComponent {
 
@@ -24,7 +25,7 @@ class TrainingEditorViewModel(
     val uiState: StateFlow<TrainingEditorUiState> = trainingsRepository
         .observeTrainingBlock(trainingBlockId)
         .filterNotNull()
-        .map { TrainingEditorUiState.from(it, trainingId, exerciseId) }
+        .map { TrainingEditorUiState.from(it, weekIndex, trainingIndex, exerciseIndex) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

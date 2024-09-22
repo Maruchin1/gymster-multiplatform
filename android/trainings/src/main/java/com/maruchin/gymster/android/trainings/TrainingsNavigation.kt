@@ -22,8 +22,9 @@ private data class TrainingBlockEditorRoute(val trainingBlockId: String)
 @Serializable
 private data class TrainingEditorRoute(
     val trainingBlockId: String,
-    val trainingId: String,
-    val exerciseId: String
+    val weekIndex: Int,
+    val trainingIndex: Int,
+    val exerciseIndex: Int
 )
 
 fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: () -> Unit) {
@@ -46,19 +47,26 @@ fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: ()
             TrainingBlockEditorScreen(
                 trainingBlockId = trainingBlockId,
                 onBack = { navController.navigateUp() },
-                onOpenTraining = { trainingId, exerciseId ->
+                onOpenTraining = { weekIndex, trainingIndex, exerciseIndex ->
                     navController.navigate(
-                        TrainingEditorRoute(trainingBlockId, trainingId, exerciseId)
+                        TrainingEditorRoute(
+                            trainingBlockId,
+                            weekIndex,
+                            trainingIndex,
+                            exerciseIndex
+                        )
                     )
                 }
             )
         }
         composable<TrainingEditorRoute> {
-            val (trainingBlockId, trainingId, exerciseId) = it.toRoute<TrainingEditorRoute>()
+            val (trainingBlockId, weekIndex, trainingIndex, exerciseIndex) =
+                it.toRoute<TrainingEditorRoute>()
             TrainingEditorScreen(
                 trainingBlockId = trainingBlockId,
-                trainingId = trainingId,
-                exerciseId = exerciseId,
+                weekIndex = weekIndex,
+                trainingIndex = trainingIndex,
+                exerciseIndex = exerciseIndex,
                 onBack = { navController.navigateUp() }
             )
         }

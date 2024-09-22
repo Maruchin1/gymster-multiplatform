@@ -5,15 +5,21 @@ import com.maruchin.gymster.data.trainings.model.TrainingBlock
 
 data class TrainingEditorUiState(
     val training: Training? = null,
-    val initialExerciseId: String = ""
+    val previousTraining: Training? = null,
+    val initialExerciseIndex: Int = -1
 ) {
 
     companion object {
 
-        fun from(trainingBlock: TrainingBlock, trainingId: String, exerciseId: String) =
-            TrainingEditorUiState(
-                training = trainingBlock.getTraining(trainingId),
-                initialExerciseId = exerciseId
-            )
+        fun from(
+            trainingBlock: TrainingBlock,
+            weekIndex: Int,
+            trainingIndex: Int,
+            exerciseIndex: Int
+        ) = TrainingEditorUiState(
+            training = trainingBlock.getTraining(weekIndex, trainingIndex),
+            previousTraining = trainingBlock.getPreviousTraining(weekIndex, trainingIndex),
+            initialExerciseIndex = exerciseIndex
+        )
     }
 }

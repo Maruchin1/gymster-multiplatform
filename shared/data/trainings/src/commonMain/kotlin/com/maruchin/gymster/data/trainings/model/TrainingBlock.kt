@@ -19,29 +19,11 @@ data class TrainingBlock(
     val currentWeekIndex: Int
         get() = weeks.indexOfFirst { !it.isComplete }
 
-    fun getWeek(index: Int) = weeks[index]
+    fun getTraining(weekIndex: Int, trainingIndex: Int): Training =
+        weeks[weekIndex].trainings[trainingIndex]
 
-    fun getTraining(trainingId: String): Training = weeks.asSequence()
-        .flatMap { it.trainings }
-        .associateBy { it.id }
-        .getValue(trainingId)
-
-    fun getExercise(exerciseId: String): Exercise = weeks.asSequence()
-        .flatMap { it.trainings }
-        .flatMap { it.exercises }
-        .associateBy { it.id }
-        .getValue(exerciseId)
-
-    fun getExerciseForSetProgress(setProgressId: String): Exercise = weeks.asSequence()
-        .flatMap { it.trainings }
-        .flatMap { it.exercises }
-        .first { exercise -> exercise.results.any { it.id == setProgressId } }
-
-    fun getSetResul(setResultId: String): SetResult = weeks.asSequence()
-        .flatMap { it.trainings }
-        .flatMap { it.exercises }
-        .flatMap { it.results }
-        .first { it.id == setResultId }
+    fun getPreviousTraining(weekIndex: Int, trainingIndex: Int): Training? =
+        weeks.getOrNull(weekIndex - 1)?.trainings?.get(trainingIndex)
 
     companion object {
 
