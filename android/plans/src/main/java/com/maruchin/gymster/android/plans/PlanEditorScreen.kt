@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -46,6 +46,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -104,13 +105,19 @@ private fun PlanEditorScreen(
     onBack: () -> Unit,
     onUpdatePlan: (newName: String) -> Unit,
     onAddTraining: (name: String) -> Unit,
-    onUpdateTraining: (trainingId: String, name: String) -> Unit,
+    onUpdateTraining: (trainingIndex: Int, name: String) -> Unit,
     onDeletePlan: () -> Unit,
-    onDeleteTraining: (trainingId: String) -> Unit,
-    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onDeleteExercise: (exerciseId: String) -> Unit,
-    onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
+    onDeleteTraining: (trainingIndex: Int) -> Unit,
+    onAddExercise: (trainingIndex: Int, name: String, sets: Sets, reps: Reps) -> Unit,
+    onUpdateExercise: (
+        trainingIndex: Int,
+        exerciseIndex: Int,
+        name: String,
+        sets: Sets,
+        reps: Reps
+    ) -> Unit,
+    onDeleteExercise: (trainingIndex: Int, exerciseIndex: Int) -> Unit,
+    onReorderExercises: (trainingIndex: Int, exercisesIds: List<String>) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var isEditingPlan by remember { mutableStateOf(false) }
@@ -150,18 +157,28 @@ private fun PlanEditorScreen(
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .padding(contentPadding)
         ) {
-            mutablePlan.trainings.forEach { training ->
+            mutablePlan.trainings.forEachIndexed { trainingIndex, training ->
                 trainingSection(
                     training = training,
                     onUpdateTraining = { name ->
-                        onUpdateTraining(training.id, name)
+                        onUpdateTraining(trainingIndex, name)
                     },
-                    onDeleteTraining = { onDeleteTraining(training.id) },
+                    onDeleteTraining = { onDeleteTraining(trainingIndex) },
                     reorderableLazyListState = reorderableLazyListState,
-                    onUpdateExercise = onUpdateExercise,
-                    onDeleteExercise = onDeleteExercise,
-                    onReorderExercises = onReorderExercises,
-                    onAddExercise = onAddExercise
+                    onUpdateExercise = { exerciseIndex, name, sets, reps ->
+                        onUpdateExercise(trainingIndex, exerciseIndex, name, sets, reps)
+                    },
+                    onDeleteExercise = { exerciseIndex ->
+                        onDeleteExercise(trainingIndex, exerciseIndex)
+                    },
+                    onReorderExercises = {
+                        val exercisesIds = mutablePlan.trainings[trainingIndex]
+                            .exercises.map { it.id }
+                        onReorderExercises(trainingIndex, exercisesIds)
+                    },
+                    onAddExercise = { name, sets, reps ->
+                        onAddExercise(trainingIndex, name, sets, reps)
+                    }
                 )
             }
             item {
@@ -185,10 +202,11 @@ private fun PlanEditorScreen(
         )
     }
     if (editedTraining != null) {
+        val trainingIndex = state.plan?.trainings?.indexOf(editedTraining) ?: -1
         TrainingFormModal(
             training = editedTraining,
             onDismiss = { editedTraining = null },
-            onSave = { onUpdateTraining(editedTraining!!.id, it) }
+            onSave = { onUpdateTraining(trainingIndex, it) }
         )
     }
 }
@@ -229,10 +247,10 @@ private fun LazyListScope.trainingSection(
     reorderableLazyListState: ReorderableLazyListState,
     onUpdateTraining: (name: String) -> Unit,
     onDeleteTraining: () -> Unit,
-    onAddExercise: (trainingId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onUpdateExercise: (exerciseId: String, name: String, sets: Sets, reps: Reps) -> Unit,
-    onDeleteExercise: (exerciseId: String) -> Unit,
-    onReorderExercises: (trainingId: String, exercisesIds: List<String>) -> Unit
+    onAddExercise: (name: String, sets: Sets, reps: Reps) -> Unit,
+    onUpdateExercise: (exerciseIndex: Int, name: String, sets: Sets, reps: Reps) -> Unit,
+    onDeleteExercise: (exerciseIndex: Int) -> Unit,
+    onReorderExercises: () -> Unit
 ) {
     stickyHeader {
         var isEditingTraining by rememberSaveable { mutableStateOf(false) }
@@ -251,18 +269,20 @@ private fun LazyListScope.trainingSection(
             )
         }
     }
-    items(training.exercises, key = { it.id }) { exercise ->
+    itemsIndexed(
+        training.exercises,
+        key = { _, exercise -> exercise.id }
+    ) { exerciseIndex, exercise ->
+        val scope = rememberCoroutineScope()
+
         ExerciseItem(
             exercise = exercise,
             reorderableLazyListState = reorderableLazyListState,
             onUpdateExercise = { name, sets, reps ->
-                onUpdateExercise(exercise.id, name, sets, reps)
+                onUpdateExercise(exerciseIndex, name, sets, reps)
             },
-            onDeleteExercise = { onDeleteExercise(exercise.id) },
-            onDragStop = {
-                val exercisesIds = training.exercises.map { it.id }
-                onReorderExercises(training.id, exercisesIds)
-            }
+            onDeleteExercise = { onDeleteExercise(exerciseIndex) },
+            onDragStop = { onReorderExercises() }
         )
     }
     item {
@@ -274,7 +294,7 @@ private fun LazyListScope.trainingSection(
             ExerciseFormModal(
                 exercise = null,
                 onSave = { name, sets, reps ->
-                    onAddExercise(training.id, name, sets, reps)
+                    onAddExercise(name, sets, reps)
                     isAddingExercise = false
                 },
                 onDismiss = { isAddingExercise = false }
@@ -448,8 +468,8 @@ private fun PlanEditorScreen_LoadedPreview() {
             onDeletePlan = {},
             onDeleteTraining = {},
             onAddExercise = { _, _, _, _ -> },
-            onUpdateExercise = { _, _, _, _ -> },
-            onDeleteExercise = { _ -> },
+            onUpdateExercise = { _, _, _, _, _ -> },
+            onDeleteExercise = { _, _ -> },
             onReorderExercises = { _, _ -> }
         )
     }

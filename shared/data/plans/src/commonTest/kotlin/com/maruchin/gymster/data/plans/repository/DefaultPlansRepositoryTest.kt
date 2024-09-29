@@ -136,7 +136,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.changeTrainingName(
                 planId = plan.id,
-                trainingId = training.id,
+                trainingIndex = 0,
                 newName = "Push 2"
             )
 
@@ -171,7 +171,7 @@ class DefaultPlansRepositoryTest : KoinTest {
                 )
             )
 
-            repository.deleteTraining(planId = plan.id, trainingId = training.id)
+            repository.deleteTraining(planId = plan.id, trainingIndex = 0)
 
             awaitItem() shouldBe Plan(
                 id = plan.id,
@@ -200,7 +200,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             val exercise = repository.addExercise(
                 planId = plan.id,
-                trainingId = training.id,
+                trainingIndex = 0,
                 name = "Bench Press",
                 sets = Sets(regular = 3, drop = 0),
                 reps = Reps(10..12)
@@ -233,7 +233,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         val training = repository.addTraining(planId = plan.id, name = "Push 1")
         val exercise = repository.addExercise(
             planId = plan.id,
-            trainingId = training.id,
+            trainingIndex = 0,
             name = "Bench Press",
             sets = Sets(regular = 3, drop = 0),
             reps = Reps(10..12)
@@ -260,7 +260,8 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.updateExercise(
                 planId = plan.id,
-                exerciseId = exercise.id,
+                trainingIndex = 0,
+                exerciseIndex = 0,
                 newName = "Incline Bench Press",
                 newSets = Sets(regular = 4, drop = 1),
                 newReps = Reps(8..10)
@@ -296,7 +297,7 @@ class DefaultPlansRepositoryTest : KoinTest {
         )
         val exercise = repository.addExercise(
             planId = plan.id,
-            trainingId = training.id,
+            trainingIndex = 0,
             name = "Bench Press",
             sets = Sets(regular = 3, drop = 0),
             reps = Reps(10..12)
@@ -323,7 +324,8 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.deleteExercise(
                 planId = plan.id,
-                exerciseId = exercise.id
+                trainingIndex = 0,
+                exerciseIndex = 0
             )
 
             awaitItem() shouldBe Plan(
@@ -349,14 +351,14 @@ class DefaultPlansRepositoryTest : KoinTest {
         )
         val exercise1 = repository.addExercise(
             planId = plan.id,
-            trainingId = training.id,
+            trainingIndex = 0,
             name = "Bench Press",
             sets = Sets(regular = 3, drop = 0),
             reps = Reps(10..12)
         )
         val exercise2 = repository.addExercise(
             planId = plan.id,
-            trainingId = training.id,
+            trainingIndex = 0,
             name = "Overhead press",
             sets = Sets(regular = 3, drop = 0),
             reps = Reps(10..12)
@@ -389,7 +391,7 @@ class DefaultPlansRepositoryTest : KoinTest {
 
             repository.reorderExercises(
                 planId = plan.id,
-                trainingId = training.id,
+                trainingIndex = 0,
                 exercisesIds = listOf(exercise2.id, exercise1.id)
             )
 

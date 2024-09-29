@@ -34,15 +34,15 @@ class PlanListViewModel :
     fun seedPlans() = viewModelScope.launch {
         samplePlans.first().let { plan ->
             val createdPlan = plansRepository.createPlan(plan.name)
-            plan.trainings.forEach { training ->
-                val createdTraining = plansRepository.addTraining(
+            plan.trainings.forEachIndexed { trainingIndex, training ->
+                plansRepository.addTraining(
                     planId = createdPlan.id,
                     name = training.name
                 )
                 training.exercises.forEach { exercise ->
                     plansRepository.addExercise(
                         planId = createdPlan.id,
-                        trainingId = createdTraining.id,
+                        trainingIndex = trainingIndex,
                         name = exercise.name,
                         sets = exercise.sets,
                         reps = exercise.reps

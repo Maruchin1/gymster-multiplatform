@@ -21,13 +21,13 @@ interface PlansRepository {
 
     suspend fun addTraining(planId: String, name: String): PlannedTraining
 
-    suspend fun changeTrainingName(planId: String, trainingId: String, newName: String)
+    suspend fun changeTrainingName(planId: String, trainingIndex: Int, newName: String)
 
-    suspend fun deleteTraining(planId: String, trainingId: String)
+    suspend fun deleteTraining(planId: String, trainingIndex: Int)
 
     suspend fun addExercise(
         planId: String,
-        trainingId: String,
+        trainingIndex: Int,
         name: String,
         sets: Sets,
         reps: Reps
@@ -35,13 +35,14 @@ interface PlansRepository {
 
     suspend fun updateExercise(
         planId: String,
-        exerciseId: String,
+        trainingIndex: Int,
+        exerciseIndex: Int,
         newName: String,
         newSets: Sets,
         newReps: Reps
     )
 
-    suspend fun deleteExercise(planId: String, exerciseId: String)
+    suspend fun deleteExercise(planId: String, trainingIndex: Int, exerciseIndex: Int)
 
-    suspend fun reorderExercises(planId: String, trainingId: String, exercisesIds: List<String>)
+    suspend fun reorderExercises(planId: String, trainingIndex: Int, exercisesIds: List<String>)
 }

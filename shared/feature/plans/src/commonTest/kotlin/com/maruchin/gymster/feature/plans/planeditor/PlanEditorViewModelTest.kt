@@ -90,12 +90,13 @@ class PlanEditorViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.random()
+        val trainingIndex = plan.trainings.indexOf(training)
         val viewModel = PlanEditorViewModel(plan.id)
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings shouldContain training
 
-            viewModel.deleteTraining(trainingId = training.id)
+            viewModel.deleteTraining(trainingIndex = trainingIndex)
 
             awaitItem()!!.trainings shouldNotContain training
         }
@@ -106,13 +107,15 @@ class PlanEditorViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.first()
+        val trainingIndex = plan.trainings.indexOf(training)
         val exercise = training.exercises.random()
+        val exerciseIndex = training.exercises.indexOf(exercise)
         val viewModel = PlanEditorViewModel(plan.id)
 
         trainingPlansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings.first().exercises shouldContain exercise
 
-            viewModel.deleteExercise(exerciseId = exercise.id)
+            viewModel.deleteExercise(trainingIndex = trainingIndex, exerciseIndex = exerciseIndex)
 
             awaitItem()!!.trainings.first().exercises shouldNotContain exercise
         }
@@ -123,6 +126,7 @@ class PlanEditorViewModelTest : KoinTest {
         trainingPlansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.first()
+        val trainingIndex = plan.trainings.indexOf(training)
         val originalExercises = training.exercises
         val reorderedExercises = training.exercises.shuffled()
         val viewModel = PlanEditorViewModel(plan.id)
@@ -131,7 +135,7 @@ class PlanEditorViewModelTest : KoinTest {
             awaitItem()!!.trainings.first().exercises shouldContainInOrder originalExercises
 
             viewModel.reorderExercises(
-                trainingId = training.id,
+                trainingIndex = trainingIndex,
                 exercisesIds = reorderedExercises.map { it.id }
             )
 

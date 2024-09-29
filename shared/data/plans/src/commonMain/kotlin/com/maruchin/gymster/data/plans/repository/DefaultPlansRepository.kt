@@ -45,31 +45,31 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
         return plannedTrainingDbModel.toDomainModel()
     }
 
-    override suspend fun changeTrainingName(planId: String, trainingId: String, newName: String) {
+    override suspend fun changeTrainingName(planId: String, trainingIndex: Int, newName: String) {
         localDataSource.updateTraining(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId),
+            trainingIndex = trainingIndex,
             name = newName
         )
     }
 
-    override suspend fun deleteTraining(planId: String, trainingId: String) {
+    override suspend fun deleteTraining(planId: String, trainingIndex: Int) {
         localDataSource.deleteTraining(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId)
+            trainingIndex = trainingIndex
         )
     }
 
     override suspend fun addExercise(
         planId: String,
-        trainingId: String,
+        trainingIndex: Int,
         name: String,
         sets: Sets,
         reps: Reps
     ): PlannedExercise {
         val plannedExerciseDbModel = localDataSource.addExercise(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId),
+            trainingIndex = trainingIndex,
             name = name,
             sets = sets,
             reps = reps
@@ -79,35 +79,38 @@ internal class DefaultPlansRepository(private val localDataSource: PlansLocalDat
 
     override suspend fun updateExercise(
         planId: String,
-        exerciseId: String,
+        trainingIndex: Int,
+        exerciseIndex: Int,
         newName: String,
         newSets: Sets,
         newReps: Reps
     ) {
         localDataSource.updateExercise(
             planId = RealmUUID.from(planId),
-            exerciseId = RealmUUID.from(exerciseId),
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex,
             newName = newName,
             newSets = newSets,
             newReps = newReps
         )
     }
 
-    override suspend fun deleteExercise(planId: String, exerciseId: String) {
+    override suspend fun deleteExercise(planId: String, trainingIndex: Int, exerciseIndex: Int) {
         localDataSource.deleteExercise(
             planId = RealmUUID.from(planId),
-            exerciseId = RealmUUID.from(exerciseId)
+            trainingIndex = trainingIndex,
+            exerciseIndex = exerciseIndex
         )
     }
 
     override suspend fun reorderExercises(
         planId: String,
-        trainingId: String,
+        trainingIndex: Int,
         exercisesIds: List<String>
     ) {
         localDataSource.reorderExercises(
             planId = RealmUUID.from(planId),
-            dayId = RealmUUID.from(trainingId),
+            trainingIndex = trainingIndex,
             exercisesIds = exercisesIds.map(RealmUUID::from)
         )
     }
