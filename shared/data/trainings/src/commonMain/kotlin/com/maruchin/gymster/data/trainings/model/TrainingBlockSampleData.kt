@@ -874,3 +874,5 @@ val sampleTrainingBlocks = listOf(
         isActive = false
     )
 )
+
+val sampleActiveTrainingBlock = sampleTrainingBlocks[0].copy(isActive = true)

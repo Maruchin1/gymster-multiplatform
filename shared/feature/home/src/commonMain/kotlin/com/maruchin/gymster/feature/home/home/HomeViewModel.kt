@@ -16,11 +16,11 @@ class HomeViewModel :
 
     private val trainingsRepository: TrainingsRepository by inject()
 
-    val uiState: StateFlow<HomeUiState> = trainingsRepository.observeAllTrainingBlocks()
-        .map { HomeUiState.from(it) }
+    val uiState: StateFlow<HomeUiState> = trainingsRepository.observeActiveTrainingBlock()
+        .map { HomeUiState(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
-            initialValue = HomeUiState.Loading
+            initialValue = HomeUiState()
         )
 }
