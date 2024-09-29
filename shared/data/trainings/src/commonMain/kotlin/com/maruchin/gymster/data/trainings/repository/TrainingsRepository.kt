@@ -11,6 +11,8 @@ interface TrainingsRepository {
 
     fun observeTrainingBlock(trainingBlockId: String): Flow<TrainingBlock?>
 
+    fun observeActiveTrainingBlock(): Flow<TrainingBlock?>
+
     suspend fun createTrainingBlock(
         plan: Plan,
         startDate: LocalDate,

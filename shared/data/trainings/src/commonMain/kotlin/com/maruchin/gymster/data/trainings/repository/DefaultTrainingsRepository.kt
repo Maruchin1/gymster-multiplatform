@@ -7,10 +7,15 @@ import com.maruchin.gymster.data.trainings.mapper.toDbModel
 import com.maruchin.gymster.data.trainings.mapper.toDomainModel
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import io.realm.kotlin.types.RealmUUID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class DefaultTrainingsRepository(
     private val trainingsLocalDataSource: TrainingsLocalDataSource,
     private val activeTrainingLocalDataSource: ActiveTrainingLocalDataSource
@@ -29,6 +34,14 @@ internal class DefaultTrainingsRepository(
     ) { trainingBlock, activeTrainingBlockId ->
         trainingBlock?.toDomainModel(activeTrainingBlockId)
     }
+
+    override fun observeActiveTrainingBlock(): Flow<TrainingBlock?> =
+        activeTrainingLocalDataSource.observeActiveTrainingBlockId()
+            .flatMapLatest { activeTrainingBlockId ->
+                if (activeTrainingBlockId == null) return@flatMapLatest flowOf(null)
+                trainingsLocalDataSource.observeTrainingBlock(RealmUUID.from(activeTrainingBlockId))
+                    .map { it?.toDomainModel(activeTrainingBlockId) }
+            }
 
     override suspend fun createTrainingBlock(
         plan: Plan,

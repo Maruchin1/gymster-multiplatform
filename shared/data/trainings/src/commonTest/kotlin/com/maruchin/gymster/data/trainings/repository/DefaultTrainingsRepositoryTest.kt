@@ -6,8 +6,6 @@ import com.maruchin.gymster.core.database.di.coreDatabaseTestModule
 import com.maruchin.gymster.core.datastore.di.coreSettingsTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
@@ -147,12 +145,12 @@ class DefaultTrainingsRepositoryTest : KoinTest {
         val startDate = LocalDate(2024, 8, 12)
         val trainingBlock = repository.createTrainingBlock(plan, startDate, 8)
 
-        repository.observeTrainingBlock(trainingBlock.id).test {
-            awaitItem()!!.isActive.shouldBeFalse()
+        repository.observeActiveTrainingBlock().test {
+            awaitItem().shouldBeNull()
 
             repository.setActiveTrainingBlock(trainingBlock.id)
 
-            awaitItem()!!.isActive.shouldBeTrue()
+            awaitItem() shouldBe trainingBlock.copy(isActive = true)
         }
     }
 }

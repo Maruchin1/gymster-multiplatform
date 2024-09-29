@@ -28,6 +28,11 @@ class FakeTrainingsRepository : TrainingsRepository {
             it[trainingBlockId]?.copy(isActive = trainingBlockId == activeTrainingBlockId.value)
         }
 
+    override fun observeActiveTrainingBlock(): Flow<TrainingBlock?> =
+        activeTrainingBlockId.map { activeTrainingBlockId ->
+            collection.value[activeTrainingBlockId]?.copy(isActive = true)
+        }
+
     override suspend fun createTrainingBlock(
         plan: Plan,
         startDate: LocalDate,
