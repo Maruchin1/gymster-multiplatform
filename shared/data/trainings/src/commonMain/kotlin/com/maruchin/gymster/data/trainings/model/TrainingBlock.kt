@@ -19,6 +19,9 @@ data class TrainingBlock(
     val currentWeekIndex: Int
         get() = weeks.indexOfFirst { !it.isComplete }
 
+    val currentWeekNumber: Int
+        get() = currentWeekIndex + 1
+
     fun getTraining(weekIndex: Int, trainingIndex: Int): Training =
         weeks[weekIndex].trainings[trainingIndex]
 

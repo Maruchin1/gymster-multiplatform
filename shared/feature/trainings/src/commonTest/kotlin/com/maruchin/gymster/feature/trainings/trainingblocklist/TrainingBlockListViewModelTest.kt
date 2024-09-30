@@ -17,7 +17,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlinx.datetime.LocalDate
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
@@ -59,32 +58,6 @@ class TrainingBlockListViewModelTest : KoinTest {
 
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingBlockListUiState()
-        }
-    }
-
-    @Test
-    fun `create training block`() = runTest {
-        val plan = samplePlans.first()
-        val startDate = LocalDate(year = 2024, monthNumber = 9, dayOfMonth = 9)
-        val weekDuration = 8
-        trainingsRepository.setTrainingBlocks(emptyList())
-
-        viewModel.uiState.test {
-            awaitItem() shouldBe TrainingBlockListUiState()
-
-            viewModel.createTrainingBlock(
-                planId = plan.id,
-                startDate = startDate,
-                weekDuration = weekDuration
-            )
-
-            awaitItem().let { state ->
-                state.trainingBlocks.first().let { trainingBlock ->
-                    trainingBlock.planName shouldBe plan.name
-                    trainingBlock.startDate shouldBe startDate
-                    trainingBlock.weeks.size shouldBe weekDuration
-                }
-            }
         }
     }
 }

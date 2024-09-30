@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.home.home
+package com.maruchin.gymster.android.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ListAlt
 import androidx.compose.material.icons.filled.AccountCircle
@@ -23,15 +24,43 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
+import com.maruchin.gymster.data.trainings.model.sampleActiveTrainingBlock
+import com.maruchin.gymster.feature.home.home.HomeUiState
+import com.maruchin.gymster.feature.home.home.HomeViewModel
 
 @Composable
-internal fun HomeScreen(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
+internal fun HomeScreen(
+    onOpenPlans: () -> Unit,
+    onOpenActiveTrainingBlock: () -> Unit,
+    onOpenTrainings: () -> Unit,
+    viewModel: HomeViewModel = viewModel { HomeViewModel() }
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    HomeScreen(
+        state = state,
+        onOpenPlans = onOpenPlans,
+        onOpenActiveTrainingBlock = onOpenActiveTrainingBlock,
+        onOpenTrainings = onOpenTrainings
+    )
+}
+
+@Composable
+private fun HomeScreen(
+    state: HomeUiState,
+    onOpenPlans: () -> Unit,
+    onOpenActiveTrainingBlock: () -> Unit,
+    onOpenTrainings: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopBar()
@@ -44,6 +73,16 @@ internal fun HomeScreen(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalItemSpacing = 16.dp
         ) {
+            state.activeTrainingBlock?.let { activeTrainingBlock ->
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    ActiveTrainingBlockCard(
+                        trainingBlock = activeTrainingBlock,
+                        onOpenActive = onOpenActiveTrainingBlock,
+                        onViewAll = onOpenTrainings,
+                        modifier = Modifier.animateItem()
+                    )
+                }
+            }
             item {
                 Card(onClick = onOpenPlans) {
                     Column(
@@ -113,6 +152,11 @@ private fun TopBar() {
 @Composable
 private fun HomeScreen_LoadedPreview() {
     AppTheme {
-        HomeScreen(onOpenPlans = {}, onOpenTrainings = {})
+        HomeScreen(
+            state = HomeUiState(activeTrainingBlock = sampleActiveTrainingBlock),
+            onOpenPlans = {},
+            onOpenTrainings = {},
+            onOpenActiveTrainingBlock = {}
+        )
     }
 }

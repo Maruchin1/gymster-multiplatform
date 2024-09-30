@@ -68,7 +68,8 @@ class StartTrainingBlockViewModel :
         val plan = checkNotNull(selectedPlan.value)
         val startDate = checkNotNull(selectedStartDate.value)
         val weeksDuration = checkNotNull(selectedWeeksDuration.value)
-        trainingsRepository.createTrainingBlock(plan, startDate, weeksDuration)
+        val trainingBlock = trainingsRepository.createTrainingBlock(plan, startDate, weeksDuration)
+        trainingsRepository.setActiveTrainingBlock(trainingBlock.id)
         isCreated.value = true
     }
 }
