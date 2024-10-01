@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.trainings
+package com.maruchin.gymster.android.trainings.trainingblocklist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,38 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.formatMedium
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingblocklist.TrainingBlockListUiState
-import com.maruchin.gymster.feature.trainings.trainingblocklist.TrainingBlockListViewModel
 
 // TODO Hide FAB and show proper info when there is no training plans
 // TODO Show empty content when there is no training blocks
 
-@Composable
-internal fun TrainingBlockListScreen(
-    onBack: () -> Unit,
-    onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
-    onStartTrainingBlock: () -> Unit,
-    viewModel: TrainingBlockListViewModel = viewModel { TrainingBlockListViewModel() }
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    TrainingBlockListScreen(
-        state = state,
-        onBack = onBack,
-        onOpenTrainingBlock = onOpenTrainingBlock,
-        onStartTrainingBlock = onStartTrainingBlock
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TrainingBlockListScreen(
+internal fun TrainingBlockListScreen(
     state: TrainingBlockListUiState,
     onBack: () -> Unit,
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit,

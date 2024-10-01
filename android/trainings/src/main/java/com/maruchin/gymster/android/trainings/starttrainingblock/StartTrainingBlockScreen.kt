@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.trainings
+package com.maruchin.gymster.android.trainings.starttrainingblock
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -40,50 +40,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.formatFull
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.feature.trainings.starttrainingblock.StartTrainingBlockUiState
-import com.maruchin.gymster.feature.trainings.starttrainingblock.StartTrainingBlockViewModel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-@Composable
-internal fun StartTrainingBlockScreen(
-    onBack: () -> Unit,
-    onEditPlans: () -> Unit,
-    viewModel: StartTrainingBlockViewModel = viewModel { StartTrainingBlockViewModel() }
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val currentOnBack by rememberUpdatedState(onBack)
-
-    LaunchedEffect(state) {
-        if (state.isCreated) currentOnBack()
-    }
-
-    StartTrainingBlockScreen(
-        state = state,
-        onBack = onBack,
-        onEditPlans = onEditPlans,
-        onSelectPlan = viewModel::selectPlan,
-        onResetPlan = viewModel::resetPlan,
-        onSelectStartDate = viewModel::selectStarDate,
-        onResetStartDate = viewModel::resetStartDate,
-        onSelectWeeksDuration = viewModel::selectWeeksDuration,
-        onResetWeeksDuration = viewModel::resetWeeksDuration,
-        onStart = viewModel::startTrainingBlock
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StartTrainingBlockScreen(
+internal fun StartTrainingBlockScreen(
     state: StartTrainingBlockUiState,
     onBack: () -> Unit,
     onEditPlans: () -> Unit,

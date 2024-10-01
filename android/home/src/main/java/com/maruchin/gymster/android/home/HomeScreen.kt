@@ -24,41 +24,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.trainings.model.sampleActiveTrainingBlock
 import com.maruchin.gymster.feature.home.home.HomeUiState
-import com.maruchin.gymster.feature.home.home.HomeViewModel
+
+// TODO Add current week trainings card
+// Finished trainings, planned trainings
+// Start next training
+
+// TODO Add records card
+// Highest weight in major exercises from each training
 
 @Composable
 internal fun HomeScreen(
-    onOpenPlans: () -> Unit,
-    onOpenActiveTrainingBlock: () -> Unit,
-    onOpenTrainings: () -> Unit,
-    viewModel: HomeViewModel = viewModel { HomeViewModel() }
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    HomeScreen(
-        state = state,
-        onOpenPlans = onOpenPlans,
-        onOpenActiveTrainingBlock = onOpenActiveTrainingBlock,
-        onOpenTrainings = onOpenTrainings
-    )
-}
-
-@Composable
-private fun HomeScreen(
     state: HomeUiState,
     onOpenPlans: () -> Unit,
-    onOpenActiveTrainingBlock: () -> Unit,
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
     onOpenTrainings: () -> Unit
 ) {
     Scaffold(
@@ -77,7 +63,7 @@ private fun HomeScreen(
                 item(span = StaggeredGridItemSpan.FullLine) {
                     ActiveTrainingBlockCard(
                         trainingBlock = activeTrainingBlock,
-                        onOpenActive = onOpenActiveTrainingBlock,
+                        onOpenActive = { onOpenTrainingBlock(activeTrainingBlock.id) },
                         onViewAll = onOpenTrainings,
                         modifier = Modifier.animateItem()
                     )
@@ -156,7 +142,7 @@ private fun HomeScreen_LoadedPreview() {
             state = HomeUiState(activeTrainingBlock = sampleActiveTrainingBlock),
             onOpenPlans = {},
             onOpenTrainings = {},
-            onOpenActiveTrainingBlock = {}
+            onOpenTrainingBlock = {}
         )
     }
 }

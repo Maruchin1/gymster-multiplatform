@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.trainings
+package com.maruchin.gymster.android.trainings.trainingeditor
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
@@ -101,7 +101,7 @@ internal fun TrainingEditorScreen(
 }
 
 @Composable
-private fun TrainingEditorScreen(
+internal fun TrainingEditorScreen(
     state: TrainingEditorUiState,
     onBack: () -> Unit,
     onUpdateWeight: (exerciseIndex: Int, setIndex: Int, weight: Double?) -> Unit,

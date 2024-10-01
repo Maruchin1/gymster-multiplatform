@@ -1,24 +1,30 @@
 package com.maruchin.gymster.android.home
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import com.maruchin.gymster.feature.home.home.HomeViewModel
 import kotlinx.serialization.Serializable
-
-@Serializable
-object HomeGraph
 
 @Serializable
 internal data object HomeRoute
 
-fun NavGraphBuilder.homeGraph(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
-    navigation<HomeGraph>(startDestination = HomeRoute) {
-        composable<HomeRoute> {
-            HomeScreen(
-                onOpenPlans = onOpenPlans,
-                onOpenActiveTrainingBlock = { }, // TODO Navigate to active training block
-                onOpenTrainings = onOpenTrainings
-            )
-        }
+internal fun NavGraphBuilder.homeScreen(
+    onOpenPlans: () -> Unit,
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
+    onOpenTrainings: () -> Unit
+) {
+    composable<HomeRoute> {
+        val viewModel = viewModel { HomeViewModel() }
+        val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+        HomeScreen(
+            state = state,
+            onOpenPlans = onOpenPlans,
+            onOpenTrainingBlock = onOpenTrainingBlock,
+            onOpenTrainings = onOpenTrainings
+        )
     }
 }

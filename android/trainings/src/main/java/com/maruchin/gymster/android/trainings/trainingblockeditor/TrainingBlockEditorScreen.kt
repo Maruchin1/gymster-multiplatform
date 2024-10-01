@@ -1,4 +1,4 @@
-package com.maruchin.gymster.android.trainings
+package com.maruchin.gymster.android.trainings.trainingblockeditor
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -53,8 +53,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.core.utils.toggle
 import com.maruchin.gymster.data.trainings.model.Exercise
@@ -63,31 +61,12 @@ import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.data.trainings.model.TrainingWeek
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingblockeditor.TrainingBlockEditorUiState
-import com.maruchin.gymster.feature.trainings.trainingblockeditor.TrainingBlockEditorViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Composable
-internal fun TrainingBlockEditorScreen(
-    trainingBlockId: String,
-    onBack: () -> Unit,
-    onOpenTraining: (weekIndex: Int, trainingIndex: Int, exerciseIndex: Int) -> Unit,
-    viewModel: TrainingBlockEditorViewModel = viewModel {
-        TrainingBlockEditorViewModel(trainingBlockId)
-    }
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    TrainingBlockEditorScreen(
-        state = state,
-        onBack = onBack,
-        onOpenTraining = onOpenTraining
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TrainingBlockEditorScreen(
+internal fun TrainingBlockEditorScreen(
     state: TrainingBlockEditorUiState,
     onBack: () -> Unit,
     onOpenTraining: (weekIndex: Int, trainingIndex: Int, exerciseIndex: Int) -> Unit

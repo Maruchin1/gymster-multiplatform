@@ -7,6 +7,8 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 
+// TODO Split navigation classes into separate files
+
 @Serializable
 data object PlansRoute
 
