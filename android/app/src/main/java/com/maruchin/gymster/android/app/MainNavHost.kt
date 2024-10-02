@@ -24,8 +24,9 @@ internal fun MainNavHost() {
     ) {
         homeGraph(
             onOpenPlans = { navController.navigate(PlansRoute) },
-            onOpenTrainings = { navController.navigateToTrainings() },
-            onOpenTrainingBlock = { navController.navigateToTrainings(it) }
+            onOpenTrainings = navController::navigateToTrainings,
+            onOpenTrainingBlock = navController::navigateToTrainings,
+            onOpenTraining = navController::navigateToTrainings
         )
         plansGraph(navController)
         trainingsGraph(

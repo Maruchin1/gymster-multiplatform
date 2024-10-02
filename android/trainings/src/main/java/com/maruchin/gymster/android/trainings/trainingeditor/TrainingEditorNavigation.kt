@@ -6,7 +6,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
+import com.maruchin.gymster.android.ui.BASE_URI
 import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorViewModel
 import kotlinx.serialization.Serializable
 
@@ -15,7 +17,7 @@ internal data class TrainingEditorRoute(
     val trainingBlockId: String,
     val weekIndex: Int,
     val trainingIndex: Int,
-    val exerciseIndex: Int
+    val exerciseIndex: Int = 0
 )
 
 internal fun NavController.navigateToTrainingEditor(
@@ -35,7 +37,11 @@ internal fun NavController.navigateToTrainingEditor(
 }
 
 internal fun NavGraphBuilder.trainingEditorScreen(onBack: () -> Unit) {
-    composable<TrainingEditorRoute> { entry ->
+    composable<TrainingEditorRoute>(
+        deepLinks = listOf(
+            navDeepLink<TrainingEditorRoute>(basePath = "$BASE_URI/training")
+        )
+    ) { entry ->
         val (trainingBlockId, weekIndex, trainingIndex, exerciseIndex) =
             entry.toRoute<TrainingEditorRoute>()
         val viewModel = viewModel {

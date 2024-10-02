@@ -10,13 +10,15 @@ object HomeGraph
 fun NavGraphBuilder.homeGraph(
     onOpenPlans: () -> Unit,
     onOpenTrainings: () -> Unit,
-    onOpenTrainingBlock: (trainingBlockId: String) -> Unit
+    onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
+    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit
 ) {
     navigation<HomeGraph>(startDestination = HomeRoute) {
         homeScreen(
             onOpenPlans = onOpenPlans,
             onOpenTrainings = onOpenTrainings,
-            onOpenTrainingBlock = onOpenTrainingBlock
+            onOpenTrainingBlock = onOpenTrainingBlock,
+            onOpenTraining = onOpenTraining
         )
     }
 }

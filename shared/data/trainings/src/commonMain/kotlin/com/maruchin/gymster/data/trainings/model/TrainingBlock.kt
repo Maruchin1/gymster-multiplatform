@@ -5,6 +5,8 @@ import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 
+// TODO Set days of week when you want to train
+
 data class TrainingBlock(
     val id: String,
     val planName: String,
@@ -21,6 +23,9 @@ data class TrainingBlock(
 
     val currentWeekNumber: Int
         get() = currentWeekIndex + 1
+
+    val currentWeek: TrainingWeek
+        get() = weeks[currentWeekIndex]
 
     fun getTraining(weekIndex: Int, trainingIndex: Int): Training =
         weeks[weekIndex].trainings[trainingIndex]

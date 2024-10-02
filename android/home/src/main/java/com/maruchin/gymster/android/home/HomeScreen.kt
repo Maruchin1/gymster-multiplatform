@@ -45,7 +45,8 @@ internal fun HomeScreen(
     state: HomeUiState,
     onOpenPlans: () -> Unit,
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
-    onOpenTrainings: () -> Unit
+    onOpenTrainings: () -> Unit,
+    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -65,6 +66,13 @@ internal fun HomeScreen(
                         trainingBlock = activeTrainingBlock,
                         onOpenActive = { onOpenTrainingBlock(activeTrainingBlock.id) },
                         onViewAll = onOpenTrainings,
+                        modifier = Modifier.animateItem()
+                    )
+                }
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    CurrentWeekTrainingsCard(
+                        trainingBlock = activeTrainingBlock,
+                        onOpenTraining = onOpenTraining,
                         modifier = Modifier.animateItem()
                     )
                 }
@@ -142,7 +150,8 @@ private fun HomeScreen_LoadedPreview() {
             state = HomeUiState(activeTrainingBlock = sampleActiveTrainingBlock),
             onOpenPlans = {},
             onOpenTrainings = {},
-            onOpenTrainingBlock = {}
+            onOpenTrainingBlock = {},
+            onOpenTraining = { _, _, _ -> }
         )
     }
 }

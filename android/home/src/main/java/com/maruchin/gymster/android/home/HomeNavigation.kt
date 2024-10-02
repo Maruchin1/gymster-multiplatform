@@ -14,7 +14,8 @@ internal data object HomeRoute
 internal fun NavGraphBuilder.homeScreen(
     onOpenPlans: () -> Unit,
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
-    onOpenTrainings: () -> Unit
+    onOpenTrainings: () -> Unit,
+    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit
 ) {
     composable<HomeRoute> {
         val viewModel = viewModel { HomeViewModel() }
@@ -24,7 +25,8 @@ internal fun NavGraphBuilder.homeScreen(
             state = state,
             onOpenPlans = onOpenPlans,
             onOpenTrainingBlock = onOpenTrainingBlock,
-            onOpenTrainings = onOpenTrainings
+            onOpenTrainings = onOpenTrainings,
+            onOpenTraining = onOpenTraining
         )
     }
 }

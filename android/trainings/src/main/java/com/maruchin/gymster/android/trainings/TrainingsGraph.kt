@@ -26,6 +26,12 @@ fun NavController.navigateToTrainings(trainingBlockId: String) {
     navigate("$BASE_URI/training-block/$trainingBlockId".toUri())
 }
 
+fun NavController.navigateToTrainings(trainingBlockId: String, weekIndex: Int, trainingIndex: Int) {
+    navigate(
+        "$BASE_URI/training/$trainingBlockId/$weekIndex/$trainingIndex".toUri()
+    )
+}
+
 fun NavGraphBuilder.trainingsGraph(navController: NavController, onEditPlans: () -> Unit) {
     navigation<TrainingsRoute>(startDestination = TrainingBlockListRoute) {
         trainingBlockListScreen(
