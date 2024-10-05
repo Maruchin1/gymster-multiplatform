@@ -1,6 +1,7 @@
 package com.maruchin.gymster.data.trainings.mapper
 
 import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
+import com.maruchin.gymster.core.database.schema.TrainingWeekDbModel
 import com.maruchin.gymster.data.trainings.model.TrainingBlock
 import com.maruchin.gymster.data.trainings.model.TrainingWeek
 import io.realm.kotlin.ext.toRealmList
@@ -13,21 +14,13 @@ internal fun TrainingBlock.toDbModel() = TrainingBlockDbModel().also {
     }
     it.planName = planName
     it.startDate = startDate.toString()
-    it.trainings = weeks.flatMapIndexed { index, trainingWeek ->
-        trainingWeek.trainings.map { training ->
-            training.toDbModel(index)
-        }
-    }.toRealmList()
+    it.weeks = weeks.map(TrainingWeek::toDbModel).toRealmList()
 }
 
 internal fun TrainingBlockDbModel.toDomainModel(activeTrainingBlockId: String?) = TrainingBlock(
     id = id.toString(),
     planName = planName,
     startDate = LocalDate.parse(startDate),
-    weeks = trainings.sortedBy { it.week }.groupBy { it.week }.map { (_, trainings) ->
-        TrainingWeek(
-            trainings = trainings.map { it.toDomainModel() }
-        )
-    },
+    weeks = weeks.map(TrainingWeekDbModel::toDomainModel),
     isActive = id.toString() == activeTrainingBlockId
 )

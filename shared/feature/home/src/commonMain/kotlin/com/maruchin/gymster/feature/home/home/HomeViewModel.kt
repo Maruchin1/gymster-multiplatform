@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -23,4 +24,12 @@ class HomeViewModel :
             started = SharingStarted.Lazily,
             initialValue = HomeUiState()
         )
+
+    fun completeWeekCurrentWeek() = viewModelScope.launch {
+        val trainingBlock = uiState.value.activeTrainingBlock ?: return@launch
+        trainingsRepository.completeWeek(
+            trainingBlockId = trainingBlock.id,
+            weekIndex = trainingBlock.currentWeekIndex
+        )
+    }
 }

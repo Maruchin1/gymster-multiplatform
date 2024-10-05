@@ -15,6 +15,7 @@ data class TrainingBlock(
     val isActive: Boolean
 ) {
 
+    // TODO Don't display end date
     val endDate: LocalDate
         get() = startDate.plus(DatePeriod(days = weeks.size * 7))
 

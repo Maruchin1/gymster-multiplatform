@@ -26,7 +26,8 @@ internal fun NavGraphBuilder.homeScreen(
             onOpenPlans = onOpenPlans,
             onOpenTrainingBlock = onOpenTrainingBlock,
             onOpenTrainings = onOpenTrainings,
-            onOpenTraining = onOpenTraining
+            onOpenTraining = onOpenTraining,
+            onCompleteCurrentWeek = { viewModel.completeWeekCurrentWeek() }
         )
     }
 }

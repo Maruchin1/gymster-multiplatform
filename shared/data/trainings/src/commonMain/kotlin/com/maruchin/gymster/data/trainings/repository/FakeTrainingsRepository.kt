@@ -47,6 +47,16 @@ class FakeTrainingsRepository : TrainingsRepository {
         collection.value -= trainingBlockId
     }
 
+    // TODO test completeWeek
+
+    override suspend fun completeWeek(trainingBlockId: String, weekIndex: Int) {
+        val trainingBlock = collection.value[trainingBlockId] ?: return
+        val updatedTrainingBlock = trainingBlock.copy(
+            weeks = trainingBlock.weeks.updated(weekIndex) { it.copy(isComplete = true) }
+        )
+        collection.value += trainingBlockId to updatedTrainingBlock
+    }
+
     override suspend fun updateSetResultWeight(
         trainingBlockId: String,
         weekIndex: Int,

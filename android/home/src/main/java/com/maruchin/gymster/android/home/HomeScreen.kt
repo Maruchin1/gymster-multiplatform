@@ -33,10 +33,6 @@ import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.trainings.model.sampleActiveTrainingBlock
 import com.maruchin.gymster.feature.home.home.HomeUiState
 
-// TODO Add current week trainings card
-// Finished trainings, planned trainings
-// Start next training
-
 // TODO Add records card
 // Highest weight in major exercises from each training
 
@@ -46,7 +42,8 @@ internal fun HomeScreen(
     onOpenPlans: () -> Unit,
     onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
     onOpenTrainings: () -> Unit,
-    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit
+    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit,
+    onCompleteCurrentWeek: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -72,7 +69,10 @@ internal fun HomeScreen(
                 item(span = StaggeredGridItemSpan.FullLine) {
                     CurrentWeekTrainingsCard(
                         trainingBlock = activeTrainingBlock,
-                        onOpenTraining = onOpenTraining,
+                        onOpenTraining = { weekIndex, trainingIndex ->
+                            onOpenTraining(activeTrainingBlock.id, weekIndex, trainingIndex)
+                        },
+                        onCompleteCurrentWeek = onCompleteCurrentWeek,
                         modifier = Modifier.animateItem()
                     )
                 }
@@ -151,7 +151,8 @@ private fun HomeScreen_LoadedPreview() {
             onOpenPlans = {},
             onOpenTrainings = {},
             onOpenTrainingBlock = {},
-            onOpenTraining = { _, _, _ -> }
+            onOpenTraining = { _, _, _ -> },
+            onCompleteCurrentWeek = {}
         )
     }
 }

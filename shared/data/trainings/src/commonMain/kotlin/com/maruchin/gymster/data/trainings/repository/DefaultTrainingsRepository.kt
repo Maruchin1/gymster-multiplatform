@@ -60,6 +60,13 @@ internal class DefaultTrainingsRepository(
         trainingsLocalDataSource.deleteTrainingBlock(RealmUUID.from(trainingBlockId))
     }
 
+    override suspend fun completeWeek(trainingBlockId: String, weekIndex: Int) {
+        trainingsLocalDataSource.completeWeek(
+            trainingBlockId = RealmUUID.from(trainingBlockId),
+            weekIndex = weekIndex
+        )
+    }
+
     override suspend fun updateSetResultWeight(
         trainingBlockId: String,
         weekIndex: Int,

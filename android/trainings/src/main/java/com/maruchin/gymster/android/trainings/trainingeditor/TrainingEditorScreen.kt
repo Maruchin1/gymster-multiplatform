@@ -54,14 +54,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
@@ -71,7 +70,6 @@ import com.maruchin.gymster.data.trainings.model.SetResult
 import com.maruchin.gymster.data.trainings.model.Training
 import com.maruchin.gymster.data.trainings.model.sampleTrainingBlocks
 import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorUiState
-import com.maruchin.gymster.feature.trainings.trainingeditor.TrainingEditorViewModel
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
@@ -79,26 +77,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
-@Composable
-internal fun TrainingEditorScreen(
-    trainingBlockId: String,
-    weekIndex: Int,
-    trainingIndex: Int,
-    exerciseIndex: Int,
-    onBack: () -> Unit,
-    viewModel: TrainingEditorViewModel = viewModel {
-        TrainingEditorViewModel(trainingBlockId, weekIndex, trainingIndex, exerciseIndex)
-    }
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    TrainingEditorScreen(
-        state = state,
-        onBack = onBack,
-        onUpdateWeight = viewModel::updateWeight,
-        onUpdateReps = viewModel::updateReps
-    )
-}
+// TODO Action to finish training when all exercises are complete
 
 @Composable
 internal fun TrainingEditorScreen(
@@ -333,7 +312,13 @@ private fun SetResultItem(
             OutlinedTextField(
                 value = weightInput,
                 onValueChange = { weightInput = it },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusChanged {
+                        if (!it.hasFocus) {
+                            currentOnUpdateWeight(weightInput.toDoubleOrNull())
+                        }
+                    },
                 placeholder = {
                     Text(text = "--")
                 },
@@ -350,7 +335,13 @@ private fun SetResultItem(
             OutlinedTextField(
                 value = repsInput,
                 onValueChange = { repsInput = it },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusChanged {
+                        if (!it.hasFocus) {
+                            currentOnUpdateReps(repsInput.toIntOrNull())
+                        }
+                    },
                 placeholder = {
                     Text(text = "--")
                 },

@@ -6,11 +6,10 @@ import com.maruchin.gymster.data.trainings.model.Training
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmUUID
 
-internal fun Training.toDbModel(week: Int) = TrainingDbModel().also {
+internal fun Training.toDbModel() = TrainingDbModel().also {
     if (id.isNotBlank()) {
         it.id = RealmUUID.from(id)
     }
-    it.week = week
     it.name = name
     it.exercises = exercises.map(Exercise::toDbModel).toRealmList()
 }

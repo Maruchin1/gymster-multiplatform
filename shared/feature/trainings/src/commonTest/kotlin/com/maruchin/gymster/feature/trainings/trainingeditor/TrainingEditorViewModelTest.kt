@@ -28,7 +28,7 @@ class TrainingEditorViewModelTest : KoinTest {
     private val viewModel by lazy {
         TrainingEditorViewModel(
             trainingBlock.id,
-            weekIndex = 0,
+            weekIndex = 1,
             trainingIndex = 0,
             initialExerciseIndex = 0
         )
@@ -54,8 +54,8 @@ class TrainingEditorViewModelTest : KoinTest {
             awaitItem() shouldBe TrainingEditorUiState()
 
             awaitItem() shouldBe TrainingEditorUiState(
-                training = trainingBlock.weeks.first().trainings.first(),
-                previousTraining = null,
+                training = trainingBlock.weeks[1].trainings.first(),
+                previousTraining = trainingBlock.weeks[0].trainings.first(),
                 initialExerciseIndex = 0
             )
         }

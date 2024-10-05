@@ -1,5 +1,6 @@
 package com.maruchin.gymster.data.trainings.datasource
 
+import com.maruchin.gymster.core.database.schema.SetResultDbModel
 import com.maruchin.gymster.core.database.schema.TrainingBlockDbModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
@@ -32,6 +33,15 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
         }
     }
 
+    suspend fun completeWeek(trainingBlockId: RealmUUID, weekIndex: Int) {
+        realm.write {
+            val trainingBlock =
+                query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
+            val week = trainingBlock.weeks[weekIndex]
+            week.isComplete = true
+        }
+    }
+
     suspend fun updateSetResultWeight(
         trainingBlockId: RealmUUID,
         weekIndex: Int,
@@ -43,11 +53,17 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
-            val setResult = trainingBlock.trainings
-                .filter { it.week == weekIndex }[trainingIndex]
-                .exercises[exerciseIndex]
-                .results[setIndex]
-            setResult.weight = weight
+            val week = trainingBlock.weeks[weekIndex]
+            val training = week.trainings[trainingIndex]
+            val exercise = training.exercises[exerciseIndex]
+            val setResult = exercise.results[setIndex]
+            val updatedSetResult = SetResultDbModel().apply {
+                this.id = setResult.id
+                this.weight = weight
+                this.reps = setResult.reps
+                this.type = setResult.type
+            }
+            exercise.results[setIndex] = updatedSetResult
         }
     }
 
@@ -62,11 +78,17 @@ internal class TrainingsLocalDataSource(private val realm: Realm) {
         realm.write {
             val trainingBlock =
                 query<TrainingBlockDbModel>("_id == $0", trainingBlockId).find().first()
-            val setResult = trainingBlock.trainings
-                .filter { it.week == weekIndex }[trainingIndex]
-                .exercises[exerciseIndex]
-                .results[setIndex]
-            setResult.reps = reps
+            val week = trainingBlock.weeks[weekIndex]
+            val training = week.trainings[trainingIndex]
+            val exercise = training.exercises[exerciseIndex]
+            val setResult = exercise.results[setIndex]
+            val updatedSetResult = SetResultDbModel().apply {
+                this.id = setResult.id
+                this.weight = setResult.weight
+                this.reps = reps
+                this.type = setResult.type
+            }
+            exercise.results[setIndex] = updatedSetResult
         }
     }
 }
