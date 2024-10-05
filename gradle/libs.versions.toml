@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.1"
+ksp = "2.0.10-1.0.24"
 kotlin = "2.0.10" # TODO update Kotlin
 kotlinx-serialization = "1.7.1"
 kotlinx-coroutines = "1.8.0"
@@ -11,6 +12,7 @@ androidx-activity-compose = "1.9.1"
 androidx-navigation-compose = "2.8.0"
 androidx-viewmodel = "2.8.0"
 androidx-datastore = "1.1.0"
+androidx-room = "2.7.0-alpha09"
 koin = "3.5.6"
 realm = "2.1.0"
 turbine = "1.1.0"
@@ -24,6 +26,7 @@ reorderable = "2.2.0"
 kotest = "5.8.1"
 lifecycle-runtime-ktx = "2.8.4"
 compose-bom = "2024.04.01"
+sqlite = "2.5.0-alpha09"
 
 [libraries]
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -60,6 +63,9 @@ kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref =
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
@@ -72,6 +78,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 realm = { id = "io.realm.kotlin", version.ref = "realm" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "androidx-room" }
 
 gymster-multiplatform = { id = "gymster.multiplatform", version = "unspecified" }
 gymster-realm = { id = "gymster.realm", version = "unspecified" }
