@@ -22,7 +22,7 @@ interface PlannedTrainingDao {
     suspend fun getPlannedTraining(id: Long): PlannedTrainingEntity?
 
     @Insert
-    suspend fun insertPlannedTraining(entity: PlannedTrainingEntity)
+    suspend fun insertPlannedTraining(entity: PlannedTrainingEntity): Long
 
     @Update
     suspend fun updatePlannedTraining(entity: PlannedTrainingEntity)

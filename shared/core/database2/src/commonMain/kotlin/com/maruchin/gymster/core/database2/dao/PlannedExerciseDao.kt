@@ -17,7 +17,7 @@ interface PlannedExerciseDao {
     suspend fun countPlannedExercisesForTraining(trainingId: Long): Int
 
     @Insert
-    suspend fun insertPlannedExercise(entity: PlannedExerciseEntity)
+    suspend fun insertPlannedExercise(entity: PlannedExerciseEntity): Long
 
     @Update
     suspend fun updatePlannedExercise(entity: PlannedExerciseEntity)
