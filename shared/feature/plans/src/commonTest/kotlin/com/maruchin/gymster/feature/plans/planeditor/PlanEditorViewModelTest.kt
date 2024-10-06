@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.plans.planeditor
 import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.FakePlansRepository
+import com.maruchin.gymster.data.plans.repository.FakePlansRepository2
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
@@ -26,7 +26,7 @@ import org.koin.test.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlanEditorViewModelTest : KoinTest {
 
-    private val trainingPlansRepository: FakePlansRepository by inject()
+    private val plansRepository: FakePlansRepository2 by inject()
 
     @BeforeTest
     fun setUp() {
@@ -42,7 +42,7 @@ class PlanEditorViewModelTest : KoinTest {
 
     @Test
     fun `emit loaded state when plan is available`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+        plansRepository.setPlans(samplePlans)
         val plan = samplePlans.random()
         val viewModel = PlanEditorViewModel(plan.id)
 
@@ -55,7 +55,7 @@ class PlanEditorViewModelTest : KoinTest {
 
     @Test
     fun `do not emit new state when plan is not available`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+        plansRepository.setPlans(samplePlans)
         val planId = "xyz"
         val viewModel = PlanEditorViewModel(planId)
 
@@ -68,7 +68,7 @@ class PlanEditorViewModelTest : KoinTest {
 
     @Test
     fun `delete plan`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+        plansRepository.setPlans(samplePlans)
         val plan = samplePlans.random()
         val viewModel = PlanEditorViewModel(plan.id)
 
@@ -80,23 +80,22 @@ class PlanEditorViewModelTest : KoinTest {
 
             awaitItem() shouldBe PlanEditorUiState(isDeleted = true)
         }
-        trainingPlansRepository.observePlan(planId = plan.id).test {
+        plansRepository.observePlan(planId = plan.id).test {
             awaitItem().shouldBeNull()
         }
     }
 
     @Test
-    fun `delete day`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+    fun `delete training`() = runTest {
+        plansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.random()
-        val trainingIndex = plan.trainings.indexOf(training)
         val viewModel = PlanEditorViewModel(plan.id)
 
-        trainingPlansRepository.observePlan(planId = plan.id).test {
+        plansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings shouldContain training
 
-            viewModel.deleteTraining(trainingIndex = trainingIndex)
+            viewModel.deleteTraining(training.id)
 
             awaitItem()!!.trainings shouldNotContain training
         }
@@ -104,18 +103,16 @@ class PlanEditorViewModelTest : KoinTest {
 
     @Test
     fun `delete exercise`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+        plansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.first()
-        val trainingIndex = plan.trainings.indexOf(training)
         val exercise = training.exercises.random()
-        val exerciseIndex = training.exercises.indexOf(exercise)
         val viewModel = PlanEditorViewModel(plan.id)
 
-        trainingPlansRepository.observePlan(planId = plan.id).test {
+        plansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings.first().exercises shouldContain exercise
 
-            viewModel.deleteExercise(trainingIndex = trainingIndex, exerciseIndex = exerciseIndex)
+            viewModel.deleteExercise(exercise.id)
 
             awaitItem()!!.trainings.first().exercises shouldNotContain exercise
         }
@@ -123,21 +120,17 @@ class PlanEditorViewModelTest : KoinTest {
 
     @Test
     fun `reorder exercises`() = runTest {
-        trainingPlansRepository.setPlans(samplePlans)
+        plansRepository.setPlans(samplePlans)
         val plan = samplePlans.first()
         val training = plan.trainings.first()
-        val trainingIndex = plan.trainings.indexOf(training)
         val originalExercises = training.exercises
         val reorderedExercises = training.exercises.shuffled()
         val viewModel = PlanEditorViewModel(plan.id)
 
-        trainingPlansRepository.observePlan(planId = plan.id).test {
+        plansRepository.observePlan(planId = plan.id).test {
             awaitItem()!!.trainings.first().exercises shouldContainInOrder originalExercises
 
-            viewModel.reorderExercises(
-                trainingIndex = trainingIndex,
-                exercisesIds = reorderedExercises.map { it.id }
-            )
+            viewModel.reorderExercises(reorderedExercises.map { it.id })
 
             awaitItem()!!.trainings.first().exercises shouldContainInOrder reorderedExercises
         }
