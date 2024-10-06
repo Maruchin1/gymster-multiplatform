@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SetResultEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val exerciseId: Long,
+    @PrimaryKey val id: String,
+    val exerciseId: String,
     val type: String,
     val weight: Double?,
     val reps: Int?

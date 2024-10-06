@@ -16,8 +16,6 @@ val coreDatabase2Module = module {
 
     factory { get<GymsterDatabase>().plannedExerciseDao() }
 
-    factory { get<GymsterDatabase>().trainingWeekDao() }
-
     factory { get<GymsterDatabase>().trainingDao() }
 
     factory { get<GymsterDatabase>().exerciseDao() }
