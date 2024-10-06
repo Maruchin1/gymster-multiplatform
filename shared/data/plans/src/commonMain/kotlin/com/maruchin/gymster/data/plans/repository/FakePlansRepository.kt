@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class FakePlansRepository2 : PlansRepository2 {
+class FakePlansRepository : PlansRepository {
 
     private val state = MutableStateFlow(emptyList<Plan>())
 

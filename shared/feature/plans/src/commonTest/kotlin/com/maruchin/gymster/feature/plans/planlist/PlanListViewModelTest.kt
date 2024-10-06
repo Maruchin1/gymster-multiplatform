@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.plans.planlist
 import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.FakePlansRepository2
+import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlin.test.AfterTest
@@ -23,7 +23,7 @@ import org.koin.test.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlanListViewModelTest : KoinTest {
 
-    private val plansRepository: FakePlansRepository2 by inject()
+    private val plansRepository: FakePlansRepository by inject()
     private val viewModel by lazy { PlanListViewModel() }
 
     @BeforeTest

@@ -11,7 +11,7 @@ import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
 
-internal class PlansLocalDataSource2(
+internal class PlansLocalDataSource(
     private val planDao: PlanDao,
     private val plannedTrainingDao: PlannedTrainingDao,
     private val plannedExerciseDao: PlannedExerciseDao

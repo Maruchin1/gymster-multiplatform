@@ -21,7 +21,7 @@ import org.koin.test.inject
 
 class DefaultPlansRepository2Test : KoinTest {
 
-    private val repository: PlansRepository2 by inject()
+    private val repository: PlansRepository by inject()
 
     @BeforeTest
     fun setup() {

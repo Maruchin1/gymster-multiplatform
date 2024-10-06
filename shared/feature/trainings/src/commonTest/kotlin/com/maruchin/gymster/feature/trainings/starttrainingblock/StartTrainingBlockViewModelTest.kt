@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.trainings.starttrainingblock
 import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.FakePlansRepository2
+import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import com.maruchin.gymster.data.trainings.di.dataTrainingsTestModule
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
 import io.kotest.matchers.collections.shouldHaveSize
@@ -26,7 +26,7 @@ import org.koin.test.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class StartTrainingBlockViewModelTest : KoinTest {
 
-    private val plansRepository: FakePlansRepository2 by inject()
+    private val plansRepository: FakePlansRepository by inject()
     private val trainingsRepository: FakeTrainingsRepository by inject()
     private val viewModel by lazy { StartTrainingBlockViewModel() }
 

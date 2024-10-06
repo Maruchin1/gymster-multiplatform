@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.plans.repository
 
 import com.maruchin.gymster.core.database2.relation.PlanWithPlannedTrainings
-import com.maruchin.gymster.data.plans.datasource.PlansLocalDataSource2
+import com.maruchin.gymster.data.plans.datasource.PlansLocalDataSource
 import com.maruchin.gymster.data.plans.mapper.toDomainModel
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.Reps
@@ -9,8 +9,8 @@ import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-internal class DefaultPlansRepository2(private val plansLocalDataSource: PlansLocalDataSource2) :
-    PlansRepository2 {
+internal class DefaultPlansRepository(private val plansLocalDataSource: PlansLocalDataSource) :
+    PlansRepository {
 
     override fun observeAllPlans(): Flow<List<Plan>> = plansLocalDataSource.observeAllPlans().map {
         it.map(PlanWithPlannedTrainings::toDomainModel)

@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.plans.planlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.PlansRepository2
+import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -16,7 +16,7 @@ class PlanListViewModel :
     ViewModel(),
     KoinComponent {
 
-    private val plansRepository: PlansRepository2 by inject()
+    private val plansRepository: PlansRepository by inject()
 
     val uiState: StateFlow<PlanListUiState> = plansRepository.observeAllPlans()
         .map { PlanListUiState(it) }

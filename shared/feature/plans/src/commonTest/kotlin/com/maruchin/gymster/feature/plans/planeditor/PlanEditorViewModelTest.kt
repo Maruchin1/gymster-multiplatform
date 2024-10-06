@@ -3,7 +3,7 @@ package com.maruchin.gymster.feature.plans.planeditor
 import app.cash.turbine.test
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
-import com.maruchin.gymster.data.plans.repository.FakePlansRepository2
+import com.maruchin.gymster.data.plans.repository.FakePlansRepository
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
@@ -26,7 +26,7 @@ import org.koin.test.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlanEditorViewModelTest : KoinTest {
 
-    private val plansRepository: FakePlansRepository2 by inject()
+    private val plansRepository: FakePlansRepository by inject()
 
     @BeforeTest
     fun setUp() {

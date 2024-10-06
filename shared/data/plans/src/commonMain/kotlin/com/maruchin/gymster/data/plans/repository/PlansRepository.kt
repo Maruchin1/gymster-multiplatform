@@ -5,7 +5,7 @@ import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
 
-interface PlansRepository2 {
+interface PlansRepository {
 
     fun observeAllPlans(): Flow<List<Plan>>
 

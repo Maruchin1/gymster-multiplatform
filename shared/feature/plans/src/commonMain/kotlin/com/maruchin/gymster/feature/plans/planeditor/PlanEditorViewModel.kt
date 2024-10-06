@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
-import com.maruchin.gymster.data.plans.repository.PlansRepository2
+import com.maruchin.gymster.data.plans.repository.PlansRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ class PlanEditorViewModel(private val planId: String) :
     ViewModel(),
     KoinComponent {
 
-    private val plansRepository: PlansRepository2 by inject()
+    private val plansRepository: PlansRepository by inject()
 
     private val isDeleted = MutableStateFlow(false)
 
