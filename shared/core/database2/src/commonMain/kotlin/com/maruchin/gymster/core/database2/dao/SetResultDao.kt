@@ -10,7 +10,7 @@ import com.maruchin.gymster.core.database2.entity.SetResultEntity
 interface SetResultDao {
 
     @Query("SELECT * FROM SetResultEntity WHERE id = :id")
-    suspend fun getSetResult(id: Long): SetResultEntity?
+    suspend fun getSetResult(id: String): SetResultEntity?
 
     @Insert
     suspend fun insertSetResults(entities: List<SetResultEntity>)

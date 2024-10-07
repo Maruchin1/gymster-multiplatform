@@ -4,7 +4,8 @@ import com.maruchin.gymster.core.database2.entity.PlannedExerciseEntity
 import com.maruchin.gymster.core.database2.room.FakeGymsterDatabase
 import kotlinx.coroutines.flow.update
 
-class FakePlannedExerciseDao(private val database: FakeGymsterDatabase) : PlannedExerciseDao {
+class FakePlannedExerciseDao internal constructor(private val database: FakeGymsterDatabase) :
+    PlannedExerciseDao {
 
     override suspend fun getPlannedExercise(id: Long): PlannedExerciseEntity? =
         database.plannedExercises.value[id]

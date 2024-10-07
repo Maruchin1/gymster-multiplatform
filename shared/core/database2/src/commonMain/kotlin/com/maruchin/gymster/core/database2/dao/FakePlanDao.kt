@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 
-class FakePlanDao(private val database: FakeGymsterDatabase) : PlanDao {
+class FakePlanDao internal constructor(private val database: FakeGymsterDatabase) : PlanDao {
 
     override fun observeAllPlansWithPlannedTrainings(): Flow<List<PlanWithPlannedTrainings>> =
         combine(

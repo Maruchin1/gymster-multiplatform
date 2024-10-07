@@ -5,7 +5,8 @@ import com.maruchin.gymster.core.database2.relation.PlannedTrainingWithPlannedEx
 import com.maruchin.gymster.core.database2.room.FakeGymsterDatabase
 import kotlinx.coroutines.flow.update
 
-class FakePlannedTrainingDao(private val database: FakeGymsterDatabase) : PlannedTrainingDao {
+class FakePlannedTrainingDao internal constructor(private val database: FakeGymsterDatabase) :
+    PlannedTrainingDao {
 
     override suspend fun getPlannedTrainingWithPlannedExercises(
         id: Long
