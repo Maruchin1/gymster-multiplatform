@@ -4,7 +4,6 @@
 .kotlin
 .DS_Store
 build
-schemas
 captures
 .externalNativeBuild
 .cxx
