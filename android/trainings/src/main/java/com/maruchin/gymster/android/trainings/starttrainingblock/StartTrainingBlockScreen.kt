@@ -51,6 +51,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+// TODO Move it to trainings2 and use it to create new training
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun StartTrainingBlockScreen(

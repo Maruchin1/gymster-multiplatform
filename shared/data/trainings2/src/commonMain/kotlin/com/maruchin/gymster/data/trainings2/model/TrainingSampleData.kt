@@ -134,4 +134,4 @@ val samplePullTraining = Training(
     )
 )
 
-val sampleTrainings = listOf(samplePushTraining, samplePullTraining)
+val sampleTrainings = listOf(samplePullTraining, samplePushTraining)

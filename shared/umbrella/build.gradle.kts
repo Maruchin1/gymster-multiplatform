@@ -24,6 +24,7 @@ kotlin {
             api(projects.shared.feature.trainings)
             implementation(projects.shared.data.plans)
             implementation(projects.shared.data.trainings)
+            implementation(projects.shared.data.trainings2)
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.database2)
             implementation(projects.shared.core.clock)

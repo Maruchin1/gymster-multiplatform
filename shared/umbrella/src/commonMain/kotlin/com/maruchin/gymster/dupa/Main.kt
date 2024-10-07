@@ -7,6 +7,7 @@ import com.maruchin.gymster.core.database2.di.coreDatabase2Module
 import com.maruchin.gymster.core.datastore.di.coreSettingsModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.trainings.di.dataTrainingsModule
+import com.maruchin.gymster.data.trainings2.di.dataTrainings2Module
 import org.koin.core.context.startKoin
 
 private val coreModules =
@@ -18,7 +19,7 @@ private val coreModules =
         coreSettingsModule
     )
 
-private val dataModules = listOf(dataPlansModule, dataTrainingsModule)
+private val dataModules = listOf(dataPlansModule, dataTrainingsModule, dataTrainings2Module)
 
 fun initSharedLibrary(platform: Platform) {
     startKoin {

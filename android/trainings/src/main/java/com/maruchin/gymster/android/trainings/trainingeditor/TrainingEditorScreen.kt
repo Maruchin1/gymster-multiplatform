@@ -77,6 +77,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
+// TODO Move it to trainings2
+
 // TODO Action to finish training when all exercises are complete
 
 @Composable

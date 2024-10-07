@@ -1,6 +1,5 @@
 package com.maruchin.gymster.data.trainings2.repository
 
-import com.maruchin.gymster.core.database2.relation.TrainingWithExercises
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.trainings2.datasource.TrainingsLocalDataSource
@@ -16,8 +15,8 @@ internal class DefaultTrainingsRepository(
 ) : TrainingsRepository {
 
     override fun observeAllTrainings(): Flow<List<Training>> =
-        trainingsLocalDataSource.observeAllTrainings().map {
-            it.map(TrainingWithExercises::toDomainModel)
+        trainingsLocalDataSource.observeAllTrainings().map { list ->
+            list.map { it.toDomainModel() }.sortedByDescending { it.date }
         }
 
     override fun observeTraining(id: String): Flow<Training?> =
