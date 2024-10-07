@@ -14,6 +14,10 @@ class FakeTrainingsRepository : TrainingsRepository {
 
     private val state = MutableStateFlow(emptyList<Training>())
 
+    fun setTrainings(trainings: List<Training>) {
+        state.value = trainings
+    }
+
     override fun observeAllTrainings(): Flow<List<Training>> = state
 
     override fun observeTraining(id: String): Flow<Training?> = state.map { trainings ->
