@@ -1,9 +1,9 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.core.utils.uuid
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
+import kotlin.uuid.Uuid
 
 data class Exercise(
     val id: String,
@@ -35,7 +35,7 @@ data class Exercise(
     companion object {
 
         internal fun from(plannedExercise: PlannedExercise) = Exercise(
-            id = uuid(),
+            id = Uuid.random().toString(),
             name = plannedExercise.name,
             sets = plannedExercise.sets,
             reps = plannedExercise.reps,

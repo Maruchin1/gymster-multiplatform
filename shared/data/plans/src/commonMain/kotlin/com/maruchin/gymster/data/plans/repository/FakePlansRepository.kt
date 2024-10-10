@@ -1,12 +1,12 @@
 package com.maruchin.gymster.data.plans.repository
 
 import com.maruchin.gymster.core.utils.updated
-import com.maruchin.gymster.core.utils.uuid
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.PlannedTraining
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -28,7 +28,7 @@ class FakePlansRepository : PlansRepository {
 
     override suspend fun createPlan(name: String): String {
         val newPlan = Plan(
-            id = uuid(),
+            id = Uuid.random().toString(),
             name = name,
             trainings = emptyList()
         )
@@ -52,7 +52,7 @@ class FakePlansRepository : PlansRepository {
 
     override suspend fun addTraining(planId: String, name: String): String {
         val newTraining = PlannedTraining(
-            id = uuid(),
+            id = Uuid.random().toString(),
             name = name,
             exercises = emptyList()
         )
@@ -93,7 +93,7 @@ class FakePlansRepository : PlansRepository {
         reps: Reps
     ): String {
         val newExercise = PlannedExercise(
-            id = uuid(),
+            id = Uuid.random().toString(),
             name = name,
             sets = sets,
             reps = reps

@@ -1,8 +1,8 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.core.utils.uuid
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedTraining
+import kotlin.uuid.Uuid
 import kotlinx.datetime.LocalDate
 
 data class Training(
@@ -23,7 +23,7 @@ data class Training(
     companion object {
 
         internal fun from(plan: Plan, plannedTraining: PlannedTraining, date: LocalDate) = Training(
-            id = uuid(),
+            id = Uuid.random().toString(),
             name = plannedTraining.name,
             planName = plan.name,
             date = date,

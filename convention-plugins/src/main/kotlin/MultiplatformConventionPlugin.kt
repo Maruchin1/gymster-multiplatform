@@ -19,6 +19,11 @@ class MultiplatformConventionPlugin : Plugin<Project> {
                     jvmTarget.set(JvmTarget.JVM_21)
                 }
             }
+            compilerOptions {
+                freeCompilerArgs.addAll(
+                    "-Xopt-in=kotlin.uuid.ExperimentalUuidApi"
+                )
+            }
             iosX64()
             iosArm64()
             iosSimulatorArm64()

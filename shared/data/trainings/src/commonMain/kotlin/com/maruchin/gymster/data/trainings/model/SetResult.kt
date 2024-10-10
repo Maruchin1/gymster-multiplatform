@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.trainings.model
 
-import com.maruchin.gymster.core.utils.uuid
 import com.maruchin.gymster.data.plans.model.Reps
+import kotlin.uuid.Uuid
 
 data class SetResult(val id: String, val type: Type, val weight: Double?, val reps: Int?) {
 
@@ -20,8 +20,18 @@ data class SetResult(val id: String, val type: Type, val weight: Double?, val re
 
     companion object {
 
-        fun emptyRegular() = SetResult(id = uuid(), type = Type.REGULAR, weight = null, reps = null)
+        fun emptyRegular() = SetResult(
+            id = Uuid.random().toString(),
+            type = Type.REGULAR,
+            weight = null,
+            reps = null
+        )
 
-        fun emptyDrop() = SetResult(id = uuid(), type = Type.DROP, weight = null, reps = null)
+        fun emptyDrop() = SetResult(
+            id = Uuid.random().toString(),
+            type = Type.DROP,
+            weight = null,
+            reps = null
+        )
     }
 }
