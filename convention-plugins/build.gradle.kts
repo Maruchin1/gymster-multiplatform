@@ -13,10 +13,6 @@ gradlePlugin {
             id = "gymster.multiplatform"
             implementationClass = "MultiplatformConventionPlugin"
         }
-        register("realm") {
-            id = "gymster.realm"
-            implementationClass = "RealmConventionPlugin"
-        }
         register("androidLibrary") {
             id = "gymster.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"

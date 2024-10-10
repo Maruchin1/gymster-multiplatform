@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.gymster.multiplatform)
-    alias(libs.plugins.gymster.realm)
 }
 
 kotlin {
