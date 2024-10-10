@@ -5,6 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.maruchin.gymster.android.trainings2.starttraining.navigateToStartTraining
 import com.maruchin.gymster.android.trainings2.starttraining.startTrainingScreen
+import com.maruchin.gymster.android.trainings2.trainingeditor.navigateToTrainingEditor
+import com.maruchin.gymster.android.trainings2.trainingeditor.trainingEditorScreen
 import com.maruchin.gymster.android.trainings2.traininglist.TrainingListScreen
 import com.maruchin.gymster.android.trainings2.traininglist.trainingListScreen
 import kotlinx.serialization.Serializable
@@ -20,12 +22,15 @@ fun NavGraphBuilder.trainings2Graph(navController: NavController) {
     navigation<Trainings2Graph>(startDestination = TrainingListScreen) {
         trainingListScreen(
             onBack = { navController.navigateUp() },
-            onOpenTraining = { },
+            onOpenTraining = { navController.navigateToTrainingEditor(it) },
             onStartTraining = { navController.navigateToStartTraining() }
         )
         startTrainingScreen(
             onBack = { navController.navigateUp() },
-            onEditPlans = {}
+            onEditPlans = { }
+        )
+        trainingEditorScreen(
+            onBack = { navController.navigateUp() }
         )
     }
 }
