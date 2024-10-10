@@ -10,8 +10,6 @@ import com.maruchin.gymster.android.home.HomeGraph
 import com.maruchin.gymster.android.home.homeGraph
 import com.maruchin.gymster.android.plans.PlansRoute
 import com.maruchin.gymster.android.plans.plansGraph
-import com.maruchin.gymster.android.trainings.navigateToTrainings
-import com.maruchin.gymster.android.trainings.trainingsGraph
 import com.maruchin.gymster.android.trainings2.navigateToTrainings2
 import com.maruchin.gymster.android.trainings2.trainings2Graph
 
@@ -26,15 +24,9 @@ internal fun MainNavHost() {
     ) {
         homeGraph(
             onOpenPlans = { navController.navigate(PlansRoute) },
-            onOpenTrainings = navController::navigateToTrainings2,
-            onOpenTrainingBlock = navController::navigateToTrainings,
-            onOpenTraining = navController::navigateToTrainings
+            onOpenTrainings = navController::navigateToTrainings2
         )
         plansGraph(navController)
         trainings2Graph(navController)
-        trainingsGraph(
-            navController = navController,
-            onEditPlans = { navController.navigate(PlansRoute) }
-        )
     }
 }

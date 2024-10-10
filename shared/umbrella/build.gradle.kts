@@ -13,7 +13,6 @@ kotlin {
             isStatic = true
             export(projects.shared.feature.home)
             export(projects.shared.feature.plans)
-            export(projects.shared.feature.trainings)
         }
     }
 
@@ -21,11 +20,8 @@ kotlin {
         commonMain.dependencies {
             api(projects.shared.feature.home)
             api(projects.shared.feature.plans)
-            api(projects.shared.feature.trainings)
             implementation(projects.shared.data.plans)
-            implementation(projects.shared.data.trainings)
             implementation(projects.shared.data.trainings2)
-            implementation(projects.shared.core.database)
             implementation(projects.shared.core.database2)
             implementation(projects.shared.core.utils)
             implementation(projects.shared.core.settings)

@@ -41,7 +41,6 @@ dependencies {
     implementation(projects.shared.umbrella)
     implementation(projects.android.home)
     implementation(projects.android.plans)
-    implementation(projects.android.trainings)
     implementation(projects.android.trainings2)
     implementation(projects.android.ui)
     implementation(libs.compose.ui)

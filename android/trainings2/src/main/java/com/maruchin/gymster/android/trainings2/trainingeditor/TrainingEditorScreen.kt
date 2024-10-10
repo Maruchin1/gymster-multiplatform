@@ -77,6 +77,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
+// TODO Option to delete training
+
+// TODO Option to change training date
+
 // TODO Action to finish training when all exercises are complete
 
 @Composable

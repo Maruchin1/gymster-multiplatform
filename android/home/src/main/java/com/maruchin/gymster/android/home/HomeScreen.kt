@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ListAlt
 import androidx.compose.material.icons.filled.AccountCircle
@@ -30,21 +29,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
-import com.maruchin.gymster.data.trainings.model.sampleActiveTrainingBlock
-import com.maruchin.gymster.feature.home.home.HomeUiState
 
 // TODO Add records card
 // Highest weight in major exercises from each training
 
 @Composable
-internal fun HomeScreen(
-    state: HomeUiState,
-    onOpenPlans: () -> Unit,
-    onOpenTrainingBlock: (trainingBlockId: String) -> Unit,
-    onOpenTrainings: () -> Unit,
-    onOpenTraining: (trainingBlockId: String, weekIndex: Int, trainingIndex: Int) -> Unit,
-    onCompleteCurrentWeek: () -> Unit
-) {
+internal fun HomeScreen(onOpenPlans: () -> Unit, onOpenTrainings: () -> Unit) {
     Scaffold(
         topBar = {
             TopBar()
@@ -57,26 +47,6 @@ internal fun HomeScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalItemSpacing = 16.dp
         ) {
-            state.activeTrainingBlock?.let { activeTrainingBlock ->
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    ActiveTrainingBlockCard(
-                        trainingBlock = activeTrainingBlock,
-                        onOpenActive = { onOpenTrainingBlock(activeTrainingBlock.id) },
-                        onViewAll = onOpenTrainings,
-                        modifier = Modifier.animateItem()
-                    )
-                }
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    CurrentWeekTrainingsCard(
-                        trainingBlock = activeTrainingBlock,
-                        onOpenTraining = { weekIndex, trainingIndex ->
-                            onOpenTraining(activeTrainingBlock.id, weekIndex, trainingIndex)
-                        },
-                        onCompleteCurrentWeek = onCompleteCurrentWeek,
-                        modifier = Modifier.animateItem()
-                    )
-                }
-            }
             item {
                 Card(onClick = onOpenPlans) {
                     Column(
@@ -147,12 +117,8 @@ private fun TopBar() {
 private fun HomeScreen_LoadedPreview() {
     AppTheme {
         HomeScreen(
-            state = HomeUiState(activeTrainingBlock = sampleActiveTrainingBlock),
             onOpenPlans = {},
-            onOpenTrainings = {},
-            onOpenTrainingBlock = {},
-            onOpenTraining = { _, _, _ -> },
-            onCompleteCurrentWeek = {}
+            onOpenTrainings = {}
         )
     }
 }
