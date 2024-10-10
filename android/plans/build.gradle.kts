@@ -9,7 +9,7 @@ android {
 
 dependencies {
     implementation(projects.shared.feature.plans)
-    implementation(projects.shared.core.clock)
+    implementation(projects.shared.core.utils)
     implementation(projects.android.ui)
     implementation(libs.reorderable)
 }

@@ -27,8 +27,7 @@ kotlin {
             implementation(projects.shared.data.trainings2)
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.database2)
-            implementation(projects.shared.core.clock)
-            implementation(projects.shared.core.coroutines)
+            implementation(projects.shared.core.utils)
             implementation(projects.shared.core.settings)
         }
     }

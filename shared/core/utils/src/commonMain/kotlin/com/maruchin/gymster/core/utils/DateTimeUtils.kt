@@ -1,4 +1,4 @@
-package com.maruchin.gymster.core.clock
+package com.maruchin.gymster.core.utils
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate

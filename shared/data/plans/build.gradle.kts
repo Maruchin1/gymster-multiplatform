@@ -8,7 +8,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.database2)
-            implementation(projects.shared.core.coroutines)
             implementation(projects.shared.core.utils)
         }
     }

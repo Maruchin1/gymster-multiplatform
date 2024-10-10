@@ -13,7 +13,8 @@ internal data object TrainingListScreen
 
 internal fun NavGraphBuilder.trainingListScreen(
     onBack: () -> Unit,
-    onOpenTraining: (String) -> Unit
+    onOpenTraining: (String) -> Unit,
+    onStartTraining: () -> Unit
 ) {
     composable<TrainingListScreen> {
         val viewModel = viewModel { TrainingListViewModel() }
@@ -22,7 +23,8 @@ internal fun NavGraphBuilder.trainingListScreen(
         TrainingListScreen(
             state = state,
             onBack = onBack,
-            onOpenTraining = onOpenTraining
+            onOpenTraining = onOpenTraining,
+            onStartTraining = onStartTraining
         )
     }
 }

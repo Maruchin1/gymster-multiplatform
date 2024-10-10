@@ -1,4 +1,4 @@
-package com.maruchin.gymster.core.coroutines
+package com.maruchin.gymster.core.utils.di
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

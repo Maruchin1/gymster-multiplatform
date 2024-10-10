@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.androidx.viewmodel)
             api(projects.shared.data.trainings2)
+            api(projects.shared.core.utils)
         }
     }
 }

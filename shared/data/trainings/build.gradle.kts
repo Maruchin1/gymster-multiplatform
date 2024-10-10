@@ -9,7 +9,6 @@ kotlin {
             api(projects.shared.data.plans)
             implementation(projects.shared.core.database)
             implementation(projects.shared.core.settings)
-            implementation(projects.shared.core.coroutines)
             implementation(projects.shared.core.utils)
         }
     }

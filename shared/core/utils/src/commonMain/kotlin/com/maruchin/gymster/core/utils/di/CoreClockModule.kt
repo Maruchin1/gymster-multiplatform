@@ -1,4 +1,4 @@
-package com.maruchin.gymster.core.clock.di
+package com.maruchin.gymster.core.utils.di
 
 import kotlinx.datetime.Clock
 import org.koin.dsl.bind

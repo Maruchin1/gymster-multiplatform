@@ -39,6 +39,7 @@ import com.maruchin.gymster.shared.feature.trainings2.traininglist.TrainingListU
 internal fun TrainingListScreen(
     state: TrainingListUiState,
     onBack: () -> Unit,
+    onStartTraining: () -> Unit,
     onOpenTraining: (String) -> Unit
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -47,7 +48,7 @@ internal fun TrainingListScreen(
             TopBar(onBack = onBack, topAppBarScrollBehavior = topAppBarScrollBehavior)
         },
         floatingActionButton = {
-            StartNewTrainingButton()
+            StartNewTrainingButton(onClick = onStartTraining)
         }
     ) { innerPadding ->
         if (state.trainings.isEmpty()) {
@@ -86,9 +87,9 @@ private fun TopBar(onBack: () -> Unit, topAppBarScrollBehavior: TopAppBarScrollB
 }
 
 @Composable
-private fun StartNewTrainingButton() {
+private fun StartNewTrainingButton(onClick: () -> Unit) {
     ExtendedFloatingActionButton(
-        onClick = {},
+        onClick = onClick,
         icon = {
             Icon(imageVector = Icons.Outlined.FitnessCenter, contentDescription = null)
         },
@@ -142,7 +143,8 @@ private fun TrainingListUiState_EmptyPreview() {
         TrainingListScreen(
             state = TrainingListUiState(),
             onBack = {},
-            onOpenTraining = {}
+            onOpenTraining = {},
+            onStartTraining = {}
         )
     }
 }
@@ -154,7 +156,8 @@ private fun TrainingListScreen_LoadedPreview() {
         TrainingListScreen(
             state = TrainingListUiState(sampleTrainings),
             onBack = {},
-            onOpenTraining = {}
+            onOpenTraining = {},
+            onStartTraining = {}
         )
     }
 }

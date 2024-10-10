@@ -26,8 +26,6 @@ include(":android:ui")
 include(":shared:umbrella")
 
 include(":shared:core:database")
-include(":shared:core:clock")
-include(":shared:core:coroutines")
 include(":shared:core:settings")
 include(":shared:core:utils")
 
