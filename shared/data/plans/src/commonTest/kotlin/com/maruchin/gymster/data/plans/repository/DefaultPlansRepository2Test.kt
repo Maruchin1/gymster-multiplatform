@@ -1,7 +1,7 @@
 package com.maruchin.gymster.data.plans.repository
 
 import app.cash.turbine.test
-import com.maruchin.gymster.core.database2.di.coreDatabase2TestModule
+import com.maruchin.gymster.core.database.di.coreDatabase2TestModule
 import com.maruchin.gymster.data.plans.di.dataPlansModule
 import com.maruchin.gymster.data.plans.model.Plan
 import com.maruchin.gymster.data.plans.model.PlannedExercise

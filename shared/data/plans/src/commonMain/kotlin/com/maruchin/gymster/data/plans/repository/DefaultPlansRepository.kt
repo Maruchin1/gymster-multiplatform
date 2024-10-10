@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.plans.repository
 
-import com.maruchin.gymster.core.database2.relation.PlanWithPlannedTrainings
+import com.maruchin.gymster.core.database.relation.PlanWithPlannedTrainings
 import com.maruchin.gymster.data.plans.datasource.PlansLocalDataSource
 import com.maruchin.gymster.data.plans.mapper.toDomainModel
 import com.maruchin.gymster.data.plans.model.Plan

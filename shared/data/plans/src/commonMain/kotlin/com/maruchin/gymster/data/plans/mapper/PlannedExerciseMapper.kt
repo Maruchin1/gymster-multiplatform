@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.plans.mapper
 
-import com.maruchin.gymster.core.database2.entity.PlannedExerciseEntity
+import com.maruchin.gymster.core.database.entity.PlannedExerciseEntity
 import com.maruchin.gymster.data.plans.model.PlannedExercise
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets

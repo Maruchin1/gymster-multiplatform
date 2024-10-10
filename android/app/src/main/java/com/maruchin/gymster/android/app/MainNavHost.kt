@@ -10,8 +10,8 @@ import com.maruchin.gymster.android.home.HomeGraph
 import com.maruchin.gymster.android.home.homeGraph
 import com.maruchin.gymster.android.plans.PlansRoute
 import com.maruchin.gymster.android.plans.plansGraph
-import com.maruchin.gymster.android.trainings2.navigateToTrainings2
-import com.maruchin.gymster.android.trainings2.trainings2Graph
+import com.maruchin.gymster.android.trainings.navigateToTrainings2
+import com.maruchin.gymster.android.trainings.trainings2Graph
 
 @Composable
 internal fun MainNavHost() {

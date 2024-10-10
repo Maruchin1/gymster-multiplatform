@@ -1,8 +1,8 @@
 package com.maruchin.gymster.android.app
 
 import android.app.Application
-import com.maruchin.gymster.dupa.Platform
-import com.maruchin.gymster.dupa.initSharedLibrary
+import com.maruchin.gymster.umbrella.Platform
+import com.maruchin.gymster.umbrella.initSharedLibrary
 
 class GymsterApplication : Application() {
 

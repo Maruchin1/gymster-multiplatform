@@ -1,6 +1,6 @@
 package com.maruchin.gymster.data.plans.mapper
 
-import com.maruchin.gymster.core.database2.relation.PlannedTrainingWithPlannedExercises
+import com.maruchin.gymster.core.database.relation.PlannedTrainingWithPlannedExercises
 import com.maruchin.gymster.data.plans.model.PlannedTraining
 
 internal fun PlannedTrainingWithPlannedExercises.toDomainModel() = PlannedTraining(

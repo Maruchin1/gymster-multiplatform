@@ -1,12 +1,12 @@
 package com.maruchin.gymster.data.plans.datasource
 
-import com.maruchin.gymster.core.database2.dao.PlanDao
-import com.maruchin.gymster.core.database2.dao.PlannedExerciseDao
-import com.maruchin.gymster.core.database2.dao.PlannedTrainingDao
-import com.maruchin.gymster.core.database2.entity.PlanEntity
-import com.maruchin.gymster.core.database2.entity.PlannedExerciseEntity
-import com.maruchin.gymster.core.database2.entity.PlannedTrainingEntity
-import com.maruchin.gymster.core.database2.relation.PlanWithPlannedTrainings
+import com.maruchin.gymster.core.database.dao.PlanDao
+import com.maruchin.gymster.core.database.dao.PlannedExerciseDao
+import com.maruchin.gymster.core.database.dao.PlannedTrainingDao
+import com.maruchin.gymster.core.database.entity.PlanEntity
+import com.maruchin.gymster.core.database.entity.PlannedExerciseEntity
+import com.maruchin.gymster.core.database.entity.PlannedTrainingEntity
+import com.maruchin.gymster.core.database.relation.PlanWithPlannedTrainings
 import com.maruchin.gymster.data.plans.model.Reps
 import com.maruchin.gymster.data.plans.model.Sets
 import kotlinx.coroutines.flow.Flow
