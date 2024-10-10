@@ -1,5 +1,6 @@
 package com.maruchin.gymster.android.trainings.traininglist
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.maruchin.gymster.android.ui.AppTheme
 import com.maruchin.gymster.android.ui.EmptyContent
 import com.maruchin.gymster.android.ui.formatFull
-import com.maruchin.gymster.data.trainings.model.sampleTrainings
+import com.maruchin.gymster.android.ui.formatMedium
+import com.maruchin.gymster.data.trainings.model.sampleTrainingWeeks
 import com.maruchin.gymster.shared.feature.trainings.traininglist.TrainingListUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +101,7 @@ private fun StartNewTrainingButton(onClick: () -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun LoadedContent(
     innerPadding: PaddingValues,
@@ -114,22 +116,31 @@ private fun LoadedContent(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(state.trainings, key = { it.id }) { training ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateItem(),
-                onClick = { onOpenTraining(training.id) }
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(
-                        text = training.date.formatFull(),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = training.name, style = MaterialTheme.typography.titleLarge)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = training.planName, style = MaterialTheme.typography.bodyLarge)
+        state.trainings.forEach { trainingWeek ->
+            stickyHeader {
+                Text(
+                    text = "${trainingWeek.startDate.formatMedium()} - ${trainingWeek.endDate.formatMedium()}",
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+            items(trainingWeek.trainings, key = { it.id }) { training ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateItem(),
+                    onClick = { onOpenTraining(training.id) }
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text(
+                            text = training.date.formatFull(),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = training.name, style = MaterialTheme.typography.titleLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = training.planName, style = MaterialTheme.typography.bodyLarge)
+                    }
                 }
             }
         }
@@ -154,7 +165,7 @@ private fun TrainingListUiState_EmptyPreview() {
 private fun TrainingListScreen_LoadedPreview() {
     AppTheme {
         TrainingListScreen(
-            state = TrainingListUiState(sampleTrainings),
+            state = TrainingListUiState(sampleTrainingWeeks),
             onBack = {},
             onOpenTraining = {},
             onStartTraining = {}

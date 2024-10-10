@@ -2,6 +2,7 @@ package com.maruchin.gymster.shared.feature.trainings.traininglist
 
 import app.cash.turbine.test
 import com.maruchin.gymster.data.trainings.di.dataTrainings2TestModule
+import com.maruchin.gymster.data.trainings.model.sampleTrainingWeeks
 import com.maruchin.gymster.data.trainings.model.sampleTrainings
 import com.maruchin.gymster.data.trainings.repository.FakeTrainingsRepository
 import io.kotest.matchers.shouldBe
@@ -43,7 +44,7 @@ class TrainingListViewModelTest : KoinTest {
 
         viewModel.uiState.test {
             awaitItem() shouldBe TrainingListUiState()
-            awaitItem() shouldBe TrainingListUiState(trainings = sampleTrainings)
+            awaitItem() shouldBe TrainingListUiState(trainings = sampleTrainingWeeks)
         }
     }
 }

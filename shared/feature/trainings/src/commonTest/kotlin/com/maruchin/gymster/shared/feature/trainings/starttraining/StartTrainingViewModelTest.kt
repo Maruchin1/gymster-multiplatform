@@ -1,6 +1,8 @@
 package com.maruchin.gymster.shared.feature.trainings.starttraining
 
 import app.cash.turbine.test
+import com.maruchin.gymster.core.utils.FakeClock
+import com.maruchin.gymster.core.utils.di.coreClockTestModule
 import com.maruchin.gymster.data.plans.di.dataPlansTestModule
 import com.maruchin.gymster.data.plans.model.samplePlans
 import com.maruchin.gymster.data.plans.repository.FakePlansRepository
@@ -28,12 +30,18 @@ class StartTrainingViewModelTest : KoinTest {
 
     private val plansRepository: FakePlansRepository by inject()
     private val trainingsRepository: FakeTrainingsRepository by inject()
+    private val clock: FakeClock by inject()
     private val viewModel by lazy { StartTrainingViewModel() }
+
+    private val currentDate = LocalDate(2024, 10, 10)
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
-        startKoin { modules(dataPlansTestModule, dataTrainings2TestModule) }
+        startKoin { modules(dataPlansTestModule, dataTrainings2TestModule, coreClockTestModule) }
+
+        plansRepository.setPlans(samplePlans)
+        clock.setNow(currentDate)
     }
 
     @AfterTest
@@ -44,176 +52,251 @@ class StartTrainingViewModelTest : KoinTest {
 
     @Test
     fun `emit all plans`() = runTest {
-        plansRepository.setPlans(samplePlans)
-
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
         }
     }
 
     @Test
     fun `select plan`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
         }
     }
 
     @Test
     fun `reset plan`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.resetPlan()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
         }
     }
 
     @Test
     fun `select training`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
         val selectedTraining = selectedPlan.trainings.first()
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.selectTraining(selectedTraining)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan, selectedTraining)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = currentDate
+            )
         }
     }
 
     @Test
     fun `reset training`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
         val selectedTraining = selectedPlan.trainings.first()
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.selectTraining(selectedTraining)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan, selectedTraining)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = currentDate
+            )
 
             viewModel.resetTraining()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
         }
     }
 
     @Test
     fun `select date`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
         val selectedTraining = selectedPlan.trainings.first()
         val selectedDate = LocalDate(2024, 10, 9)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.selectTraining(selectedTraining)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan, selectedTraining)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = currentDate
+            )
 
             viewModel.selectDate(selectedDate)
             awaitItem() shouldBe StartTrainingUiState(
-                samplePlans,
-                selectedPlan,
-                selectedTraining,
-                selectedDate
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = selectedDate
             )
         }
     }
 
     @Test
     fun `reset date`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
         val selectedTraining = selectedPlan.trainings.first()
         val selectedDate = LocalDate(2024, 10, 9)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.selectTraining(selectedTraining)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan, selectedTraining)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = currentDate
+            )
 
             viewModel.selectDate(selectedDate)
             awaitItem() shouldBe StartTrainingUiState(
-                samplePlans,
-                selectedPlan,
-                selectedTraining,
-                selectedDate
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = selectedDate
             )
 
             viewModel.resetDate()
             awaitItem() shouldBe StartTrainingUiState(
-                samplePlans,
-                selectedPlan,
-                selectedTraining
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining
             )
         }
     }
 
     @Test
     fun `start training`() = runTest {
-        plansRepository.setPlans(samplePlans)
         val selectedPlan = samplePlans.first()
         val selectedTraining = selectedPlan.trainings.first()
         val selectedDate = LocalDate(2024, 10, 9)
 
         viewModel.uiState.test {
-            awaitItem() shouldBe StartTrainingUiState()
-            awaitItem() shouldBe StartTrainingUiState(samplePlans)
+            awaitItem() shouldBe StartTrainingUiState(selectedDate = currentDate)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedDate = currentDate
+            )
 
             viewModel.selectPlan(selectedPlan)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedDate = currentDate
+            )
 
             viewModel.selectTraining(selectedTraining)
-            awaitItem() shouldBe StartTrainingUiState(samplePlans, selectedPlan, selectedTraining)
+            awaitItem() shouldBe StartTrainingUiState(
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = currentDate
+            )
 
             viewModel.selectDate(selectedDate)
             awaitItem() shouldBe StartTrainingUiState(
-                samplePlans,
-                selectedPlan,
-                selectedTraining,
-                selectedDate
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = selectedDate
             )
 
             viewModel.startTraining()
             awaitItem() shouldBe StartTrainingUiState(
-                samplePlans,
-                selectedPlan,
-                selectedTraining,
-                selectedDate,
+                plans = samplePlans,
+                selectedPlan = selectedPlan,
+                selectedTraining = selectedTraining,
+                selectedDate = selectedDate,
                 isCreated = true
             )
         }

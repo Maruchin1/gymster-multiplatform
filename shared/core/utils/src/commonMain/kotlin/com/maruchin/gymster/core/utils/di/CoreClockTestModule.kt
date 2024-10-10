@@ -5,7 +5,7 @@ import kotlinx.datetime.Clock
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val coreUtilsTesModule = module {
+val coreClockTestModule = module {
 
     factory { FakeClock() } bind Clock::class
 }

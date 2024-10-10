@@ -8,7 +8,7 @@ val samplePushTraining = Training(
     id = "1",
     name = "Push",
     planName = "Push Pull Legs",
-    date = LocalDate(2024, 10, 7),
+    date = LocalDate(2024, 10, 2),
     isComplete = false,
     exercises = listOf(
         Exercise(
@@ -74,7 +74,7 @@ val samplePullTraining = Training(
     id = "2",
     name = "Pull",
     planName = "Push Pull Legs",
-    date = LocalDate(2024, 10, 8),
+    date = LocalDate(2024, 10, 9),
     isComplete = false,
     exercises = listOf(
         Exercise(
